@@ -1,0 +1,16 @@
+  https://developer.adobe.com/stock/docs/api/11-search-reference/#responses
+  
+  /* result_columns[]=is_licensed&result_columns[]=creation_date
+  thumbnail_220_url | thumbnail_220_widththumbnail_220_height
+  nb_downloads creation_date nb_views
+  
+search_parameters[order] = relevance
+--How closely it matches your search request, closest matches first.
+creation
+--Creation date in descending order (newest first).
+featured
+--Attempts to display the highest quality content first, as scored by Adobe Sensei's machine learning algorithms. In practice, it performs best on lifestyle imagery.
+nb_downloads
+--In descending order by the number of downloads by all users since the asset was added to Adobe Stock.
+undiscovered
+--Starting with assets that have not commonly been viewed or downloaded.*/

@@ -3,10 +3,11 @@ import Image from "next/image";
 
 export default function Home() {
   const [resp, setResp] = useState();
+  const [query, setQuery] = useState("");
 
   const handleClick = async () => {
     try {
-      const res = await fetch("/api/get-files");
+      const res = await fetch(`/api/get-files?search=${query}`);
       if (!res.ok) {
         throw new Error(res.statusText);
       }
@@ -18,33 +19,51 @@ export default function Home() {
     }
   };
 
+  const handleQuery = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const isEnter = (e) => {
+    if (e.key === "Enter") {
+      handleClick();
+    }
+  };
+
   return (
     <main
-      className={`flex min-h-screen flex-row items-center justify-center p-24`}
+      className={`flex min-h-screen flex-col items-center justify-center p-24`}
     >
-      <button
-        className="bg-sky-700 hover:bg-sky-900 text-center px-5 py-3 m-1 text-white rounded-lg text-lg"
-        onClick={handleClick}
-      >
-        Fetch Christmas
-      </button>
-      <div className="bg-green-700 hover:bg-sky-900 text-center px-5 py-3 m-1 text-white rounded-lg text-lg">
-        {resp
-          ? Object.getOwnPropertyNames(resp.files[0]).map((e, ind) => (
-              <p key={ind}>{e}</p>
-            ))
-          : null}
+      <div>
+        <input
+          className="bg-sky-700 hover:bg-sky-900 text-center px-3 py-1 m-1 text-white rounded-lg text-lg"
+          type="text"
+          onChange={handleQuery}
+          onKeyDown={isEnter}
+          value={query}
+        />
+        <button
+          className="bg-sky-700 hover:bg-sky-900 text-center px-3 py-1 m-1 text-white rounded-lg text-lg"
+          onClick={handleClick}
+        >
+          Fetch
+        </button>
       </div>
-      <div className="bg-green-700 hover:bg-sky-900 text-center px-5 py-3 m-1 text-white rounded-lg text-lg">
+      <div className="animation-all ease-in duration-300 bg-gray-400 hover:bg-gray-500 text-center p-1 m-1 text-white rounded-md text-lg">
         {resp
           ? resp.files.map((e, ind) => (
-              <Image
-                src={e.thumbnail_url}
-                width={e.thumbnail_width}
-                height={e.thumbnail_height}
-                alt={e.title}
-                key={`e-${ind}`}
-              />
+              <div key={`e-${ind}`}>
+                <Image
+                  className="p-1"
+                  src={e.thumbnail_url}
+                  width={e.thumbnail_width}
+                  height={e.thumbnail_height}
+                  alt={e.title}
+                />
+                <p className="text-sm w-full flex justify-between px-1">
+                  <span>dls-{e.nb_downloads}</span>{" "}
+                  <span>{e.creation_date.substr(0, 4)}</span>
+                </p>
+              </div>
             ))
           : null}
       </div>

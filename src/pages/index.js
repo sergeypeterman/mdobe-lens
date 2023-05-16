@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+const TYPES = {1: "Photo",
+  2: "Illustration",
+  3: "Vector",
+  4: "Video",
+  6: "3D",
+  7: "Template",}
+
 export default function Home() {
   const [resp, setResp] = useState();
   const [query, setQuery] = useState("");
@@ -61,7 +68,9 @@ export default function Home() {
                 />
                 <p className="text-sm w-full flex justify-between px-1">
                   <span>dls-{e.nb_downloads}</span>{" "}
-                  <span>{e.creation_date.substr(0, 4)}</span>
+                  <span>{TYPES[e.media_type_id]}</span>
+                  <span>{e.creator_name}</span>
+                  <span>{e.creation_date/* .substr(0, 4) */}</span>
                 </p>
               </div>
             ))

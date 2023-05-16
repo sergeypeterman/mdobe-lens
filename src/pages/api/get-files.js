@@ -3,35 +3,49 @@ const adobeUrl =
 const apikey = process.env.API_KEY;
 
 export default async function handler(req, res) {
-  let search_params = ["[words]"];
+  let search_params = ["[words]","[order]","[filters]"];
   let columns = [
     "thumbnail_url",
     "thumbnail_width",
     "thumbnail_height",
     "nb_downloads",
     "creation_date",
-    "nb_views",
+    "country_name",
+    "creator_name",
+    "creator_id",
+    "width",
+    "height",
+    "has_releases",
+    "keywords",
+    "media_type_id",
+    "premium_level_id",
+    "video_small_preview_url",
   ];
   let params = [
     { search_parameters: search_params },
     { result_columns: columns },
   ];
   let sParams = "&search_parameters";
-  /* result_columns[]=is_licensed&result_columns[]=creation_date
-   search_parameters[words]=dog big happy*/
 
-   let responseColumns = columns.reduce((acc,item)=>{
+  let responseColumns = columns.reduce((acc, item) => {
     acc += `&result_columns[]=${item}`;
     return acc;
-   },"");
-   //console.log(responseColumns);
+  }, "");
 
   const {
     query: { search },
   } = req;
-  console.log(search);
+  console.log(`API: Search = ${search}`);
 
-  let modifier = "&search_parameters" + "[words]=" + search + responseColumns;
+  //age: 1w, 1m, 6m, 1y, 2y, 3y
+
+  let modifier =
+    "&search_parameters[filters][age]=2w" +
+    "&search_parameters[order]=nb_downloads" +
+    "&search_parameters" +
+    "[words]=" +
+    search +
+    responseColumns;
   let searchUrl = adobeUrl + modifier;
 
   try {

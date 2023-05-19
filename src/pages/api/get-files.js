@@ -40,8 +40,9 @@ export default async function handler(req, res) {
   //age: 1w, 1m, 6m, 1y, 2y, 3y
 
   let modifier =
-    "&search_parameters[filters][age]=2w" +
+    "&search_parameters[filters][age]=1m" +
     "&search_parameters[order]=nb_downloads" +
+    "&search_parameters[thumbnail_size]=240" +
     "&search_parameters" +
     "[words]=" +
     search +

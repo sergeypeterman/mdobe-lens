@@ -14,3 +14,13 @@ nb_downloads
 --In descending order by the number of downloads by all users since the asset was added to Adobe Stock.
 undiscovered
 --Starting with assets that have not commonly been viewed or downloaded.*/
+
+media_type_id
+
+Type of the asset. Integer.
+	• 1: Photos
+	• 2: Illustrations
+	• 3: Vectors
+	• 4: Videos
+	• 6: 3D
+	• 7: Templates

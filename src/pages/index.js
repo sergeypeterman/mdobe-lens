@@ -1,14 +1,78 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronUp,
+  faChevronDown,
+  faPenNib,
+  faCamera,
+  faVideo,
+  faDesktop,
+  faCube,
+  faPenSquare,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 
 const TYPES = {
-  1: "Photo",
-  2: "Illustration",
-  3: "Vector",
-  4: "Video",
-  6: "3D",
-  7: "Template",
+  1: {icon: faCamera, title:"Photo"},
+  2: {icon: faDesktop, title:"Illustration"},
+  3: {icon: faPenNib, title: "Vector"},
+  4: {icon: faVideo, title: "Video"},
+  6: {icon: faCube, title:"3D"},
+  7: {icon: faPenSquare, title:"Template"},
 };
+
+function Card({ e }) {
+  const [pressed, setPressed] = useState(false);
+
+  const handleClick = () => {
+    setPressed(!pressed);
+  };
+
+  return (
+    <div
+      className="mb-2 bg-gradient-to-b w-full flex flex-col rounded-lg shadow-lg
+                 from-neutral-100 from-85% to-neutral-50
+                 "
+    >
+      <div className="text-sm flex justify-between p-1">
+        <span className="px-1 font-bold">{e.nb_downloads}</span>
+        <span>{e.creator_name}</span>
+        <span title={TYPES[e.media_type_id].title} className="px-1">
+          <FontAwesomeIcon icon={TYPES[e.media_type_id].icon} />
+        </span>
+      </div>
+      <Image
+        className="h-48 w-auto object-contain cursor-pointer"
+        src={e.thumbnail_url}
+        width={e.thumbnail_width}
+        height={e.thumbnail_height}
+        alt={e.title}
+        onClick={handleClick}
+      />
+      <div className="text-sm flex justify-around p-1">
+        <span className="px-1">{e.creation_date.substr(0, 7)}</span>
+      </div>
+      {pressed ? (
+        <div className={`px-3 py-2`}>
+          <p className="p-1 border-b-2">{e.title}</p>
+          <p className="p-1">
+            {e.keywords.reduce((acc, item) => (acc += `${item.name}, `), " ")}
+          </p>
+        </div>
+      ) : null}
+      {pressed ? (
+        <div onClick={handleClick} className={`expand`}>
+          <FontAwesomeIcon icon={faChevronUp} />
+        </div>
+      ) : (
+        <div onClick={handleClick} className={`expand`}>
+          <FontAwesomeIcon icon={faChevronDown} />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
   const [resp, setResp] = useState();
@@ -23,6 +87,7 @@ export default function Home() {
       const result = await res.json();
       const { response } = result;
       setResp(response);
+      //console.log(response);
     } catch (err) {
       alert(err.message);
     }
@@ -42,10 +107,10 @@ export default function Home() {
     <main
       className={`flex min-h-screen flex-col items-center justify-center p-12`}
     >
-      <div id="search-form" className="w-full flex flex-col items-center">
+      <div id="search-form" className="w-full flex flex-row items-center">
         <input
-          className="bg-gray-100 hover:bg-gray-200 text-center px-3 py-1 m-1 text-black
-          rounded-lg text-lg w-full"
+          className="text-center px-3 py-1 m-1 text-black
+          rounded-lg bg-gray-100 hover:bg-gray-200 text-lg w-full"
           type="text"
           placeholder="type query..."
           onChange={handleQuery}
@@ -54,42 +119,19 @@ export default function Home() {
         />
         <button
           className="bg-sky-700 hover:bg-sky-900  text-center 
-              px-10 py-1 mt-1 text-white rounded-lg text-lg "
+              px-3 py-1 text-white rounded-lg text-lg shadow-md active:shadow-none"
           onClick={handleClick}
         >
-          Fetch
+          <FontAwesomeIcon icon={faMagnifyingGlass} />
         </button>
       </div>
       <div
-        className="animation-all ease-in duration-300 text-center p-1 m-1 text-white 
-                      rounded-md text-lg w-full
+        className="   text-center p-1 m-1 text-black 
+                      rounded-md w-full
                       grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
       >
         {resp
-          ? resp.files.map((e, ind) => (
-              <div
-                key={`e-${ind}`}
-                className="mb-2 bg-gray-400 w-full hover:bg-gray-500 flex flex-col rounded-lg"
-              >
-                <div className="text-sm flex justify-center p-1">
-                  <p>
-                    <span>{e.creator_name}</span>
-                  </p>
-                </div>
-                <Image
-                  className="h-48 w-auto object-contain"
-                  src={e.thumbnail_url}
-                  width={e.thumbnail_width}
-                  height={e.thumbnail_height}
-                  alt={e.title}
-                />
-                <div className="text-sm flex justify-between p-1">
-                  <span className="font-bold">{e.nb_downloads}</span>{" "}
-                  <span>{TYPES[e.media_type_id]}</span>
-                  <span>{e.creation_date.substr(0, 7)}</span>
-                </div>
-              </div>
-            ))
+          ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)
           : null}
       </div>
     </main>

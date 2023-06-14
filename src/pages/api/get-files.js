@@ -3,7 +3,7 @@ const adobeUrl =
 const apikey = process.env.API_KEY;
 
 export default async function handler(req, res) {
-  let search_params = ["[words]","[order]","[filters]"];
+  //let search_params = ["[words]","[order]","[filters]"];
   let columns = [
     "thumbnail_url",
     "thumbnail_width",
@@ -17,15 +17,16 @@ export default async function handler(req, res) {
     "height",
     "has_releases",
     "keywords",
+    "title",
     "media_type_id",
     "premium_level_id",
     "video_small_preview_url",
   ];
-  let params = [
+  /* let params = [
     { search_parameters: search_params },
     { result_columns: columns },
   ];
-  let sParams = "&search_parameters";
+  let sParams = "&search_parameters"; */
 
   let responseColumns = columns.reduce((acc, item) => {
     acc += `&result_columns[]=${item}`;

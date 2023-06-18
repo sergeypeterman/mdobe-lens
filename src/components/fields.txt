@@ -1,3 +1,15 @@
+"has_releases"
+"media_type_id"
+[filters][age]=1w, 1m, 6m, 1y, 2y, 3y
+[order]=nb_downloads relevance creation featured undiscovered
+
+?similar_image
+Image data to use when searching for visually
+similar assets. Must also specify:search_parameters[similar_image]=1Supported in POST only.
+Valid image data is for JPG, PNG, or GIF files. Use multipart/form-data. Ignored if search_parameters[similar_url] is specified.
+
+
+
   https://developer.adobe.com/stock/docs/api/11-search-reference/#responses
   
   /* result_columns[]=is_licensed&result_columns[]=creation_date

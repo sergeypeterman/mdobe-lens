@@ -11,16 +11,58 @@ import {
   faCube,
   faPenSquare,
   faMagnifyingGlass,
+  faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 
 const TYPES = {
-  1: {icon: faCamera, title:"Photo"},
-  2: {icon: faDesktop, title:"Illustration"},
-  3: {icon: faPenNib, title: "Vector"},
-  4: {icon: faVideo, title: "Video"},
-  6: {icon: faCube, title:"3D"},
-  7: {icon: faPenSquare, title:"Template"},
+  1: { icon: faCamera, title: "Photo" },
+  2: { icon: faDesktop, title: "Illustration" },
+  3: { icon: faPenNib, title: "Vector" },
+  4: { icon: faVideo, title: "Video" },
+  6: { icon: faCube, title: "3D" },
+  7: { icon: faPenSquare, title: "Template" },
 };
+
+function Settings({ handleQuery, isEnter, query, handleClick }) {
+  return (
+    <div
+      id="search-form"
+      className="w-full flex flex-col items-center fixed top-0 left-0 px-12 py-8 
+               backdrop-blur-sm bg-gradient-to-b from-neutral-400"
+    >
+      <div id="search-field" className="w-full flex flex-row items-center">
+        
+        <button
+          className="bg-gray-100 hover:bg-gray-200 text-center 
+          px-3 py-1 ml-1 -mr-1 text-gray-400 rounded-l-lg text-lg shadow-md "
+          
+        >
+          <FontAwesomeIcon icon={faSliders} className="" />
+        </button>
+        <input
+          className="text-center px-3 py-1 m-1 text-black shadow-md
+                     rounded-r-lg bg-gray-100 hover:bg-gray-200 text-lg w-full"
+          type="text"
+          placeholder="type query..."
+          onChange={handleQuery}
+          onKeyDown={isEnter}
+          value={query}
+        />
+        <button
+          className="bg-sky-700 hover:bg-sky-900  text-center 
+          px-3 py-1 m-1 text-white rounded-lg text-lg shadow-md active:shadow-none"
+          onClick={handleClick}
+        >
+          <FontAwesomeIcon icon={faMagnifyingGlass} />
+        </button>
+      </div>
+      <div
+        id="search-params"
+        className="w-full flex flex-row items-center"
+      ></div>
+    </div>
+  );
+}
 
 function Card({ e }) {
   const [pressed, setPressed] = useState(false);
@@ -87,7 +129,6 @@ export default function Home() {
       const result = await res.json();
       const { response } = result;
       setResp(response);
-      //console.log(response);
     } catch (err) {
       alert(err.message);
     }
@@ -104,29 +145,15 @@ export default function Home() {
   };
 
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-center p-12`}
-    >
-      <div id="search-form" className="w-full flex flex-row items-center">
-        <input
-          className="text-center px-3 py-1 m-1 text-black
-          rounded-lg bg-gray-100 hover:bg-gray-200 text-lg w-full"
-          type="text"
-          placeholder="type query..."
-          onChange={handleQuery}
-          onKeyDown={isEnter}
-          value={query}
-        />
-        <button
-          className="bg-sky-700 hover:bg-sky-900  text-center 
-              px-3 py-1 text-white rounded-lg text-lg shadow-md active:shadow-none"
-          onClick={handleClick}
-        >
-          <FontAwesomeIcon icon={faMagnifyingGlass} />
-        </button>
-      </div>
+    <main className={`flex min-h-screen flex-col items-center justify-center `}>
+      <Settings
+        handleQuery={handleQuery}
+        isEnter={isEnter}
+        query={query}
+        handleClick={handleClick}
+      />
       <div
-        className="   text-center p-1 m-1 text-black 
+        className="   text-center p-12 m-16 text-black 
                       rounded-md w-full
                       grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
       >

@@ -26,13 +26,18 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-@media (hover: hover){
-  .expand{
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+@media (hover: hover) {
+  .expand {
     cursor: pointer;
   }
 }
-@media (hover: none){
-  .expand{
+@media (hover: none) {
+  .expand {
     cursor: default;
   }
 }

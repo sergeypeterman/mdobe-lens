@@ -3,7 +3,6 @@ const adobeUrl =
 const apikey = process.env.API_KEY;
 
 export default async function handler(req, res) {
-  //let search_params = ["[words]","[order]","[filters]"];
   let columns = [
     "thumbnail_url",
     "thumbnail_width",
@@ -21,12 +20,11 @@ export default async function handler(req, res) {
     "media_type_id",
     "premium_level_id",
     "video_small_preview_url",
+    "video_small_preview_width",
+    "video_small_preview_height",
+    "video_small_preview_content_length",
+    "video_small_preview_content_type",
   ];
-  /* let params = [
-    { search_parameters: search_params },
-    { result_columns: columns },
-  ];
-  let sParams = "&search_parameters"; */
 
   let responseColumns = columns.reduce((acc, item) => {
     acc += `&result_columns[]=${item}`;
@@ -36,19 +34,34 @@ export default async function handler(req, res) {
   const {
     query: { search },
   } = req;
-  console.log(`API: Search = ${search}`);
 
-  //age: 1w, 1m, 6m, 1y, 2y, 3y
+  let userRequest = JSON.parse(search);
+
+  let ageInd = userRequest.age.selected; //index of selected age
+  let age = userRequest.age.values[ageInd].name; //selected age
+
+  let orderInd = userRequest.order.selected; //index of selected order
+  let order = userRequest.order.values[orderInd].name; //selected order
+
+  //"&search_parameters[filters][content_type:photo]=1"+
+  let contentTypes = userRequest.content.values.reduce((acc, elem, ind) => {
+    acc += userRequest.content.selected[ind]
+      ? `&search_parameters[filters][content_type:${elem.title}]=1`
+      : "";
+    return acc;
+  }, "");
+  //console.log(contentTypes);
 
   let modifier =
-    "&search_parameters[filters][age]=1m" +
-    "&search_parameters[order]=nb_downloads" +
-    "&search_parameters[thumbnail_size]=240" +
-    "&search_parameters" +
-    "[words]=" +
-    search +
-    responseColumns;
+    `&search_parameters[filters][age]=${age}` +
+    `&search_parameters[order]=${order}` +
+    `&search_parameters[thumbnail_size]=240` +
+    `&search_parameters[words]=${userRequest.query}` +
+    responseColumns +
+    contentTypes;
   let searchUrl = adobeUrl + modifier;
+
+  //console.log(`API: Search = ${searchUrl}`);
 
   try {
     const respn = await fetch(searchUrl, {

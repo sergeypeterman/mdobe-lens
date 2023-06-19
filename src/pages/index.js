@@ -15,12 +15,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const CONTENT_TYPES = [
-  { name: 1, icon: faCamera, title: "Photo" },
-  { name: 2, icon: faDesktop, title: "Illustration" },
-  { name: 3, icon: faPenNib, title: "Vector" },
-  { name: 4, icon: faVideo, title: "Video" },
-  { name: 5, icon: faCube, title: "3D" },
-  { name: 6, icon: faPenSquare, title: "Template" },
+  { name: 1, icon: faCamera, title: "photo" },
+  { name: 2, icon: faDesktop, title: "illustration" },
+  { name: 3, icon: faPenNib, title: "vector" },
+  { name: 4, icon: faVideo, title: "video" },
+  { name: 5, icon: faCube, title: "3d" },
+  { name: 6, icon: faPenSquare, title: "template" },
 ];
 
 const ORDER = [
@@ -62,6 +62,7 @@ const SETTINGS_TYPES = {
     values: AGE,
     selected: 2,
   },
+  query: "",
 };
 
 function SettingsBlock({ type, settingsValues, setSettingsValues }) {
@@ -118,9 +119,15 @@ function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   );
 }
 
-function Settings({ handleQuery, isEnter, query, handleFetchClick }) {
-  const [settingsShow, setSettingsShow] = useState(false);
-  const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES);
+function Settings({
+  handleQuery,
+  isEnter,
+  query,
+  handleFetchClick,
+  settingsValues,
+  setSettingsValues,
+}) {
+  const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
 
   const handleSettingsFilter = () => {
     setSettingsShow(!settingsShow);
@@ -130,7 +137,7 @@ function Settings({ handleQuery, isEnter, query, handleFetchClick }) {
     <div
       id="search-form"
       className={`w-full flex flex-col items-center fixed top-0 left-0 px-12 py-8 
-      backdrop-blur-sm bg-gradient-to-b from-neutral-400`}
+      backdrop-blur-sm bg-gradient-to-b from-neutral-400 z-10`}
     >
       <div id="search-field" className="w-full flex flex-row items-center">
         <button
@@ -209,14 +216,29 @@ function Card({ e }) {
           <FontAwesomeIcon icon={CONTENT_TYPES[e.media_type_id - 1].icon} />
         </span>
       </div>
-      <Image
-        className="h-48 w-auto object-contain cursor-pointer"
-        src={e.thumbnail_url}
-        width={e.thumbnail_width}
-        height={e.thumbnail_height}
-        alt={e.title}
-        onClick={handleExpand}
-      />
+      {(CONTENT_TYPES[e.media_type_id - 1].title === "video") ? (
+        <video
+          controls
+        >
+          <source
+            src={e.video_small_preview_url}
+            type={e.video_small_preview_content_type}
+          />
+          <p>
+            Your browser does not support HTML video. Here is a
+            <a href={e.video_small_preview_url}>link to the video</a> instead.
+          </p>
+        </video>
+      ) : (
+        <Image
+          className="h-48 w-auto object-contain cursor-pointer"
+          src={e.thumbnail_url}
+          width={e.thumbnail_width}
+          height={e.thumbnail_height}
+          alt={e.title}
+          onClick={handleExpand}
+        />
+      )}
       <div className="text-sm flex justify-around p-1">
         <span className="px-1">{e.creation_date.substr(0, 7)}</span>
       </div>
@@ -243,11 +265,14 @@ function Card({ e }) {
 
 export default function Home() {
   const [resp, setResp] = useState();
-  const [query, setQuery] = useState("");
+  //const [query, setQuery] = useState("");
+  const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
 
   const handleFetchClick = async () => {
     try {
-      const res = await fetch(`/api/get-files?search=${query}`);
+      const res = await fetch(
+        `/api/get-files?search=${JSON.stringify(settingsValues)}`
+      );
       if (!res.ok) {
         throw new Error(res.statusText);
       }
@@ -260,7 +285,9 @@ export default function Home() {
   };
 
   const handleQuery = (e) => {
-    setQuery(e.target.value);
+    let newSet = JSON.parse(JSON.stringify(settingsValues));
+    newSet.query = e.target.value;
+    setSettingsValues(newSet);
   };
 
   const isEnter = (e) => {
@@ -274,8 +301,10 @@ export default function Home() {
       <Settings
         handleQuery={handleQuery}
         isEnter={isEnter}
-        query={query}
+        query={settingsValues.query}
         handleFetchClick={handleFetchClick}
+        settingsValues={settingsValues}
+        setSettingsValues={setSettingsValues}
       />
       <div
         className="   text-center p-12 m-16 text-black 

@@ -4,6 +4,7 @@ const apikey = process.env.API_KEY;
 
 export default async function handler(req, res) {
   let columns = [
+    "id",
     "thumbnail_url",
     "thumbnail_width",
     "thumbnail_height",
@@ -43,6 +44,11 @@ export default async function handler(req, res) {
   let orderInd = userRequest.order.selected; //index of selected order
   let order = userRequest.order.values[orderInd].name; //selected order
 
+  let author =
+    userRequest.creatorId.values <= 0
+      ? ``
+      : `&search_parameters[creator_id]=${userRequest.creatorId.values}`;
+
   //"&search_parameters[filters][content_type:photo]=1"+
   let contentTypes = userRequest.content.values.reduce((acc, elem, ind) => {
     acc += userRequest.content.selected[ind]
@@ -57,6 +63,7 @@ export default async function handler(req, res) {
     `&search_parameters[order]=${order}` +
     `&search_parameters[thumbnail_size]=240` +
     `&search_parameters[words]=${userRequest.query}` +
+    `${author}` +
     responseColumns +
     contentTypes;
   let searchUrl = adobeUrl + modifier;

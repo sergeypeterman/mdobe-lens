@@ -29,7 +29,6 @@ const ORDER = [
   { name: "creation", title: "Creation Date" },
   { name: "featured", title: "Featured" },
   { name: "undiscovered", title: "Undiscovered" },
-  { name: "undiscovered", title: "Undiscovered" },
 ];
 //[age]=1w, 1m, 6m, 1y, 2y, 3y
 const AGE = [
@@ -63,6 +62,12 @@ const SETTINGS_TYPES = {
     selected: 2,
   },
   query: "",
+  creatorId: {
+    name: "creator_id",
+    type: "checkbox",
+    values: -1,
+    caption: "Author id:",
+  },
 };
 
 function SettingsBlock({ type, settingsValues, setSettingsValues }) {
@@ -83,7 +88,7 @@ function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   };
 
   return (
-    <div className="bg-gray-100 hover:bg-gray-50 px-4 py-1 m-1 rounded-lg shadow-lg ">
+    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-lg ">
       <fieldset className="">
         <legend className="font-bold text-lg">{thisSetting.caption}</legend>
 
@@ -108,13 +113,88 @@ function SettingsBlock({ type, settingsValues, setSettingsValues }) {
                 checked={checked}
               />
 
-              <label htmlFor={`${item.name}`} className="px-2 py-1">
+              <label htmlFor={`${item.name}`} className="px-2 py-1 capitalize">
                 {item.title}
               </label>
             </div>
           );
         })}
       </fieldset>
+    </div>
+  );
+}
+
+function SettingsIntField({ type, settingsValues, setSettingsValues }) {
+  let thisSetting = settingsValues[type];
+
+  const handleFieldChange = (e) => {
+    let newSet = JSON.parse(JSON.stringify(settingsValues));
+    let input = +e.target.value;
+
+    newSet[type].values = input;
+
+    setSettingsValues(newSet);
+  };
+
+  return (
+    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-lg flex flex-wrap justify-between">
+      <div className="font-bold text-lg px-5 pb-2 basis-full">
+        {thisSetting.caption}
+      </div>
+      <input
+        className="px-5 mb-2 basis-full"
+        type="number"
+        id={`${thisSetting}`}
+        onChange={handleFieldChange}
+        value={thisSetting.values <= 0 ? null : thisSetting.values}
+      />
+    </div>
+  );
+}
+
+function SettingsButtonsBlock({ type, settingsValues, setSettingsValues }) {
+  let thisSetting = settingsValues[type];
+
+  const handleBlockChange = (e) => {
+    let newSet = JSON.parse(JSON.stringify(settingsValues));
+    let num = +e.target.value;
+    /* switch (thisSetting.type) {
+      case "radio":
+        newSet[type].selected = num;
+        break;
+      case "checkbox":
+        newSet[type].selected[num] = !newSet[type].selected[num];
+        break;
+    } */
+    setSettingsValues(newSet);
+  };
+
+  return (
+    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-lg flex flex-wrap justify-between">
+      <div className="font-bold text-lg px-5 basis-full">
+        {thisSetting.caption}
+      </div>
+
+      {thisSetting.values.map((item, ind) => {
+        let checked = false;
+        switch (thisSetting.type) {
+          case "radio":
+            checked = ind === thisSetting.selected;
+            break;
+          case "checkbox":
+            checked = thisSetting.selected[ind];
+            break;
+        }
+        return (
+          <button
+            key={`${thisSetting.name}-${item.name}`}
+            className="bg-gray-200 m-1 py-2 justify-center flex basis-24
+                       rounded-lg border-2"
+          >
+            {item.title}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -143,12 +223,16 @@ function Settings({
         <button
           id="search-settings"
           className="bg-gray-100 hover:bg-gray-200 text-center 
-          px-3 py-1 ml-1 -mr-1 text-gray-400 rounded-l-lg text-lg "
+          px-3 py-1 ml-1 -mr-1 rounded-l-lg text-lg "
           onClick={handleSettingsFilter}
         >
           <FontAwesomeIcon
             icon={faSliders}
-            className={settingsShow ? `transition rotate-90` : `transition`}
+            className={
+              settingsShow
+                ? `transition rotate-90 text-gray-700`
+                : `transition text-gray-400`
+            }
           />
         </button>
         <input
@@ -158,14 +242,21 @@ function Settings({
           type="text"
           placeholder="type query..."
           onChange={handleQuery}
-          onKeyDown={isEnter}
+          onKeyDown={(e) => {
+            if(isEnter(e)){
+              handleSettingsFilter();
+            }
+          }}
           value={query}
         />
         <button
           id="search-button"
           className="bg-sky-700 hover:bg-sky-900  text-center 
           px-3 py-1 m-1 text-white rounded-lg text-lg shadow-md active:shadow-none"
-          onClick={handleFetchClick}
+          onClick={() => {
+            handleSettingsFilter();
+            handleFetchClick();
+          }}
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} />
         </button>
@@ -189,6 +280,11 @@ function Settings({
             settingsValues={settingsValues}
             setSettingsValues={setSettingsValues}
             type="age"
+          />
+          <SettingsIntField
+            settingsValues={settingsValues}
+            setSettingsValues={setSettingsValues}
+            type="creatorId"
           />
         </div>
       ) : null}
@@ -216,10 +312,8 @@ function Card({ e }) {
           <FontAwesomeIcon icon={CONTENT_TYPES[e.media_type_id - 1].icon} />
         </span>
       </div>
-      {(CONTENT_TYPES[e.media_type_id - 1].title === "video") ? (
-        <video
-          controls
-        >
+      {CONTENT_TYPES[e.media_type_id - 1].title === "video" ? (
+        <video controls>
           <source
             src={e.video_small_preview_url}
             type={e.video_small_preview_content_type}
@@ -240,6 +334,7 @@ function Card({ e }) {
         />
       )}
       <div className="text-sm flex justify-around p-1">
+        <span className="px-1">{`id: ${e.id}`}</span>
         <span className="px-1">{e.creation_date.substr(0, 7)}</span>
       </div>
       {pressed ? (
@@ -293,7 +388,9 @@ export default function Home() {
   const isEnter = (e) => {
     if (e.key === "Enter") {
       handleFetchClick();
+      return true;
     }
+    return false;
   };
 
   return (

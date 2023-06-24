@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -88,9 +88,11 @@ function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   };
 
   return (
-    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-lg ">
+    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-sm ">
       <fieldset className="">
-        <legend className="font-bold text-lg">{thisSetting.caption}</legend>
+        <legend className="font-bold text-lg px-5 pb-2 basis-full">
+          {thisSetting.caption}
+        </legend>
 
         {thisSetting.values.map((item, ind) => {
           let checked = false;
@@ -137,7 +139,7 @@ function SettingsIntField({ type, settingsValues, setSettingsValues }) {
   };
 
   return (
-    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-lg flex flex-wrap justify-between">
+    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-sm flex flex-wrap justify-between">
       <div className="font-bold text-lg px-5 pb-2 basis-full">
         {thisSetting.caption}
       </div>
@@ -146,7 +148,7 @@ function SettingsIntField({ type, settingsValues, setSettingsValues }) {
         type="number"
         id={`${thisSetting}`}
         onChange={handleFieldChange}
-        value={thisSetting.values <= 0 ? null : thisSetting.values}
+        value={thisSetting.values <= 0 ? "" : thisSetting.values}
       />
     </div>
   );
@@ -207,87 +209,118 @@ function Settings({
   settingsValues,
   setSettingsValues,
 }) {
+  const ref = useRef();
+
   const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
 
   const handleSettingsFilter = () => {
     setSettingsShow(!settingsShow);
   };
 
+  useEffect(() => {
+    const checkIfClickedInside = (e) => {
+      if (settingsShow && !ref.current.contains(e.target)) {
+        setSettingsShow(false);
+        console.log(e.target);
+      }
+    };
+
+    document.addEventListener("mousedown", checkIfClickedInside);
+    console.log("added");
+    return () => {
+      document.removeEventListener("mousedown", checkIfClickedInside);
+      console.log("removed");
+    };
+  }, [settingsShow]);
+
+  let hFull = settingsShow ? "h-full" : "h-auto";
   return (
     <div
-      id="search-form"
-      className={`w-full flex flex-col items-center fixed top-0 left-0 px-12 py-8 
-      backdrop-blur-sm bg-gradient-to-b from-neutral-400 z-10`}
+      className={`w-full transition  ${hFull}  fixed top-0 left-0 px-12 py-8
+                  backdrop-blur-sm bg-neutral-700`}
     >
-      <div id="search-field" className="w-full flex flex-row items-center">
-        <button
-          id="search-settings"
-          className="bg-gray-100 hover:bg-gray-200 text-center 
+      <div
+        id="search-form"
+        ref={ref}
+        className={`flex flex-col items-center  
+       z-10`}
+      >
+        <div id="search-field" className="w-full flex flex-row items-center">
+          <button
+            id="search-settings"
+            className="bg-gray-100 hover:bg-gray-200 text-center 
           px-3 py-1 ml-1 -mr-1 rounded-l-lg text-lg "
-          onClick={handleSettingsFilter}
-        >
-          <FontAwesomeIcon
-            icon={faSliders}
-            className={
-              settingsShow
-                ? `transition rotate-90 text-gray-700`
-                : `transition text-gray-400`
-            }
-          />
-        </button>
-        <input
-          id="query-field"
-          className="text-center px-3 py-1 m-1 text-black font-medium
+            onClick={handleSettingsFilter}
+          >
+            <FontAwesomeIcon
+              icon={faSliders}
+              className={
+                settingsShow
+                  ? `transition rotate-90 text-gray-700`
+                  : `transition text-gray-400`
+              }
+            />
+          </button>
+          <input
+            id="query-field"
+            className="text-center px-3 py-1 m-1 text-black font-medium
                      rounded-r-lg bg-gray-100 hover:bg-gray-200 text-lg w-full"
-          type="text"
-          placeholder="type query..."
-          onChange={handleQuery}
-          onKeyDown={(e) => {
-            if(isEnter(e)){
-              handleSettingsFilter();
-            }
-          }}
-          value={query}
-        />
-        <button
-          id="search-button"
-          className="bg-sky-700 hover:bg-sky-900  text-center 
+            type="text"
+            placeholder="type query..."
+            onChange={handleQuery}
+            onKeyDown={(e) => {
+              if (isEnter(e) && settingsShow) {
+                handleSettingsFilter();
+              }
+            }}
+            value={query}
+          />
+          <button
+            id="search-button"
+            className="bg-sky-600 hover:bg-sky-500  text-center 
           px-3 py-1 m-1 text-white rounded-lg text-lg shadow-md active:shadow-none"
-          onClick={() => {
-            handleSettingsFilter();
-            handleFetchClick();
-          }}
-        >
-          <FontAwesomeIcon icon={faMagnifyingGlass} />
-        </button>
-      </div>
-      {settingsShow ? (
-        <div
-          id="search-params"
-          className="w-full max-h-[85vh] items-center m-1 overflow-auto"
-        >
-          <SettingsBlock
-            settingsValues={settingsValues}
-            setSettingsValues={setSettingsValues}
-            type="order"
-          />
-          <SettingsBlock
-            settingsValues={settingsValues}
-            setSettingsValues={setSettingsValues}
-            type="content"
-          />
-          <SettingsBlock
-            settingsValues={settingsValues}
-            setSettingsValues={setSettingsValues}
-            type="age"
-          />
-          <SettingsIntField
-            settingsValues={settingsValues}
-            setSettingsValues={setSettingsValues}
-            type="creatorId"
-          />
+            onClick={() => {
+              settingsShow && handleSettingsFilter();
+              handleFetchClick();
+            }}
+          >
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </button>
         </div>
-      ) : null}
+        {settingsShow ? (
+          <div
+            id="search-params"
+            className="w-full max-h-[85vh] items-center m-1
+                      overflow-auto relative transition ease-out duration-300 opacity-100"
+          >
+            <SettingsBlock
+              settingsValues={settingsValues}
+              setSettingsValues={setSettingsValues}
+              type="order"
+            />
+            <SettingsBlock
+              settingsValues={settingsValues}
+              setSettingsValues={setSettingsValues}
+              type="content"
+            />
+            <SettingsBlock
+              settingsValues={settingsValues}
+              setSettingsValues={setSettingsValues}
+              type="age"
+            />
+            <SettingsIntField
+              settingsValues={settingsValues}
+              setSettingsValues={setSettingsValues}
+              type="creatorId"
+            />
+          </div>
+        ) : (
+          <div
+            id="search-params"
+            className="pacity-0 -translate-x-[40rem]"
+          ></div>
+        )}
+      </div>
     </div>
   );
 }
@@ -301,7 +334,7 @@ function Card({ e }) {
 
   return (
     <div
-      className="mb-2 bg-gradient-to-b w-full flex flex-col rounded-lg shadow-lg
+      className="mb-2 bg-gradient-to-b w-full flex flex-col rounded-lg shadow-sm
                  from-neutral-100 from-85% to-neutral-50
                  "
     >

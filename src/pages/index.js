@@ -130,8 +130,8 @@ function SettingsIntField({ type, settingsValues, setSettingsValues }) {
   let thisSetting = settingsValues[type];
 
   const handleFieldChange = (e) => {
-    let newSet = JSON.parse(JSON.stringify(settingsValues));
-    let input = +e.target.value;
+    let newSet = JSON.parse(JSON.stringify(settingsValues)); //copy of an abject
+    let input = +e.target.value; // convert to num
 
     newSet[type].values = input;
 
@@ -233,93 +233,112 @@ function Settings({
     };
   }, [settingsShow]);
 
-  let hFull = settingsShow ? "h-full" : "h-auto";
+  //let hFull = settingsShow ? "h-full" : "h-auto";
   return (
     <div
-      className={`w-full transition  ${hFull}  fixed top-0 left-0 px-12 py-8
-                  backdrop-blur-sm bg-neutral-700`}
+      className={
+        `fixed top-0 left-0 w-full ` /* `w-full ${hFull}  fixed top-0 left-0 px-12 py-8
+                  backdrop-blur-sm bg-neutral-700` */
+      }
     >
       <div
         id="search-form"
-        ref={ref}
-        className={`flex flex-col items-center  
-       z-10`}
+        className={`flex flex-col items-center px-12 py-8 `}
       >
-        <div id="search-field" className="w-full flex flex-row items-center">
-          <button
-            id="search-settings"
-            className="bg-gray-100 hover:bg-gray-200 text-center 
+        <div
+          id="top-background"
+          className={`fixed top-0 left-0 w-full z-10 h-28 px-12 py-8 bg-neutral-700`}
+        ></div>
+        <div id="search-elements" className="w-full z-20" ref={ref}>
+          <div
+            id="search-field"
+            className="flex flex-row items-center bg-neutral-700"
+          >
+            <button
+              id="search-settings"
+              className="bg-gray-100 hover:bg-gray-200 text-center 
           px-3 py-1 ml-1 -mr-1 rounded-l-lg text-lg "
-            onClick={handleSettingsFilter}
-          >
-            <FontAwesomeIcon
-              icon={faSliders}
-              className={
-                settingsShow
-                  ? `transition rotate-90 text-gray-700`
-                  : `transition text-gray-400`
-              }
-            />
-          </button>
-          <input
-            id="query-field"
-            className="text-center px-3 py-1 m-1 text-black font-medium
+              onClick={handleSettingsFilter}
+            >
+              <FontAwesomeIcon
+                icon={faSliders}
+                className={
+                  settingsShow
+                    ? `transition rotate-90 text-gray-700`
+                    : `transition text-gray-400`
+                }
+              />
+            </button>
+            <input
+              id="query-field"
+              className="text-center px-3 py-1 m-1 text-black font-medium
                      rounded-r-lg bg-gray-100 hover:bg-gray-200 text-lg w-full"
-            type="text"
-            placeholder="type query..."
-            onChange={handleQuery}
-            onKeyDown={(e) => {
-              if (isEnter(e) && settingsShow) {
-                handleSettingsFilter();
-              }
-            }}
-            value={query}
-          />
-          <button
-            id="search-button"
-            className="bg-sky-600 hover:bg-sky-500  text-center 
+              type="text"
+              placeholder="type query..."
+              onChange={handleQuery}
+              onKeyDown={(e) => {
+                if (isEnter(e) && settingsShow) {
+                  handleSettingsFilter();
+                }
+              }}
+              value={query}
+            />
+            <button
+              id="search-button"
+              className="bg-sky-600 hover:bg-sky-500  text-center 
           px-3 py-1 m-1 text-white rounded-lg text-lg shadow-md active:shadow-none"
-            onClick={() => {
-              settingsShow && handleSettingsFilter();
-              handleFetchClick();
-            }}
-          >
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </button>
-        </div>
-        {settingsShow ? (
-          <div
-            id="search-params"
-            className="w-full max-h-[85vh] items-center m-1
-                      overflow-auto relative transition ease-out duration-300 opacity-100"
-          >
-            <SettingsBlock
-              settingsValues={settingsValues}
-              setSettingsValues={setSettingsValues}
-              type="order"
-            />
-            <SettingsBlock
-              settingsValues={settingsValues}
-              setSettingsValues={setSettingsValues}
-              type="content"
-            />
-            <SettingsBlock
-              settingsValues={settingsValues}
-              setSettingsValues={setSettingsValues}
-              type="age"
-            />
-            <SettingsIntField
-              settingsValues={settingsValues}
-              setSettingsValues={setSettingsValues}
-              type="creatorId"
-            />
+              onClick={() => {
+                settingsShow && handleSettingsFilter();
+                handleFetchClick();
+              }}
+            >
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
           </div>
-        ) : (
-          <div
-            id="search-params"
-            className="pacity-0 -translate-x-[40rem]"
-          ></div>
-        )}
+          {settingsShow ? (
+            <div
+              id="search-params"
+              className="w-full max-h-[85vh] items-center bg-neutral-700
+                      overflow-auto relative transition ease-out duration-300 opacity-100"
+            >
+              <SettingsBlock
+                settingsValues={settingsValues}
+                setSettingsValues={setSettingsValues}
+                type="order"
+              />
+              <SettingsBlock
+                settingsValues={settingsValues}
+                setSettingsValues={setSettingsValues}
+                type="content"
+              />
+              <SettingsBlock
+                settingsValues={settingsValues}
+                setSettingsValues={setSettingsValues}
+                type="age"
+              />
+              <SettingsIntField
+                settingsValues={settingsValues}
+                setSettingsValues={setSettingsValues}
+                type="creatorId"
+              />
+            </div>
+          ) : (
+            <div
+              id="search-params"
+              className="transition duration-300 ease-out opacity-0 -translate-x-[40rem]"
+            ></div>
+          )}
+        </div>
+        <div
+          id="bottom-background"
+          className={`fixed top-0 left-0 w-full z-10 h-full px-12 py-8 bg-neutral-700 
+                      transition-all
+                     ${
+                       settingsShow
+                         ? "duration-300 ease-out opacity-100 translate-x-0 blur-none"
+                         : "duration-100 ease-out opacity-0 -translate-x-[40rem] blur-lg"
+                     }`}
+        ></div>
       </div>
     </div>
   );
@@ -437,7 +456,7 @@ export default function Home() {
         setSettingsValues={setSettingsValues}
       />
       <div
-        className="   text-center p-12 m-16 text-black 
+        className="   text-center p-12 m-20 text-black 
                       rounded-md w-full
                       grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
       >

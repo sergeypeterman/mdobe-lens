@@ -78,17 +78,17 @@ export function SearchContainer({
   };
 
   return (
-    <div className={`fixed top-0 left-0 w-full `}>
+    <div className={`fixed top-0 left-0 w-full`}>
       <div
         id="search-form"
         ref={refSearch}
-        className={`flex flex-col items-center px-12 py-8 `}
+        className={`flex flex-col items-center px-12 py-8`}
       >
         <div
           id="top-background"
           className={`fixed top-0 left-0 w-full z-10 h-28 px-12 py-8 bg-neutral-700`}
         ></div>
-        <div id="search-elements" className="w-full z-20">
+        <div id="search-elements" className="w-full z-20  lg:w-1/2">
           <div
             id="search-field"
             className="flex flex-row items-center bg-neutral-700"

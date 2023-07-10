@@ -325,7 +325,7 @@ function Settings({
           ) : (
             <div
               id="search-params"
-              className="transition duration-300 ease-out opacity-0 -translate-x-[40rem]"
+              className="transition duration-300 ease-out opacity-50 -translate-x-[40rem]"
             ></div>
           )}
         </div>
@@ -336,7 +336,7 @@ function Settings({
                      ${
                        settingsShow
                          ? "duration-300 ease-out opacity-100 translate-x-0 blur-none"
-                         : "duration-100 ease-out opacity-0 -translate-x-[40rem] blur-lg"
+                         : "duration-100 ease-out opacity-0 -translate-x-full blur-lg"
                      }`}
         ></div>
       </div>
@@ -458,7 +458,7 @@ export default function Home() {
       <div
         className="   text-center p-12 m-20 text-black 
                       rounded-md w-full
-                      grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+                      grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
         {resp
           ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)

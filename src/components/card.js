@@ -26,7 +26,7 @@ export function Card({ e }) {
         </span>
       </div>
       {CONTENT_TYPES[e.media_type_id - 1].title === "video" ? (
-        <video controls>
+        <video controls key={e.video_small_preview_url}>
           <source
             src={e.video_small_preview_url}
             type={e.video_small_preview_content_type}

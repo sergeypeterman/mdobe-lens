@@ -4,73 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronUp,
   faChevronDown,
-  faPenNib,
-  faCamera,
-  faVideo,
-  faDesktop,
-  faCube,
-  faPenSquare,
   faMagnifyingGlass,
   faSliders,
 } from "@fortawesome/free-solid-svg-icons";
+import { SETTINGS_TYPES, CONTENT_TYPES } from "@/components/constants";
+import { SettingsContainer, SearchContainer } from "@/components/settings";
 
-const CONTENT_TYPES = [
-  { name: 1, icon: faCamera, title: "photo" },
-  { name: 2, icon: faDesktop, title: "illustration" },
-  { name: 3, icon: faPenNib, title: "vector" },
-  { name: 4, icon: faVideo, title: "video" },
-  { name: 5, icon: faCube, title: "3d" },
-  { name: 6, icon: faPenSquare, title: "template" },
-];
-
-const ORDER = [
-  { name: "nb_downloads", title: "Downloads" },
-  { name: "relevance", title: "Relevance" },
-  { name: "creation", title: "Creation Date" },
-  { name: "featured", title: "Featured" },
-  { name: "undiscovered", title: "Undiscovered" },
-];
-//[age]=1w, 1m, 6m, 1y, 2y, 3y
-const AGE = [
-  { name: "1w", title: "1 week" },
-  { name: "1m", title: "1 month" },
-  { name: "6m", title: "6 months" },
-  { name: "1y", title: "1 year" },
-  { name: "2y", title: "2 years" },
-  { name: "3y", title: "3 years" },
-];
-const SETTINGS_TYPES = {
-  order: {
-    name: "order",
-    type: "radio",
-    caption: "Order by:",
-    values: ORDER,
-    selected: 0,
-  },
-  content: {
-    name: "media_type_id",
-    type: "checkbox",
-    caption: "Content types:",
-    values: CONTENT_TYPES,
-    selected: [true, true, true, true, false, false],
-  },
-  age: {
-    name: "age",
-    type: "radio",
-    caption: "Uploaded in the last:",
-    values: AGE,
-    selected: 2,
-  },
-  query: "",
-  creatorId: {
-    name: "creator_id",
-    type: "checkbox",
-    values: -1,
-    caption: "Author id:",
-  },
-};
-
-function SettingsBlock({ type, settingsValues, setSettingsValues }) {
+/* function SettingsBlock({ type, settingsValues, setSettingsValues }) {
+  //component for a group which
+  //chooses from a group of options (radio\checkbox type)
   let thisSetting = settingsValues[type];
 
   const handleBlockChange = (e) => {
@@ -124,9 +66,11 @@ function SettingsBlock({ type, settingsValues, setSettingsValues }) {
       </fieldset>
     </div>
   );
-}
+} */
 
-function SettingsIntField({ type, settingsValues, setSettingsValues }) {
+/* function SettingsIntField({ type, settingsValues, setSettingsValues }) {
+  //component for a settings group which
+  //works with an integer input
   let thisSetting = settingsValues[type];
 
   const handleFieldChange = (e) => {
@@ -160,14 +104,14 @@ function SettingsButtonsBlock({ type, settingsValues, setSettingsValues }) {
   const handleBlockChange = (e) => {
     let newSet = JSON.parse(JSON.stringify(settingsValues));
     let num = +e.target.value;
-    /* switch (thisSetting.type) {
+     switch (thisSetting.type) {
       case "radio":
         newSet[type].selected = num;
         break;
       case "checkbox":
         newSet[type].selected[num] = !newSet[type].selected[num];
         break;
-    } */
+    } 
     setSettingsValues(newSet);
   };
 
@@ -200,7 +144,8 @@ function SettingsButtonsBlock({ type, settingsValues, setSettingsValues }) {
     </div>
   );
 }
-
+ */
+/* 
 function Settings({
   handleQuery,
   isEnter,
@@ -209,6 +154,7 @@ function Settings({
   settingsValues,
   setSettingsValues,
 }) {
+  //combined component for search and search settings. Maybe it's better to split them
   const ref = useRef();
 
   const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
@@ -233,12 +179,10 @@ function Settings({
     };
   }, [settingsShow]);
 
-  //let hFull = settingsShow ? "h-full" : "h-auto";
   return (
     <div
       className={
-        `fixed top-0 left-0 w-full ` /* `w-full ${hFull}  fixed top-0 left-0 px-12 py-8
-                  backdrop-blur-sm bg-neutral-700` */
+        `fixed top-0 left-0 w-full ` 
       }
     >
       <div
@@ -343,8 +287,9 @@ function Settings({
     </div>
   );
 }
-
+ */
 function Card({ e }) {
+  //Asset card component
   const [pressed, setPressed] = useState(false);
 
   const handleExpand = () => {
@@ -411,9 +356,37 @@ function Card({ e }) {
 }
 
 export default function Home() {
+  //main page component
   const [resp, setResp] = useState();
-  //const [query, setQuery] = useState("");
   const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
+  const refSettings = useRef();
+  const refSearch = useRef();
+
+  const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
+
+  const handleSettingsFilter = () => {
+    setSettingsShow(!settingsShow);
+  };
+
+  useEffect(() => {
+    const checkIfClickedInside = (e) => {
+      if (
+        settingsShow &&
+        !refSettings.current.contains(e.target) &&
+        !refSearch.current.contains(e.target)
+      ) {
+        setSettingsShow(false);
+        console.log(e.target);
+      }
+    };
+
+    document.addEventListener("mousedown", checkIfClickedInside);
+    console.log("added");
+    return () => {
+      document.removeEventListener("mousedown", checkIfClickedInside);
+      console.log("removed");
+    };
+  }, [settingsShow]);
 
   const handleFetchClick = async () => {
     try {
@@ -446,23 +419,45 @@ export default function Home() {
   };
 
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-center `}>
-      <Settings
-        handleQuery={handleQuery}
-        isEnter={isEnter}
-        query={settingsValues.query}
+    <main className={`flex min-h-screen flex-col `}>
+      <SearchContainer
         handleFetchClick={handleFetchClick}
-        settingsValues={settingsValues}
-        setSettingsValues={setSettingsValues}
+        isEnter={isEnter}
+        settingsShow={settingsShow}
+        setSettingsShow={setSettingsShow}
+        handleQuery={handleQuery}
+        query={settingsValues.query}
+        refSearch={refSearch}
       />
       <div
-        className="   text-center p-12 m-20 text-black 
-                      rounded-md w-full
-                      grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-      >
-        {resp
-          ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)
-          : null}
+        id="screen-background"
+        className={`fixed top-28 left-0 h-full px-12 py-8 bg-neutral-700 w-full
+                      transition-all duration-300 easy-out  ${
+                        settingsShow
+                          ? "z-10 blur-none opacity-100 md:opacity-20"
+                          : "-z-[1] blur-lg opacity-0 md:opacity-0"
+                      }`}
+      ></div>
+      <div className={`flex w-full`}>
+        {settingsShow && (
+          <SettingsContainer
+            settingsShow={settingsShow}
+            refSettings={refSettings}
+            settingsValues={settingsValues}
+            setSettingsValues={setSettingsValues}
+          />
+        )}
+        <div
+          className={`text-center p-12 mt-20 
+                      ${settingsShow && "md:ml-72"}
+                      text-black rounded-md w-full
+                      grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3
+                      lg:grid-cols-4 gap-4`}
+        >
+          {resp
+            ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)
+            : null}
+        </div>
       </div>
     </main>
   );

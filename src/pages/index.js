@@ -6,14 +6,34 @@ import Head from "next/head";
 
 export default function Home() {
   //main page component
+
   const [resp, setResp] = useState();
   const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
+  const [settingsRead, setSettingssRead] = useState(false);
   //darkmode const [styling, setStyling] = useState("");
   const refSettings = useRef();
   const refSearch = useRef();
 
   const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
 
+  //reading settings from browser cache on the first load
+  useEffect(() => {
+    const localSettings = JSON.parse(localStorage.getItem(`searchSettings`));
+    if (localSettings) {
+      console.log(`reading searchSettings`);
+      setSettingsValues(localSettings);
+    }
+    setSettingssRead(true);
+  }, []);
+
+  //saving settings to browser cache
+  useEffect(() => {
+    settingsRead && localStorage.setItem(`searchSettings`, JSON.stringify(settingsValues));
+    settingsRead && console.log(`writing searchSettings`);
+    //console.log(localStorage.getItem(`searchSettings`));
+  }, [settingsValues,settingsRead]);
+
+  //effect checks if the user clicked outside of the open settings menu
   useEffect(() => {
     const checkIfClickedInside = (e) => {
       if (
@@ -34,6 +54,7 @@ export default function Home() {
     };
   }, [settingsShow]);
 
+  //handling system-wide dark mode changes
   useEffect(() => {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       document.documentElement.classList.add("dark");
@@ -43,7 +64,7 @@ export default function Home() {
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", (event) => {
         const colorScheme = event.matches ? "dark" : "light";
-        console.log(colorScheme); // "dark" or "light"
+        console.log(`${colorScheme} mode applied`); // "dark" or "light"
         if (colorScheme === "dark") {
           document.documentElement.classList.add("dark");
         } else {
@@ -54,7 +75,7 @@ export default function Home() {
     return window
       .matchMedia("(prefers-color-scheme: dark)")
       .removeEventListener("change", (event) => {});
-  });
+  }, []);
 
   const handleFetchClick = async () => {
     try {

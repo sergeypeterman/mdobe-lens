@@ -2,7 +2,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { CONTENT_TYPES } from "@/components/constants";
+import { CONTENT_TYPES, STYLE } from "@/components/constants";
 
 export function Card({ e }) {
   //Asset card component
@@ -14,9 +14,8 @@ export function Card({ e }) {
 
   return (
     <div
-      className="mb-2 bg-gradient-to-b w-full flex flex-col rounded-lg shadow-sm
-                   from-neutral-100 from-85% to-neutral-50
-                   "
+      className={`mb-2 w-full flex flex-col rounded-lg shadow-sm 
+        bg-gradient-to-b ${STYLE.gradColorFrom} from-85% ${STYLE.gradColorTo}`}
     >
       <div className="text-sm flex justify-between p-1">
         <span className="px-1 font-bold">{e.nb_downloads}</span>

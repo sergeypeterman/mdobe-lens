@@ -1,20 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { SETTINGS_TYPES } from "@/components/constants";
+import { SETTINGS_TYPES, STYLE } from "@/components/constants";
 import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
+import Head from "next/head";
 
 export default function Home() {
   //main page component
   const [resp, setResp] = useState();
   const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
+  //darkmode const [styling, setStyling] = useState("");
   const refSettings = useRef();
   const refSearch = useRef();
 
   const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
-
-  const handleSettingsFilter = () => {
-    setSettingsShow(!settingsShow);
-  };
 
   useEffect(() => {
     const checkIfClickedInside = (e) => {
@@ -24,7 +22,7 @@ export default function Home() {
         !refSearch.current.contains(e.target)
       ) {
         setSettingsShow(false);
-        console.log(e.target);
+        //console.log(e.target);
       }
     };
 
@@ -35,6 +33,28 @@ export default function Home() {
       //console.log("removed");
     };
   }, [settingsShow]);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.classList.add("dark");
+    }
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (event) => {
+        const colorScheme = event.matches ? "dark" : "light";
+        console.log(colorScheme); // "dark" or "light"
+        if (colorScheme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      });
+
+    return window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .removeEventListener("change", (event) => {});
+  });
 
   const handleFetchClick = async () => {
     try {
@@ -67,46 +87,53 @@ export default function Home() {
   };
 
   return (
-    <main className={`flex min-h-screen flex-col `}>
-      <SearchContainer
-        handleFetchClick={handleFetchClick}
-        isEnter={isEnter}
-        settingsShow={settingsShow}
-        setSettingsShow={setSettingsShow}
-        handleQuery={handleQuery}
-        query={settingsValues.query}
-        refSearch={refSearch}
-      />
-      <div
-        id="screen-background"
-        className={`fixed top-28 left-0 h-full px-12 py-8 bg-neutral-700 w-full
+    <>
+      <Head>
+        <title>mdobeLens</title>
+      </Head>
+      <main className={`flex min-h-screen flex-col ${STYLE.bodyBackground}`}>
+        <SearchContainer
+          handleFetchClick={handleFetchClick}
+          isEnter={isEnter}
+          settingsShow={settingsShow}
+          setSettingsShow={setSettingsShow}
+          handleQuery={handleQuery}
+          query={settingsValues.query}
+          refSearch={refSearch}
+        />
+        <div
+          id="screen-background"
+          className={`fixed top-28 left-0 h-full px-12 py-8 ${
+            STYLE.inactiveBackground
+          } w-full
                       transition-all duration-300 easy-out  ${
                         settingsShow
-                          ? "z-10 blur-none opacity-100 md:opacity-20"
-                          : "-z-[1] blur-lg opacity-0 md:opacity-0"
+                          ? `z-10 blur-none opacity-100 ${STYLE.inactiveBackgroundOpacity}`
+                          : `-z-[1] blur-lg opacity-0 md:opacity-0`
                       }`}
-      ></div>
-      <div className={`flex w-full`}>
-        {settingsShow && (
-          <SettingsContainer
-            settingsShow={settingsShow}
-            refSettings={refSettings}
-            settingsValues={settingsValues}
-            setSettingsValues={setSettingsValues}
-          />
-        )}
-        <div
-          className={`text-center p-12 mt-20 
+        ></div>
+        <div className={`flex w-full`}>
+          {settingsShow && (
+            <SettingsContainer
+              settingsShow={settingsShow}
+              refSettings={refSettings}
+              settingsValues={settingsValues}
+              setSettingsValues={setSettingsValues}
+            />
+          )}
+          <div
+            className={`text-center p-12 mt-20 
                       ${settingsShow && "md:ml-72"}
-                      text-black rounded-md w-full
+                      ${STYLE.fontColor} rounded-md w-full
                       grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3
                       lg:grid-cols-4 gap-4`}
-        >
-          {resp
-            ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)
-            : null}
+          >
+            {resp
+              ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)
+              : null}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

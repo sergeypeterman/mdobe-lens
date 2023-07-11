@@ -1,11 +1,11 @@
 import {
-    faPenNib,
-    faCamera,
-    faVideo,
-    faDesktop,
-    faCube,
-    faPenSquare,
-  } from "@fortawesome/free-solid-svg-icons";
+  faPenNib,
+  faCamera,
+  faVideo,
+  faDesktop,
+  faCube,
+  faPenSquare,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const CONTENT_TYPES = [
   { name: 1, icon: faCamera, title: "photo" },
@@ -61,4 +61,15 @@ export const SETTINGS_TYPES = {
     values: -1,
     caption: "Author id:",
   },
+};
+
+//implementing dark mode styling
+export const STYLE = {
+  fontColor: "text-gray-950 dark:text-gray-200",
+  backColor: "bg-neutral-100 dark:bg-neutral-600",
+  bodyBackground: "bg-neutral-200 dark:bg-neutral-950",
+  inactiveBackground: "bg-neutral-800 dark:bg-neutral-800",
+  inactiveBackgroundOpacity: "md:opacity-20 dark:md:opacity-60",
+  gradColorFrom: "from-neutral-100 dark:from-neutral-800",
+  gradColorTo: "to-neutral-50 dark:to-[#262626]",
 };

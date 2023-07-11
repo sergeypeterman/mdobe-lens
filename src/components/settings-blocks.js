@@ -1,3 +1,5 @@
+import { STYLE } from "./constants";
+
 export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   //component for a group which
   //chooses from a group of options (radio\checkbox type)
@@ -18,7 +20,7 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   };
 
   return (
-    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-sm ">
+    <div className={`${STYLE.backColor} px-4 py-1 m-1 rounded-lg shadow-sm`}>
       <fieldset className="">
         <legend className="font-bold text-lg px-5 pb-2 basis-full">
           {thisSetting.caption}
@@ -71,12 +73,12 @@ export function SettingsIntField({ type, settingsValues, setSettingsValues }) {
   };
 
   return (
-    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-sm flex flex-wrap justify-between">
+    <div className={`${STYLE.backColor} px-4 py-1 m-1 rounded-lg shadow-sm flex flex-wrap justify-between`}>
       <div className="font-bold text-lg px-5 pb-2 basis-full">
         {thisSetting.caption}
       </div>
       <input
-        className="px-5 mb-2 basis-full"
+        className="min-w-0 px-5 mb-2 basis-full"
         type="number"
         id={`${thisSetting}`}
         onChange={handleFieldChange}

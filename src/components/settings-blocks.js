@@ -21,7 +21,7 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
 
   return (
     <div className={`${STYLE.backColor} px-4 py-1 m-1 rounded-lg shadow-sm`}>
-      <fieldset className="">
+      <fieldset className="flex flex-wrap justify-between">
         <legend className="font-bold text-lg px-5 pb-2 basis-full">
           {thisSetting.caption}
         </legend>
@@ -37,7 +37,11 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
               break;
           }
           return (
-            <div key={`${item.name}`} className="flex">
+            <div
+              key={`${item.name}`}
+              className={`flex items-center p-1 m-1 rounded-md basis-2/7 flex-grow
+                          ${STYLE.backColor2}`}
+            >
               <input
                 type={thisSetting.type}
                 id={`${item.name}`}
@@ -47,7 +51,10 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
                 checked={checked}
               />
 
-              <label htmlFor={`${item.name}`} className="px-2 py-1 capitalize">
+              <label
+                htmlFor={`${item.name}`}
+                className="px-2 py-1 capitalize"
+              >
                 {item.title}
               </label>
             </div>
@@ -73,7 +80,9 @@ export function SettingsIntField({ type, settingsValues, setSettingsValues }) {
   };
 
   return (
-    <div className={`${STYLE.backColor} px-4 py-1 m-1 rounded-lg shadow-sm flex flex-wrap justify-between`}>
+    <div
+      className={`${STYLE.backColor} px-4 py-1 m-1 rounded-lg shadow-sm flex flex-wrap justify-between`}
+    >
       <div className="font-bold text-lg px-5 pb-2 basis-full">
         {thisSetting.caption}
       </div>

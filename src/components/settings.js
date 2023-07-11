@@ -92,6 +92,7 @@ export function SearchContainer({
         >
           <button
             id="search-settings"
+            aria-label="Search Settings"
             className="bg-gray-100 hover:bg-gray-200 text-center 
                          px-3 py-1 ml-1 -mr-1 rounded-l-lg text-lg "
             onClick={handleSettingsFilter}
@@ -121,6 +122,7 @@ export function SearchContainer({
           />
           <button
             id="search-button"
+            aria-label="Search"
             className="bg-sky-600 hover:bg-sky-500  text-center 
                          px-3 py-1 m-1 text-white rounded-lg text-lg shadow-md active:shadow-none"
             onClick={() => {

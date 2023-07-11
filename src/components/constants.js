@@ -19,7 +19,7 @@ export const CONTENT_TYPES = [
 export const ORDER = [
   { name: "nb_downloads", title: "Downloads" },
   { name: "relevance", title: "Relevance" },
-  { name: "creation", title: "Creation Date" },
+  { name: "creation", title: "Creation" },
   { name: "featured", title: "Featured" },
   { name: "undiscovered", title: "Undiscovered" },
 ];
@@ -67,6 +67,7 @@ export const SETTINGS_TYPES = {
 export const STYLE = {
   fontColor: "text-gray-950 dark:text-gray-200",
   backColor: "bg-neutral-100 dark:bg-neutral-600",
+  backColor2: "bg-neutral-200 dark:bg-neutral-700",
   bodyBackground: "bg-neutral-200 dark:bg-neutral-950",
   inactiveBackground: "bg-neutral-800 dark:bg-neutral-800",
   inactiveBackgroundOpacity: "md:opacity-20 dark:md:opacity-60",

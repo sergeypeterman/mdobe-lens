@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { STYLE } from "./constants";
 import { Paginator } from "./paginator";
+import { useEffect, useState } from "react";
 
 export function SearchContainer({
   handleFetchClick,
@@ -18,15 +19,39 @@ export function SearchContainer({
   setSettingsShow,
   settingsShow,
   refSearch,
-  handleQuery,
-  query,
+  setSettingsValues,
+  settingsValues,
   currPage,
   setCurrPage,
   assetsCount,
   limit,
 }) {
+  const [tempQuery, setTempQuery] = useState();
+
+  useEffect(() => {
+    setTempQuery(settingsValues.query);
+  }, [settingsValues.query]);
+
   const handleSettingsFilter = () => {
     setSettingsShow(!settingsShow);
+  };
+
+  const handleQueryChange = (e) => {
+    let q = e.target.value;
+    setTempQuery(q);
+  };
+
+  const handleQueryBlur = (e) => {
+    //alert(e.target.value);
+    let q = e.target.value;
+    setTempQuery(q);
+    updateQuery(q);
+  };
+
+  const updateQuery = (newQuery) => {
+    let newSet = JSON.parse(JSON.stringify(settingsValues));
+    newSet.query = newQuery;
+    setSettingsValues(newSet);
   };
 
   return (
@@ -66,13 +91,16 @@ export function SearchContainer({
                      bg-gray-100 hover:bg-gray-200 text-lg w-full"
             type="text"
             placeholder="type query..."
-            onChange={handleQuery}
+            onChange={handleQueryChange}
+            onBlur={handleQueryBlur}
             onKeyDown={(e) => {
-              if (isEnter(e) && settingsShow) {
-                handleSettingsFilter();
+              if (isEnter(e)) {
+                settingsShow && handleSettingsFilter();
+                updateQuery(tempQuery);
+                e.target.blur();
               }
             }}
-            value={query}
+            value={tempQuery}
           />
           <button
             id="search-button"
@@ -97,7 +125,6 @@ export function SearchContainer({
     </div>
   );
 }
-
 
 export function SettingsContainer({
   settingsShow,
@@ -154,4 +181,3 @@ export function SettingsContainer({
     </div>
   );
 }
-

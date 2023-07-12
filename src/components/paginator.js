@@ -18,7 +18,7 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
 
   const pagesCount = Math.ceil(+assetsCount / +limit);
 
-  let textStyle = `text-gray-200 disabled:text-gray-500 hover:text-gray-50`;
+  let textStyle = `transition text-gray-200 disabled:text-gray-500 hover:text-gray-50`;
 
   return (
     <div id="pages-container" className="w-full z-20 lg:w-1/2 mt-2">
@@ -60,7 +60,7 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
           <FontAwesomeIcon icon={faChevronRight} />
         </button>
         <button
-          className={`hover:underline ${textStyle} px-3`}
+          className={`${textStyle} hover:underline px-3`}
           onClick={() => updatePage(pagesCount)}
         >{`${pagesCount}`}</button>
       </div>

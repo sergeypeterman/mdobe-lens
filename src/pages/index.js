@@ -57,6 +57,8 @@ export default function Home() {
     if (settingsRead) {
       try {
         const res = await fetch(fetchURL);
+
+        console.log(`fetch: ${settingsValues.query}`);
         if (!res.ok) {
           throw new Error(res.statusText);
         }
@@ -112,11 +114,11 @@ export default function Home() {
       .removeEventListener("change", (event) => {});
   }, []);
 
-  const handleQuery = (e) => {
+/*   const handleQuery = (searchQuery) => {
     let newSet = JSON.parse(JSON.stringify(settingsValues));
-    newSet.query = e.target.value;
+    newSet.query = searchQuery;
     setSettingsValues(newSet);
-  };
+  }; */
 
   const isEnter = (e) => {
     if (e.key === "Enter") {
@@ -137,8 +139,8 @@ export default function Home() {
           isEnter={isEnter}
           settingsShow={settingsShow}
           setSettingsShow={setSettingsShow}
-          handleQuery={handleQuery}
-          query={settingsValues.query}
+          settingsValues={settingsValues}
+          setSettingsValues={setSettingsValues}
           refSearch={refSearch}
           currPage={currPage}
           setCurrPage={setCurrPage}

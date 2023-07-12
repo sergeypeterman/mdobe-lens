@@ -31,6 +31,7 @@ export const AGE = [
   { name: "1y", title: "1 year" },
   { name: "2y", title: "2 years" },
   { name: "3y", title: "3 years" },
+  { name: "", title: "any" },
 ];
 export const SETTINGS_TYPES = {
   order: {
@@ -57,17 +58,24 @@ export const SETTINGS_TYPES = {
   query: "",
   creatorId: {
     name: "creator_id",
-    type: "checkbox",
+    type: "number",
     values: -1,
     caption: "Author id:",
   },
+  limit:{
+    name: "limit",
+    type: "number",
+    values: 100,
+    caption: "Assets per page",
+  }
 };
 
 //implementing dark mode styling
 export const STYLE = {
-  fontColor: "text-gray-950 dark:text-gray-200",
+  fontColor: "text-gray-950 dark:text-gray-200 disabled:text-gray-300 disabled:dark:text-gray-500",
   backColor: "bg-neutral-100 dark:bg-neutral-600",
   backColor2: "bg-neutral-200 dark:bg-neutral-700",
+  backColorHover: "hover:bg-neutral-200 hover:dark:bg-neutral-500",
   bodyBackground: "bg-neutral-200 dark:bg-neutral-950",
   inactiveBackground: "bg-neutral-800 dark:bg-neutral-800",
   inactiveBackgroundOpacity: "md:opacity-20 dark:md:opacity-60",

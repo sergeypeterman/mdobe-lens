@@ -10,6 +10,7 @@ import {
   faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 import { STYLE } from "./constants";
+import { Paginator } from "./paginator";
 
 export function SettingsContainer({
   settingsShow,
@@ -50,6 +51,11 @@ export function SettingsContainer({
               setSettingsValues={setSettingsValues}
               type="creatorId"
             />
+            <SettingsIntField
+              settingsValues={settingsValues}
+              setSettingsValues={setSettingsValues}
+              type="limit"
+            />
           </div>
         ) : (
           <div
@@ -70,6 +76,10 @@ export function SearchContainer({
   refSearch,
   handleQuery,
   query,
+  currPage,
+  setCurrPage,
+  assetsCount,
+  limit,
 }) {
   const handleSettingsFilter = () => {
     setSettingsShow(!settingsShow);
@@ -79,13 +89,13 @@ export function SearchContainer({
     <div
       id="search-form"
       ref={refSearch}
-      className={`fixed top-0 left-0 w-full z-10 flex flex-col items-center px-12 py-8`}
+      className={`fixed top-0 left-0 w-full z-10 flex flex-col items-center px-12 py-4`}
     >
       <div
         id="top-background"
         className={`fixed top-0 left-0 w-full z-10 h-28 px-12 py-8 bg-neutral-700 shadow-md`}
       ></div>
-      <div id="search-elements" className="w-full z-20  lg:w-1/2">
+      <div id="search-elements" className="w-full z-20 lg:w-1/2">
         <div
           id="search-field"
           className="flex flex-row items-center bg-neutral-700"
@@ -134,6 +144,12 @@ export function SearchContainer({
           </button>
         </div>
       </div>
+      <Paginator
+        currPage={currPage}
+        setCurrPage={setCurrPage}
+        assetsCount={assetsCount}
+        limit={limit}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SETTINGS_TYPES, STYLE } from "@/components/constants";
 import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
@@ -9,8 +9,9 @@ export default function Home() {
 
   const [resp, setResp] = useState();
   const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
-  const [settingsRead, setSettingssRead] = useState(false);
-  //darkmode const [styling, setStyling] = useState("");
+  const [settingsRead, setSettingssRead] = useState(false); //were the settings read from localStorage
+  const [currPage, setCurrPage] = useState(1);
+
   const refSettings = useRef();
   const refSearch = useRef();
 
@@ -28,12 +29,33 @@ export default function Home() {
 
   //saving settings to browser cache
   useEffect(() => {
-    settingsRead && localStorage.setItem(`searchSettings`, JSON.stringify(settingsValues));
+    settingsRead &&
+      localStorage.setItem(`searchSettings`, JSON.stringify(settingsValues));
     settingsRead && console.log(`writing searchSettings`);
-    //console.log(localStorage.getItem(`searchSettings`));
-  }, [settingsValues,settingsRead]);
+  }, [settingsValues, settingsRead]);
+
+  //fetch function
+  const handleFetchClick = useCallback(async () => {
+    let offset = (currPage - 1) * settingsValues.limit.values;
+    let fetchURL = `/api/get-files?search=${JSON.stringify(
+      settingsValues
+    )}&offset=${offset}`;
+
+    try {
+      const res = await fetch(fetchURL);
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      const result = await res.json();
+      const { response } = result;
+      setResp(response);
+    } catch (err) {
+      alert(err.message);
+    }
+  }, [settingsValues, currPage]);
 
   //effect checks if the user clicked outside of the open settings menu
+  //and fetches with applied settings
   useEffect(() => {
     const checkIfClickedInside = (e) => {
       if (
@@ -42,17 +64,15 @@ export default function Home() {
         !refSearch.current.contains(e.target)
       ) {
         setSettingsShow(false);
-        //console.log(e.target);
       }
     };
 
+    handleFetchClick();
     document.addEventListener("mousedown", checkIfClickedInside);
-    //console.log("added");
     return () => {
       document.removeEventListener("mousedown", checkIfClickedInside);
-      //console.log("removed");
     };
-  }, [settingsShow]);
+  }, [settingsShow, handleFetchClick]);
 
   //handling system-wide dark mode changes
   useEffect(() => {
@@ -76,22 +96,6 @@ export default function Home() {
       .matchMedia("(prefers-color-scheme: dark)")
       .removeEventListener("change", (event) => {});
   }, []);
-
-  const handleFetchClick = async () => {
-    try {
-      const res = await fetch(
-        `/api/get-files?search=${JSON.stringify(settingsValues)}`
-      );
-      if (!res.ok) {
-        throw new Error(res.statusText);
-      }
-      const result = await res.json();
-      const { response } = result;
-      setResp(response);
-    } catch (err) {
-      alert(err.message);
-    }
-  };
 
   const handleQuery = (e) => {
     let newSet = JSON.parse(JSON.stringify(settingsValues));
@@ -121,6 +125,10 @@ export default function Home() {
           handleQuery={handleQuery}
           query={settingsValues.query}
           refSearch={refSearch}
+          currPage={currPage}
+          setCurrPage={setCurrPage}
+          assetsCount={resp ? resp.nb_results : 0}
+          limit={settingsValues.limit.values}
         />
         <div
           id="screen-background"

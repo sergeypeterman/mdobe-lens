@@ -25,6 +25,7 @@ export default async function handler(req, res) {
     "video_small_preview_height",
     "video_small_preview_content_length",
     "video_small_preview_content_type",
+    "nb_results",
   ];
 
   let responseColumns = columns.reduce((acc, item) => {
@@ -33,7 +34,7 @@ export default async function handler(req, res) {
   }, "");
 
   const {
-    query: { search },
+    query: { search, offset },
   } = req;
 
   let userRequest = JSON.parse(search);
@@ -49,7 +50,13 @@ export default async function handler(req, res) {
       ? ``
       : `&search_parameters[creator_id]=${userRequest.creatorId.values}`;
 
-  //"&search_parameters[filters][content_type:photo]=1"+
+  let limit =
+    userRequest.limit.values > 100
+      ? `&search_parameters[limit]=100`
+      : userRequest.limit.values <= 0
+      ? `&search_parameters[limit]=32`
+      : `&search_parameters[limit]=${userRequest.limit.values}`;
+
   let contentTypes = userRequest.content.values.reduce((acc, elem, ind) => {
     acc += userRequest.content.selected[ind]
       ? `&search_parameters[filters][content_type:${elem.title}]=1`
@@ -64,6 +71,8 @@ export default async function handler(req, res) {
     `&search_parameters[thumbnail_size]=240` +
     `&search_parameters[words]=${userRequest.query}` +
     `${author}` +
+    `${limit}` +
+    `&search_parameters[offset]=${offset}` +
     responseColumns +
     contentTypes;
   let searchUrl = adobeUrl + modifier;

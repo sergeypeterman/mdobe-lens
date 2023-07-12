@@ -20,9 +20,21 @@ export default function Home() {
   //reading settings from browser cache on the first load
   useEffect(() => {
     const localSettings = JSON.parse(localStorage.getItem(`searchSettings`));
+
     if (localSettings) {
-      console.log(`reading searchSettings`);
-      setSettingsValues(localSettings);
+      let sameStructure =
+        JSON.stringify(Object.keys(localSettings)) === JSON.stringify(Object.keys(SETTINGS_TYPES));
+      console.log(
+        sameStructure,
+        Object.keys(localSettings),
+        Object.keys(SETTINGS_TYPES)
+      );
+      if (sameStructure) {
+        console.log(`reading searchSettings`);
+        setSettingsValues(localSettings);
+      } else {
+        localStorage.removeItem(`searchSettings`);
+      }
     }
     setSettingssRead(true);
   }, []);

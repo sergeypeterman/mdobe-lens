@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
   const updatePage = (num) => {
     let newPage = +num > 0 ? num : currPage;
-    //console.log(newPage, num);
     setCurrPage(newPage);
   };
 

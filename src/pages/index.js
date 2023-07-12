@@ -67,7 +67,7 @@ export default function Home() {
         alert(err.message);
       }
     }
-  }, [settingsValues, currPage]);
+  }, [settingsValues, currPage, settingsRead]);
 
   //effect checks if the user clicked outside of the open settings menu
   //and fetches with applied settings

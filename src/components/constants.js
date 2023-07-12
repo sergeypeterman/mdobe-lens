@@ -17,11 +17,11 @@ export const CONTENT_TYPES = [
 ];
 
 export const ORDER = [
-  { name: "nb_downloads", title: "Downloads" },
   { name: "relevance", title: "Relevance" },
   { name: "creation", title: "Creation" },
   { name: "featured", title: "Featured" },
   { name: "undiscovered", title: "Undiscovered" },
+  { name: "nb_downloads", title: "Downloads" },
 ];
 //[age]=1w, 1m, 6m, 1y, 2y, 3y
 export const AGE = [
@@ -62,17 +62,18 @@ export const SETTINGS_TYPES = {
     values: -1,
     caption: "Author id:",
   },
-  limit:{
+  limit: {
     name: "limit",
     type: "number",
     values: 100,
     caption: "Assets per page",
-  }
+  },
 };
 
 //implementing dark mode styling
 export const STYLE = {
-  fontColor: "text-gray-950 dark:text-gray-200 disabled:text-gray-300 disabled:dark:text-gray-500",
+  fontColor:
+    "text-gray-950 dark:text-gray-200 disabled:text-gray-300 disabled:dark:text-gray-500",
   backColor: "bg-neutral-100 dark:bg-neutral-600",
   backColor2: "bg-neutral-200 dark:bg-neutral-700",
   backColorHover: "hover:bg-neutral-200 hover:dark:bg-neutral-500",

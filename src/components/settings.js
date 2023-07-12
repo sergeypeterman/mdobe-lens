@@ -89,22 +89,22 @@ export function SearchContainer({
     <div
       id="search-form"
       ref={refSearch}
-      className={`fixed top-0 left-0 w-full z-10 flex flex-col items-center px-12 py-4`}
+      className={`fixed top-0 left-0 w-full z-10 flex flex-col items-center py-4`}
     >
       <div
         id="top-background"
         className={`fixed top-0 left-0 w-full z-10 h-28 px-12 py-8 bg-neutral-700 shadow-md`}
       ></div>
-      <div id="search-elements" className="w-full z-20 lg:w-1/2">
+      <div id="search-elements" className="w-full z-20">
         <div
           id="search-field"
-          className="flex flex-row items-center bg-neutral-700"
+          className="flex flex-row items-center w-full mt-2"
         >
           <button
             id="search-settings"
             aria-label="Search Settings"
             className="bg-gray-100 hover:bg-gray-200 text-center 
-                         px-3 py-1 ml-1 -mr-1 rounded-l-lg text-lg "
+                         pl-12 pr-3 py-2 -mr-1 text-xl "
             onClick={handleSettingsFilter}
           >
             <FontAwesomeIcon
@@ -118,8 +118,8 @@ export function SearchContainer({
           </button>
           <input
             id="query-field"
-            className="text-center px-3 py-1 m-1 text-black font-medium
-                     rounded-r-lg bg-gray-100 hover:bg-gray-200 text-lg w-full"
+            className="text-center px-3 py-2 text-black font-medium
+                     bg-gray-100 hover:bg-gray-200 text-lg w-full"
             type="text"
             placeholder="type query..."
             onChange={handleQuery}
@@ -133,8 +133,8 @@ export function SearchContainer({
           <button
             id="search-button"
             aria-label="Search"
-            className="bg-sky-600 hover:bg-sky-500  text-center 
-                         px-3 py-1 m-1 text-white rounded-lg text-lg shadow-md active:shadow-none"
+            className="bg-gray-100 hover:bg-gray-200 text-center 
+                         pl-3 pr-12 py-2 text-gray-700 text-lg active:shadow-none"
             onClick={() => {
               settingsShow && handleSettingsFilter();
               handleFetchClick();

@@ -20,7 +20,7 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   };
 
   return (
-    <div className={`${STYLE.backColor} px-4 py-1 m-1 rounded-lg shadow-sm`}>
+    <div className={`${STYLE.backColor} px-4 py-1 m-1 rounded-sm shadow-sm`}>
       <fieldset className="flex flex-wrap justify-between">
         <legend className="font-bold text-lg px-5 pb-2 basis-full">
           {thisSetting.caption}
@@ -81,7 +81,7 @@ export function SettingsIntField({ type, settingsValues, setSettingsValues }) {
 
   return (
     <div
-      className={`${STYLE.backColor} px-4 py-1 m-1 rounded-lg shadow-sm flex flex-wrap justify-between`}
+      className={`${STYLE.backColor} px-4 py-1 m-1 rounded-sm shadow-sm flex flex-wrap justify-between`}
     >
       <div className="font-bold text-lg px-5 pb-2 basis-full">
         {thisSetting.caption}
@@ -119,7 +119,7 @@ export function SettingsButtonsBlock({
   };
 
   return (
-    <div className="bg-gray-100 px-4 py-1 m-1 rounded-lg shadow-lg flex flex-wrap justify-between">
+    <div className="bg-gray-100 px-4 py-1 m-1 rounded-sm shadow-lg flex flex-wrap justify-between">
       <div className="font-bold text-lg px-5 basis-full">
         {thisSetting.caption}
       </div>

@@ -23,7 +23,8 @@ export default function Home() {
 
     if (localSettings) {
       let sameStructure =
-        JSON.stringify(Object.keys(localSettings)) === JSON.stringify(Object.keys(SETTINGS_TYPES));
+        JSON.stringify(Object.keys(localSettings)) ===
+        JSON.stringify(Object.keys(SETTINGS_TYPES));
       console.log(
         sameStructure,
         Object.keys(localSettings),
@@ -53,16 +54,18 @@ export default function Home() {
       settingsValues
     )}&offset=${offset}`;
 
-    try {
-      const res = await fetch(fetchURL);
-      if (!res.ok) {
-        throw new Error(res.statusText);
+    if (settingsRead) {
+      try {
+        const res = await fetch(fetchURL);
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        const result = await res.json();
+        const { response } = result;
+        setResp(response);
+      } catch (err) {
+        alert(err.message);
       }
-      const result = await res.json();
-      const { response } = result;
-      setResp(response);
-    } catch (err) {
-      alert(err.message);
     }
   }, [settingsValues, currPage]);
 

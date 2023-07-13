@@ -12,8 +12,9 @@ export const CONTENT_TYPES = [
   { name: 2, icon: faDesktop, title: "illustration" },
   { name: 3, icon: faPenNib, title: "vector" },
   { name: 4, icon: faVideo, title: "video" },
-  { name: 5, icon: faCube, title: "3d" },
-  { name: 6, icon: faPenSquare, title: "template" },
+  { name: 5, icon: null, title: "UNKNOWN" },
+  { name: 6, icon: faCube, title: "3d" },
+  { name: 7, icon: faPenSquare, title: "template" },
 ];
 
 export const ORDER = [

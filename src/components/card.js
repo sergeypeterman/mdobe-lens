@@ -20,11 +20,26 @@ export function Card({ e }) {
       <div className="text-sm flex justify-between p-1">
         <span className="px-1 font-bold">{e.nb_downloads}</span>
         <span>{`${e.creator_name} | ${e.creator_id}`}</span>
-        <span title={CONTENT_TYPES[e.media_type_id - 1].title} className="px-1">
-          <FontAwesomeIcon icon={CONTENT_TYPES[e.media_type_id - 1].icon} />
+        <span
+          title={
+            CONTENT_TYPES[e.media_type_id - 1]
+              ? CONTENT_TYPES[e.media_type_id - 1].title
+              : "ERROR"
+          }
+          className="px-1"
+        >
+          <FontAwesomeIcon
+            icon={
+              CONTENT_TYPES[e.media_type_id - 1]
+                ? CONTENT_TYPES[e.media_type_id - 1].icon
+                : "ERROR"
+            }
+          />
         </span>
       </div>
-      {CONTENT_TYPES[e.media_type_id - 1].title === "video" ? (
+      {CONTENT_TYPES[e.media_type_id - 1] === undefined ? (
+        `ERROR ${e.media_type_id}`
+      ) : CONTENT_TYPES[e.media_type_id - 1].title === "video" ? (
         <video controls key={e.video_small_preview_url} className="z-0">
           <source
             src={e.video_small_preview_url}

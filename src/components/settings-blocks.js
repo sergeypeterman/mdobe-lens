@@ -5,6 +5,17 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   //chooses from a group of options (radio\checkbox type)
   let thisSetting = settingsValues[type];
 
+  const allUnchecked = (setting) => {
+    if (setting.type === "checkbox") {
+      let status = setting.selected.reduce((acc, item) => {
+        console.log(`checkbox: ${item}, acc: ${acc}`);
+        return !item || acc;
+      }, false);
+      return status;
+    }
+    return false;
+  };
+
   const handleBlockChange = (e) => {
     let newSet = JSON.parse(JSON.stringify(settingsValues));
     let num = +e.target.value;
@@ -14,6 +25,12 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
         break;
       case "checkbox":
         newSet[type].selected[num] = !newSet[type].selected[num];
+        /* if (allUnchecked(newSet[type])) {
+          console.log("all unchecked");
+          newSet[type].selected.forEach((e, ind) => {
+            newSet[type].selected[ind] = true;
+          });
+        } */
         break;
     }
     setSettingsValues(newSet);

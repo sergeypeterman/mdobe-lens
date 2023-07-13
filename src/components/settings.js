@@ -22,7 +22,7 @@ export function SearchContainer({
   assetsCount,
   limit,
 }) {
-  const [tempQuery, setTempQuery] = useState();
+  const [tempQuery, setTempQuery] = useState("");
 
   useEffect(() => {
     setTempQuery(settingsValues.query);

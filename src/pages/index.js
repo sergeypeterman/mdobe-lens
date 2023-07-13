@@ -19,8 +19,9 @@ export default function Home() {
 
   //reading settings from browser cache on the first load
   useEffect(() => {
+    //HARD RESET//localStorage.removeItem(`searchSettings`);
     const localSettings = JSON.parse(localStorage.getItem(`searchSettings`));
-
+    
     if (localSettings) {
       let sameStructure =
         JSON.stringify(Object.keys(localSettings)) ===
@@ -188,7 +189,7 @@ export default function Home() {
           >
             <div
               className={`text-center p-2 
-                      ${STYLE.fontColor} rounded-md md:w-full
+                      ${STYLE.fontColor} rounded-md w-full
                       grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3
                       lg:grid-cols-4 gap-4`}
             >

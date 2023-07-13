@@ -156,15 +156,17 @@ export default function Home() {
             assetsCount={resp ? resp.nb_results : 0}
             limit={settingsValues.limit.values}
           />
-          <div
-            id="screen-background"
-            className={`fixed top-0 ${STYLE.inactiveBackground} w-full h-full
+          {settingsShow && (
+            <div
+              id="screen-background"
+              className={`fixed top-0 ${STYLE.inactiveBackground} w-full h-full
                     transition-all duration-300 easy-out  ${
                       settingsShow
                         ? `z-10 blur-none opacity-100 ${STYLE.inactiveBackgroundOpacity}`
                         : `-z-[1] blur-lg opacity-0 md:opacity-0`
                     }`}
-          ></div>
+            ></div>
+          )}
         </div>
         <div className="md:flex md:flex-row">
           {settingsShow && (

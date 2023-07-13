@@ -65,6 +65,20 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   );
 }
 
+export function checkIntegerRange(input, min, max) {
+  if (Number.isInteger(input)) {
+    if (input > max) {
+      return { intInRange: false, message: `too large, ${max} max` };
+    } else if (input < min) {
+      return { intInRange: false, message: `too small, min ${min}` };
+    } else {
+      return { intInRange: true, message: `correct` };
+    }
+  } else {
+    return { intInRange: false, message: `${input} is not integer` };
+  }
+}
+
 export function SettingsIntField({ type, settingsValues, setSettingsValues }) {
   //component for a settings group which
   //works with an integer input

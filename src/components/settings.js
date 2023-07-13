@@ -126,7 +126,7 @@ export function SettingsContainer({
   return (
     <div
       id="settings-form"
-      className={`flex flex-col px-12 md:px-0 ${STYLE.fontColor}`}
+      className={`flex flex-col px-2 md:px-0 ${STYLE.fontColor}`}
     >
       <div id="settings-elements" className="w-full">
         {settingsShow ? (

@@ -78,7 +78,7 @@ export const STYLE = {
   backColor2: "bg-neutral-200 dark:bg-neutral-700",
   backColorHover: "hover:bg-neutral-200 hover:dark:bg-neutral-500",
   bodyBackground: "bg-neutral-200 dark:bg-neutral-950",
-  inactiveBackground: "bg-neutral-800 dark:bg-neutral-800",
+  inactiveBackground: "bg-neutral-700 dark:bg-neutral-700",
   inactiveBackgroundOpacity: "md:opacity-20 dark:md:opacity-60",
   gradColorFrom: "from-neutral-100 dark:from-neutral-800",
   gradColorTo: "to-neutral-50 dark:to-[#262626]",

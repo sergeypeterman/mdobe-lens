@@ -138,7 +138,7 @@ export default function Home() {
           id="top-background"
           className={`w-full z-30 h-10 bg-neutral-700 flex justify-center items-center`}
         >
-          <h1 className={`text-gray-300 font-medium font-logo`}>
+          <h1 className={`text-gray-300 font-medium font-logo z-30`}>
             mdobeLens
           </h1>
         </div>
@@ -166,11 +166,11 @@ export default function Home() {
                     }`}
           ></div>
         </div>
-        <div className="flex flex-row justify-between">
+        <div className="md:flex md:flex-row">
           {settingsShow && (
             <div
               id="settings-div"
-              className="sticky top-[88px] md:top-20 z-20 h-full w-full md:w-[500px]"
+              className="sticky top-[9%] md:top-20 z-20 h-full w-full md:w-[500px]"
             >
               <SettingsContainer
                 settingsShow={settingsShow}

@@ -136,8 +136,12 @@ export default function Home() {
       <main className={`min-h-screen ${STYLE.bodyBackground}`}>
         <div
           id="top-background"
-          className={`w-full z-30 h-10 bg-neutral-700`}
-        ></div>
+          className={`w-full z-30 h-10 bg-neutral-700 flex justify-center items-center`}
+        >
+          <h1 className={`text-gray-300 font-medium font-logo`}>
+            mdobeLens
+          </h1>
+        </div>
         <div className="w-full h-full sticky top-0 z-20">
           <SearchContainer
             handleFetchClick={handleFetchClick}

@@ -51,8 +51,8 @@ export function Card({ e }) {
       </div>
       {pressed ? (
         <div className={`px-3 py-2`}>
-          <p className="p-1 border-b-2">{e.title}</p>
-          <p className="p-1">
+          <p className="p-1 border-b-2 text-start">{e.title}</p>
+          <p className="p-1 text-between text-justify">
             {e.keywords.reduce((acc, item) => (acc += `${item.name}, `), " ")}
           </p>
         </div>

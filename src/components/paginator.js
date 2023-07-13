@@ -21,7 +21,7 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
   let textStyle = `transition text-gray-200 disabled:text-gray-500 hover:text-gray-50`;
 
   return (
-    <div id="pages-container" className="w-full z-20 lg:w-1/2 mt-2">
+    <div id="pages-container" className="w-full z-20  p-1 bg-neutral-700 shadow-md">
       <div className={`flex flex-row items-center justify-center `}>
         <button
           className={`hover:underline ${textStyle} px-3`}

@@ -114,7 +114,7 @@ export default function Home() {
       .removeEventListener("change", (event) => {});
   }, []);
 
-/*   const handleQuery = (searchQuery) => {
+  /*   const handleQuery = (searchQuery) => {
     let newSet = JSON.parse(JSON.stringify(settingsValues));
     newSet.query = searchQuery;
     setSettingsValues(newSet);
@@ -133,50 +133,63 @@ export default function Home() {
       <Head>
         <title>mdobeLens</title>
       </Head>
-      <main className={`flex min-h-screen flex-col ${STYLE.bodyBackground}`}>
-        <SearchContainer
-          handleFetchClick={handleFetchClick}
-          isEnter={isEnter}
-          settingsShow={settingsShow}
-          setSettingsShow={setSettingsShow}
-          settingsValues={settingsValues}
-          setSettingsValues={setSettingsValues}
-          refSearch={refSearch}
-          currPage={currPage}
-          setCurrPage={setCurrPage}
-          assetsCount={resp ? resp.nb_results : 0}
-          limit={settingsValues.limit.values}
-        />
+      <main className={`min-h-screen ${STYLE.bodyBackground}`}>
         <div
-          id="screen-background"
-          className={`fixed top-28 left-0 h-full px-12 py-8 ${
-            STYLE.inactiveBackground
-          } w-full
-                      transition-all duration-300 easy-out  ${
-                        settingsShow
-                          ? `z-10 blur-none opacity-100 ${STYLE.inactiveBackgroundOpacity}`
-                          : `-z-[1] blur-lg opacity-0 md:opacity-0`
-                      }`}
+          id="top-background"
+          className={`w-full z-30 h-10 bg-neutral-700`}
         ></div>
-        <div className={`flex w-full`}>
+        <div className="w-full h-full sticky top-0 z-20">
+          <SearchContainer
+            handleFetchClick={handleFetchClick}
+            isEnter={isEnter}
+            settingsShow={settingsShow}
+            setSettingsShow={setSettingsShow}
+            settingsValues={settingsValues}
+            setSettingsValues={setSettingsValues}
+            refSearch={refSearch}
+            currPage={currPage}
+            setCurrPage={setCurrPage}
+            assetsCount={resp ? resp.nb_results : 0}
+            limit={settingsValues.limit.values}
+          />
+          <div
+            id="screen-background"
+            className={`fixed top-0 ${STYLE.inactiveBackground} w-full h-full
+                    transition-all duration-300 easy-out  ${
+                      settingsShow
+                        ? `z-10 blur-none opacity-100 ${STYLE.inactiveBackgroundOpacity}`
+                        : `-z-[1] blur-lg opacity-0 md:opacity-0`
+                    }`}
+          ></div>
+        </div>
+        <div className="flex flex-row justify-between">
           {settingsShow && (
-            <SettingsContainer
-              settingsShow={settingsShow}
-              refSettings={refSettings}
-              settingsValues={settingsValues}
-              setSettingsValues={setSettingsValues}
-            />
+            <div
+              id="settings-div"
+              className="sticky top-[88px] md:top-20 z-20 h-full w-full md:w-[500px]"
+            >
+              <SettingsContainer
+                settingsShow={settingsShow}
+                refSettings={refSettings}
+                settingsValues={settingsValues}
+                setSettingsValues={setSettingsValues}
+              />
+            </div>
           )}
           <div
-            className={`text-center p-12 mt-20 
-                      ${settingsShow && "md:ml-72"}
-                      ${STYLE.fontColor} rounded-md w-full
+            id="cards-div"
+            className={`flex ${settingsShow ? "w-0 md:w-full" : "w-full"}`}
+          >
+            <div
+              className={`text-center p-2 
+                      ${STYLE.fontColor} rounded-md md:w-full
                       grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3
                       lg:grid-cols-4 gap-4`}
-          >
-            {resp
-              ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)
-              : null}
+            >
+              {resp
+                ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)
+                : null}
+            </div>
           </div>
         </div>
       </main>

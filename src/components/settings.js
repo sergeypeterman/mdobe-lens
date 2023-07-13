@@ -1,8 +1,4 @@
-import {
-  SettingsBlock,
-  SettingsIntField,
-  SettingsButtonsBlock,
-} from "./settings-blocks";
+import { SettingsBlock, SettingsIntField } from "./settings-blocks";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -55,74 +51,69 @@ export function SearchContainer({
   };
 
   return (
-    <div
-      id="search-form"
-      ref={refSearch}
-      className={`fixed top-0 left-0 w-full z-10 flex flex-col items-center py-4`}
-    >
+    <>
       <div
-        id="top-background"
-        className={`fixed top-0 left-0 w-full z-10 h-28 px-12 py-8 bg-neutral-700 shadow-md`}
-      ></div>
-      <div id="search-elements" className="w-full z-20">
-        <div
-          id="search-field"
-          className="flex flex-row items-center w-full mt-1"
-        >
-          <button
-            id="search-settings"
-            aria-label="Search Settings"
-            className="bg-gray-100 hover:bg-gray-200 text-center 
+        id="search-form"
+        ref={refSearch}
+        className={`w-full z-30 flex flex-col items-center `}
+      >
+        <div id="search-elements" className="w-full z-20">
+          <div id="search-field" className="flex flex-row items-center w-full">
+            <button
+              id="search-settings"
+              aria-label="Search Settings"
+              className="bg-gray-100 hover:bg-gray-200 text-center 
                          pl-12 pr-3 py-2 -mr-1 text-xl "
-            onClick={handleSettingsFilter}
-          >
-            <FontAwesomeIcon
-              icon={faSliders}
-              className={
-                settingsShow
-                  ? `transition rotate-90 text-gray-700`
-                  : `transition text-gray-400`
-              }
-            />
-          </button>
-          <input
-            id="query-field"
-            className="text-center px-3 py-2 text-black font-medium
+              onClick={handleSettingsFilter}
+            >
+              <FontAwesomeIcon
+                icon={faSliders}
+                className={
+                  settingsShow
+                    ? `transition rotate-90 text-gray-700`
+                    : `transition text-gray-400`
+                }
+              />
+            </button>
+            <input
+              id="query-field"
+              className="text-center px-3 py-2 text-black font-medium
                      bg-gray-100 hover:bg-gray-200 text-lg w-full"
-            type="text"
-            placeholder="type query..."
-            onChange={handleQueryChange}
-            onBlur={handleQueryBlur}
-            onKeyDown={(e) => {
-              if (isEnter(e)) {
-                settingsShow && handleSettingsFilter();
-                updateQuery(tempQuery);
-                e.target.blur();
-              }
-            }}
-            value={tempQuery}
-          />
-          <button
-            id="search-button"
-            aria-label="Search"
-            className="bg-gray-100 hover:bg-gray-200 text-center 
+              type="text"
+              placeholder="type query..."
+              onChange={handleQueryChange}
+              onBlur={handleQueryBlur}
+              onKeyDown={(e) => {
+                if (isEnter(e)) {
+                  settingsShow && handleSettingsFilter();
+                  updateQuery(tempQuery);
+                  e.target.blur();
+                }
+              }}
+              value={tempQuery}
+            />
+            <button
+              id="search-button"
+              aria-label="Search"
+              className="bg-gray-100 hover:bg-gray-200 text-center 
                          pl-3 pr-12 py-2 text-gray-700 text-lg active:shadow-none"
-            onClick={() => {
-              settingsShow && handleSettingsFilter();
-              handleFetchClick();
-            }}
-          >
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </button>
+              onClick={() => {
+                settingsShow && handleSettingsFilter();
+                handleFetchClick();
+              }}
+            >
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
+          </div>
         </div>
+        <Paginator
+          currPage={currPage}
+          setCurrPage={setCurrPage}
+          assetsCount={assetsCount}
+          limit={limit}
+        />
       </div>
-      <Paginator
-        currPage={currPage}
-        setCurrPage={setCurrPage}
-        assetsCount={assetsCount}
-        limit={limit}
-      />
-    </div>
+    </>
   );
 }
 
@@ -135,7 +126,7 @@ export function SettingsContainer({
   return (
     <div
       id="settings-form"
-      className={`flex flex-col px-12 md:px-0 fixed top-28 left-0 w-full z-20 md:w-80 ${STYLE.fontColor}`}
+      className={`flex flex-col px-12 md:px-0 ${STYLE.fontColor}`}
     >
       <div id="settings-elements" className="w-full">
         {settingsShow ? (

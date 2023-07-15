@@ -6,11 +6,13 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   let thisSetting = settingsValues[type];
 
   const allUnchecked = (setting) => {
+    //console.log("all unchecked func");
     if (setting.type === "checkbox") {
       let status = setting.selected.reduce((acc, item) => {
         console.log(`checkbox: ${item}, acc: ${acc}`);
         return !item || acc;
       }, false);
+      status && console.log("all unchecked");
       return status;
     }
     return false;
@@ -44,7 +46,12 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
         </legend>
 
         {thisSetting.values.map((item, ind) => {
+          if (!item.enabled) {
+            return;
+          }
+
           let checked = false;
+          //let status = allUnchecked(thisSetting);
           switch (thisSetting.type) {
             case "radio":
               checked = ind === thisSetting.selected;
@@ -127,3 +134,5 @@ export function SettingsIntField({ type, settingsValues, setSettingsValues }) {
     </div>
   );
 }
+
+export function SettingsOptions({ settingsValues, setSettingsValues }) {}

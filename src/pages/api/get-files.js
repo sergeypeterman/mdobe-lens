@@ -1,43 +1,16 @@
+import { RESULT_COLUMNS } from "@/components/constants";
+
 const adobeUrl =
   "https://stock.adobe.io/Rest/Media/1/Search/Files?locale=en_US";
 const apikey = process.env.API_KEY;
 
-export default async function handler(req, res) {
-  let columns = [
-    "id",
-    "thumbnail_url",
-    "thumbnail_width",
-    "thumbnail_height",
-    "nb_downloads",
-    "creation_date",
-    "country_name",
-    "creator_name",
-    "creator_id",
-    "width",
-    "height",
-    "has_releases",
-    "keywords",
-    "title",
-    "media_type_id",
-    "premium_level_id",
-    "video_small_preview_url",
-    "video_small_preview_width",
-    "video_small_preview_height",
-    "video_small_preview_content_length",
-    "video_small_preview_content_type",
-    "nb_results",
-  ];
+const calculateFetchUrl = (userRequest, offset) => {
+  let columns = RESULT_COLUMNS;
 
   let responseColumns = columns.reduce((acc, item) => {
     acc += `&result_columns[]=${item}`;
     return acc;
   }, "");
-
-  const {
-    query: { search, offset },
-  } = req;
-
-  let userRequest = JSON.parse(search);
 
   let ageInd = userRequest.age.selected; //index of selected age
   let age = userRequest.age.values[ageInd].name; //selected age
@@ -48,7 +21,7 @@ export default async function handler(req, res) {
   let author =
     userRequest.creatorId.values <= 0
       ? ``
-      : `&search_parameters[creator_id]=${userRequest.creatorId.values}`;
+      : `&search_parameters[creatorss_id]=${userRequest.creatorId.values}`;
 
   let limit =
     userRequest.limit.values > 100
@@ -77,7 +50,18 @@ export default async function handler(req, res) {
     contentTypes;
   let searchUrl = adobeUrl + modifier;
 
+  return searchUrl;
+};
+
+export default async function handler(req, res) {
+  const {
+    query: { search, offset },
+  } = req;
+
+  let userRequest = JSON.parse(search);
+
   //console.log(`API: Search = ${searchUrl}`);
+  let searchUrl = calculateFetchUrl(userRequest, offset);
 
   try {
     const respn = await fetch(searchUrl, {
@@ -89,11 +73,14 @@ export default async function handler(req, res) {
     });
     const result = await respn.json();
     //console.log(result);
+    //console.log(respn);
     if (!respn.ok) {
-      throw new Error(respn.message);
+      console.log(respn);
+      throw new Error(`API Response Error: ${respn.statusText}`);
     }
     res.status(200).json({ response: result });
   } catch (err) {
+    console.log(err);
     res.status(400).json(err.message);
   }
 }

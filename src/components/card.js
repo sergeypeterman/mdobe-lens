@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
 
-export function Card({ e }) {
+export function Card({ e, errors }) {
   //Asset card component
   const [pressed, setPressed] = useState(false);
 
@@ -12,54 +12,61 @@ export function Card({ e }) {
     setPressed(!pressed);
   };
 
+  const getCardContent = () => {
+    let cardType;
+    if (/* errors.state && errors.errors.includes(e.media_type_id) */false) {
+      cardType = "ERROR";
+    } else {
+      cardType = CONTENT_TYPES[e.media_type_id - 1].title;
+    }
+    return cardType === "video" ? (
+      <video controls key={e.video_small_preview_url} className="z-0">
+        <source
+          src={e.video_small_preview_url}
+          type={e.video_small_preview_content_type}
+        />
+        <p>
+          Your browser does not support HTML video. Here is a
+          <a href={e.video_small_preview_url}>link to the video</a> instead.
+        </p>
+      </video>
+    ) : (
+      <Image
+        className="h-48 w-auto object-contain cursor-pointer"
+        src={e.thumbnail_url}
+        width={e.thumbnail_width}
+        height={e.thumbnail_height}
+        alt={e.title}
+        onClick={handleExpand}
+      />
+    );
+  };
+
+  const getCardHeader = () => {
+    let cardType;
+    if (/* errors.state && errors.errors.includes(e.media_type_id) */false) {
+      cardType = "ERROR";
+    } else {
+      cardType = CONTENT_TYPES[e.media_type_id - 1].title;
+    }
+    return (
+      <div className="text-sm flex justify-between p-1">
+        <span className="px-1 font-bold">{e.nb_downloads}</span>
+        <span>{`${e.creator_name} | ${e.creator_id}`}</span>
+        <span title={cardType} className="px-1">
+          <FontAwesomeIcon icon={CONTENT_TYPES[e.media_type_id - 1].icon} />
+        </span>
+      </div>
+    );
+  };
+
   return (
     <div
       className={`mb-2 w-full flex flex-col rounded-lg shadow-sm 
         bg-gradient-to-b ${STYLE.gradColorFrom} from-85% ${STYLE.gradColorTo}`}
     >
-      <div className="text-sm flex justify-between p-1">
-        <span className="px-1 font-bold">{e.nb_downloads}</span>
-        <span>{`${e.creator_name} | ${e.creator_id}`}</span>
-        <span
-          title={
-            CONTENT_TYPES[e.media_type_id - 1]
-              ? CONTENT_TYPES[e.media_type_id - 1].title
-              : "ERROR"
-          }
-          className="px-1"
-        >
-          <FontAwesomeIcon
-            icon={
-              CONTENT_TYPES[e.media_type_id - 1]
-                ? CONTENT_TYPES[e.media_type_id - 1].icon
-                : "ERROR"
-            }
-          />
-        </span>
-      </div>
-      {CONTENT_TYPES[e.media_type_id - 1] === undefined ? (
-        `ERROR ${e.media_type_id}`
-      ) : CONTENT_TYPES[e.media_type_id - 1].title === "video" ? (
-        <video controls key={e.video_small_preview_url} className="z-0">
-          <source
-            src={e.video_small_preview_url}
-            type={e.video_small_preview_content_type}
-          />
-          <p>
-            Your browser does not support HTML video. Here is a
-            <a href={e.video_small_preview_url}>link to the video</a> instead.
-          </p>
-        </video>
-      ) : (
-        <Image
-          className="h-48 w-auto object-contain cursor-pointer"
-          src={e.thumbnail_url}
-          width={e.thumbnail_width}
-          height={e.thumbnail_height}
-          alt={e.title}
-          onClick={handleExpand}
-        />
-      )}
+      {getCardHeader()}
+      {getCardContent()}
       <div className="text-sm flex justify-around p-1">
         <span className="px-1">{`id: ${e.id}`}</span>
         <span className="px-1">{e.creation_date.substr(0, 7)}</span>

@@ -1,8 +1,57 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SETTINGS_TYPES, STYLE } from "@/components/constants";
+import {
+  CONTENT_TYPES,
+  RESULT_COLUMNS,
+  SETTINGS_TYPES,
+  STYLE,
+} from "@/components/constants";
 import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
 import Head from "next/head";
+
+const checkResponseValidity = (response, fix) => {
+  //trying to find all columns in response
+  console.log(`checking: `);
+  console.log(response);
+
+  let checkResult = { error: false, message: "", typeError: [] };
+
+  //checking presence of all requested columns
+  let columns = RESULT_COLUMNS;
+  columns.forEach((column) => {
+    let columnExists = response.files.reduce((acc, asset) => {
+      return (asset[column] !== undefined || column === "nb_results") && acc;
+    }, true);
+    if (!columnExists) {
+      checkResult.error = true;
+      checkResult.message = `${column} doesn't exist in all the assets`;
+      console.log(checkResult.message);
+      return checkResult;
+    }
+  });
+
+  //checking that contenct types match between the constant and api response
+  let types = CONTENT_TYPES;
+  let typesAreFine = response.files.reduce((acc, asset) => {
+    if (types[asset.media_type_id] === undefined) {
+      !checkResult.typeError.includes(asset.media_type_id) &&
+        checkResult.typeError.push(asset.media_type_id);
+      return false;
+    } else {
+      return true && acc;
+    }
+  }, true);
+
+  if (!typesAreFine) {
+    checkResult.error = true;
+    checkResult.message = `missing types ##: ${checkResult.typeError.join(
+      ", "
+    )}`;
+    console.log(checkResult.message);
+  }
+
+  return checkResult;
+};
 
 export default function Home() {
   //main page component
@@ -11,6 +60,7 @@ export default function Home() {
   const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
   const [settingsRead, setSettingssRead] = useState(false); //were the settings read from localStorage
   const [currPage, setCurrPage] = useState(1);
+  //const [mdobeError, setMdobeError] = useState({ state: false, errors: [] });
 
   const refSettings = useRef();
   const refSearch = useRef();
@@ -21,7 +71,7 @@ export default function Home() {
   useEffect(() => {
     //HARD RESET//localStorage.removeItem(`searchSettings`);
     const localSettings = JSON.parse(localStorage.getItem(`searchSettings`));
-    
+
     if (localSettings) {
       let sameStructure =
         JSON.stringify(Object.keys(localSettings)) ===
@@ -59,12 +109,15 @@ export default function Home() {
       try {
         const res = await fetch(fetchURL);
 
-        console.log(`fetch: ${settingsValues.query}`);
+        console.log(
+          `fetch: ${settingsValues.query}, ${settingsValues.limit.values} per page`
+        );
         if (!res.ok) {
-          throw new Error(res.statusText);
+          throw new Error(`Fetch error: ${res.statusText}`);
         }
         const result = await res.json();
         const { response } = result;
+
         setResp(response);
       } catch (err) {
         alert(err.message);
@@ -114,12 +167,6 @@ export default function Home() {
       .matchMedia("(prefers-color-scheme: dark)")
       .removeEventListener("change", (event) => {});
   }, []);
-
-  /*   const handleQuery = (searchQuery) => {
-    let newSet = JSON.parse(JSON.stringify(settingsValues));
-    newSet.query = searchQuery;
-    setSettingsValues(newSet);
-  }; */
 
   const isEnter = (e) => {
     if (e.key === "Enter") {
@@ -194,7 +241,12 @@ export default function Home() {
                       lg:grid-cols-4 gap-4`}
             >
               {resp
-                ? resp.files.map((e, ind) => <Card key={`e-${ind}`} e={e} />)
+                ? resp.files.map((e, ind) => (
+                    <Card
+                      key={`e-${e.nb_results}-${e.id}`}
+                      e={e}
+                    />
+                  ))
                 : null}
             </div>
           </div>

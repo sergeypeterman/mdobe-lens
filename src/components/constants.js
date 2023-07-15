@@ -61,14 +61,18 @@ export const SETTINGS_TYPES = {
   creatorId: {
     name: "creator_id",
     type: "number",
-    values: -1,
+    values: 0,
     caption: "Author id:",
+    min: 0,
+    max: 9999999999, //plus one digit to xxx.xxx.xxx
   },
   limit: {
     name: "limit",
     type: "number",
     values: 100,
     caption: "Assets per page",
+    min: 1,
+    max: 100,
   },
 };
 
@@ -84,6 +88,7 @@ export const STYLE = {
   inactiveBackgroundOpacity: "md:opacity-20 dark:md:opacity-60",
   gradColorFrom: "from-neutral-100 dark:from-neutral-800",
   gradColorTo: "to-neutral-50 dark:to-[#262626]",
+  textError: "text-red-500 dark:text-red-200",
 };
 
 export const RESULT_COLUMNS = [

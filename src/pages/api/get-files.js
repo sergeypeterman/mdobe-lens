@@ -21,7 +21,7 @@ const calculateFetchUrl = (userRequest, offset) => {
   let author =
     userRequest.creatorId.values <= 0
       ? ``
-      : `&search_parameters[creatorss_id]=${userRequest.creatorId.values}`;
+      : `&search_parameters[creator_id]=${userRequest.creatorId.values}`;
 
   let limit =
     userRequest.limit.values > 100

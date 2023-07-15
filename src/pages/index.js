@@ -86,6 +86,7 @@ export default function Home() {
         !refSearch.current.contains(e.target)
       ) {
         setSettingsShow(false);
+        setCurrPage(1);
       }
     };
 
@@ -122,6 +123,7 @@ export default function Home() {
   const isEnter = (e) => {
     if (e.key === "Enter") {
       handleFetchClick();
+      setCurrPage(1);
       return true;
     }
     return false;

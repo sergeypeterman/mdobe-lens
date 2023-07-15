@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { STYLE } from "./constants";
+import { checkIntegerRange } from "./functions";
 
 export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   //component for a group which
   //chooses from a group of options (radio\checkbox type)
   let thisSetting = settingsValues[type];
   const [checkedAny, setCheckedAny] = useState(false);
-  //let checkedAny = false;
 
   const handleAny = () => {
     let newAny = !checkedAny;
@@ -30,7 +30,7 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   const allUnchecked = (setting) => {
     if (setting.type === "checkbox") {
       let status = setting.selected.reduce((acc, item, ind) => {
-        /* console.log(
+        /*DIAGNOSTIC console.log(
           `${setting.values[ind].title} checkbox: ${item}(${
             setting.values[ind].enabled ? "" : "not "
           }enabled), acc: ${acc}`
@@ -40,7 +40,6 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
         }
         return !item && acc;
       }, true);
-      //status && console.log("allUnchecked: all unchecked");
       return status;
     }
     return false;
@@ -49,7 +48,7 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   const allChecked = (setting) => {
     if (setting.type === "checkbox") {
       let status = setting.selected.reduce((acc, item, ind) => {
-        /* console.log(
+        /*DIAGNOSTIC console.log(
           `${setting.values[ind].title} checkbox: ${item}(${
             setting.values[ind].enabled ? "" : "not "
           }enabled), acc: ${acc}`
@@ -59,7 +58,6 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
         }
         return item && acc;
       }, true);
-      //status && console.log("allChecked: all checked");
       return status;
     }
     return false;
@@ -77,12 +75,10 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
         if (allUnchecked(newSet[type])) {
           console.log(`${thisSetting.caption} all unchecked`);
           setCheckedAny(true);
-        }
-        else if(allChecked(newSet[type])){
+        } else if (allChecked(newSet[type])) {
           console.log(`${thisSetting.caption} all checked`);
           setCheckedAny(true);
-        }
-        else{
+        } else {
           setCheckedAny(false);
         }
         break;
@@ -103,7 +99,6 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
           }
 
           let checked = false;
-          //let status = allUnchecked(thisSetting);
           switch (thisSetting.type) {
             case "radio":
               checked = ind === thisSetting.selected;
@@ -160,47 +155,75 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   );
 }
 
-export function checkIntegerRange(input, min, max) {
-  if (Number.isInteger(input)) {
-    if (input > max) {
-      return { intInRange: false, message: `too large, ${max} max` };
-    } else if (input < min) {
-      return { intInRange: false, message: `too small, min ${min}` };
-    } else {
-      return { intInRange: true, message: `correct` };
-    }
-  } else {
-    return { intInRange: false, message: `${input} is not integer` };
-  }
-}
-
 export function SettingsIntField({ type, settingsValues, setSettingsValues }) {
   //component for a settings group which
   //works with an integer input
   let thisSetting = settingsValues[type];
+  const [thisInt, setThisInt] = useState(thisSetting.values);
+  const [thisErr, setThisErr] = useState({ status: false, message: "" });
+  const thisRef = useRef();
+
+  const handleBlur = (e) => {
+    let newSet = JSON.parse(JSON.stringify(settingsValues)); //copy of an abject
+    let input = e.target.value;
+
+    let isCorrect = checkIntegerRange(Number(input), thisSetting.min, thisSetting.max);
+    let err = JSON.parse(JSON.stringify(thisErr));
+    
+    err.status = false;
+    if (isCorrect.intInRange) {
+      thisRef.current.className =
+        "min-w-0 px-5 py-1 mb-2 basis-full font-medium text-lg rounded-md";
+      newSet[type].values = input;
+      setSettingsValues(newSet);
+      setThisErr(err);
+    } else {
+      thisRef.current.focus();
+      thisRef.current.className =
+        "bg-rose-300 min-w-0 px-5 py-1 mb-2 basis-full font-medium text-lg rounded-md";
+      err.status = true;
+      err.message = isCorrect.message;
+      setThisErr(err);
+    }
+  };
 
   const handleFieldChange = (e) => {
-    let newSet = JSON.parse(JSON.stringify(settingsValues)); //copy of an abject
-    let input = +e.target.value; // convert to num
+    let num = e.target.value;
+    console.log(num);
+    let err = JSON.parse(JSON.stringify(thisErr));
 
-    newSet[type].values = input;
+    let isCorrect = checkIntegerRange(Number(num), thisSetting.min, thisSetting.max);
 
-    setSettingsValues(newSet);
+    err.status = false;
+    if (isCorrect.intInRange) {
+      setThisErr(err);
+      setThisInt(num);
+    } else {
+      console.log(isCorrect.message);
+      err.status = true;
+      err.message = isCorrect.message;
+      setThisErr(err);
+    }
   };
 
   return (
     <div
       className={`${STYLE.backColor} px-4 py-1 m-1 rounded-sm shadow-sm flex flex-wrap justify-between`}
     >
-      <div className="font-bold text-lg px-5 pb-2 basis-full">
+      <div className="font-bold text-lg px-5 pb-2 basis-1/2">
         {thisSetting.caption}
+      </div>
+      <div className={`${STYLE.textError} px-5 pb-2 basis-1/2 text-right`}>
+        {thisErr.status && thisErr.message}
       </div>
       <input
         className="min-w-0 px-5 py-1 mb-2 basis-full font-medium text-lg rounded-md"
         type="number"
         id={`${thisSetting}`}
         onChange={handleFieldChange}
-        value={thisSetting.values <= 0 ? "" : thisSetting.values}
+        onBlur={handleBlur}
+        value={thisInt ? thisInt : ""}
+        ref={thisRef}
       />
     </div>
   );

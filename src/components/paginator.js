@@ -5,33 +5,76 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { checkIntegerRange } from "./functions";
+import { useRef, useState } from "react";
 
 export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
+  const [err, setErr] = useState(false);
+  const ref = useRef();
+
+  const pagesCount = Math.ceil(+assetsCount / +limit);
+
   const updatePage = (num) => {
-    let newPage = +num > 0 ? num : currPage;
+    let newPage = num > 0 ? num : currPage;
     setCurrPage(newPage);
   };
 
   const handleCurrPage = (e) => {
-    updatePage(e.target.value);
+    let input = e.target.value;
+    let isCorrect = checkIntegerRange(Number(input), 1, pagesCount);
+
+    let error = false;
+    if (isCorrect.intInRange) {
+      ref.current.className = `bg-transparent text-center font-medium
+      px-3 py-1  ${textStyle} text-lg `;
+      setErr(error);
+      updatePage(Number(input));
+    } else {
+      ref.current.className = `bg-red-500 text-center font-medium
+      px-3 py-1  ${textStyle} text-lg border-red-500`;
+      error = true;
+      setErr(error);
+    }
   };
 
-  const pagesCount = Math.ceil(+assetsCount / +limit);
+  const handleBlur = (e) => {
+    let input = e.target.value;
+    let isCorrect = checkIntegerRange(Number(input), 1, pagesCount);
+
+    let error = false;
+    if (isCorrect.intInRange) {
+      ref.current.className = `bg-transparent text-center font-medium
+      px-3 py-1  ${textStyle} text-lg `;
+      setErr(error);
+      updatePage(Number(input));
+    } else {
+      ref.current.focus();
+      ref.current.className = `bg-transparent text-center font-medium
+      px-3 py-1  ${textStyle} text-lg `;
+      error = true;
+      setErr(error);      
+    }
+  };
 
   let textStyle = `transition text-gray-200 disabled:text-gray-500 hover:text-gray-50`;
 
   return (
-    <div id="pages-container" className="w-full z-20  p-1 bg-neutral-700 shadow-md">
+    <div
+      id="pages-container"
+      className="w-full z-20  p-1 bg-neutral-700 shadow-md"
+    >
       <div className={`flex flex-row items-center justify-center `}>
         <button
           className={`hover:underline ${textStyle} px-3`}
+          title="First Page"
           onClick={() => updatePage(1)}
+          disabled={currPage === 1}
         >{`${1}`}</button>
         <button
           id="previous-page"
-          aria-label="Previous Page"
           onClick={() => updatePage(currPage - 1)}
           disabled={currPage < 2}
+          title="Previous Page"
           className={` bg-transparent text-center ${textStyle} 
                        px-3 py-1 text-lg rounded-l-lg `}
         >
@@ -40,6 +83,7 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
         <input
           id="current-page"
           aria-label="Current Page"
+          ref={ref}
           className={`bg-transparent text-center font-medium
                       px-3 py-1  ${textStyle} text-lg `}
           type="number"
@@ -48,10 +92,11 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
           min={1}
           max={pagesCount + 1}
           onChange={handleCurrPage}
+          onBlur={handleBlur}
         />
         <button
           id="next-page"
-          aria-label="Next Page"
+          title="Next Page"
           onClick={() => updatePage(currPage + 1)}
           disabled={currPage >= pagesCount}
           className={` bg-transparent text-center 
@@ -61,8 +106,10 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
         </button>
         <button
           className={`${textStyle} hover:underline px-3`}
-          onClick={() => updatePage(pagesCount)}
-        >{`${pagesCount}`}</button>
+          onClick={() => updatePage(pagesCount + 1)}
+          title="Last Page"
+          disabled={currPage === pagesCount}
+        >{`${pagesCount + 1}`}</button>
       </div>
     </div>
   );

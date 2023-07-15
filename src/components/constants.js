@@ -48,6 +48,7 @@ export const SETTINGS_TYPES = {
     caption: "Content types:",
     values: CONTENT_TYPES,
     selected: [true, true, true, true, false, false, false],
+    any: true,
   },
   age: {
     name: "age",

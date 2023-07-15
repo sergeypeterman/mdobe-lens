@@ -1,18 +1,65 @@
+import { useState } from "react";
 import { STYLE } from "./constants";
 
 export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   //component for a group which
   //chooses from a group of options (radio\checkbox type)
   let thisSetting = settingsValues[type];
+  const [checkedAny, setCheckedAny] = useState(false);
+  //let checkedAny = false;
+
+  const handleAny = () => {
+    let newAny = !checkedAny;
+    if (newAny) {
+      let newSet = JSON.parse(JSON.stringify(settingsValues));
+      newSet[type].selected.forEach((e, ind) => {
+        newSet[type].selected[ind] = true;
+      });
+      setSettingsValues(newSet);
+    } else {
+      let newSet = JSON.parse(JSON.stringify(settingsValues));
+      newSet[type].selected.forEach((e, ind) => {
+        newSet[type].selected[ind] = false;
+      });
+      setSettingsValues(newSet);
+    }
+
+    setCheckedAny(newAny);
+  };
 
   const allUnchecked = (setting) => {
-    //console.log("all unchecked func");
     if (setting.type === "checkbox") {
-      let status = setting.selected.reduce((acc, item) => {
-        console.log(`checkbox: ${item}, acc: ${acc}`);
-        return !item || acc;
-      }, false);
-      status && console.log("all unchecked");
+      let status = setting.selected.reduce((acc, item, ind) => {
+        /* console.log(
+          `${setting.values[ind].title} checkbox: ${item}(${
+            setting.values[ind].enabled ? "" : "not "
+          }enabled), acc: ${acc}`
+        ); */
+        if (setting.values[ind].enabled === false) {
+          return true && acc;
+        }
+        return !item && acc;
+      }, true);
+      //status && console.log("allUnchecked: all unchecked");
+      return status;
+    }
+    return false;
+  };
+
+  const allChecked = (setting) => {
+    if (setting.type === "checkbox") {
+      let status = setting.selected.reduce((acc, item, ind) => {
+        /* console.log(
+          `${setting.values[ind].title} checkbox: ${item}(${
+            setting.values[ind].enabled ? "" : "not "
+          }enabled), acc: ${acc}`
+        ); */
+        if (setting.values[ind].enabled === false) {
+          return true && acc;
+        }
+        return item && acc;
+      }, true);
+      //status && console.log("allChecked: all checked");
       return status;
     }
     return false;
@@ -27,12 +74,17 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
         break;
       case "checkbox":
         newSet[type].selected[num] = !newSet[type].selected[num];
-        /* if (allUnchecked(newSet[type])) {
-          console.log("all unchecked");
-          newSet[type].selected.forEach((e, ind) => {
-            newSet[type].selected[ind] = true;
-          });
-        } */
+        if (allUnchecked(newSet[type])) {
+          console.log(`${thisSetting.caption} all unchecked`);
+          setCheckedAny(true);
+        }
+        else if(allChecked(newSet[type])){
+          console.log(`${thisSetting.caption} all checked`);
+          setCheckedAny(true);
+        }
+        else{
+          setCheckedAny(false);
+        }
         break;
     }
     setSettingsValues(newSet);
@@ -84,6 +136,25 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
             </div>
           );
         })}
+        {thisSetting.any ? (
+          <div
+            className={`flex items-center p-1 m-1 rounded-md basis-2/7 flex-grow
+                          ${STYLE.backColor2}`}
+          >
+            <input
+              type={thisSetting.type}
+              id={`Any`}
+              value={`${thisSetting.values.length}`}
+              name={"Any"}
+              onChange={handleAny}
+              checked={checkedAny}
+            />
+
+            <label htmlFor={`Any`} className="px-2 py-1 capitalize w-full">
+              Any
+            </label>
+          </div>
+        ) : null}
       </fieldset>
     </div>
   );

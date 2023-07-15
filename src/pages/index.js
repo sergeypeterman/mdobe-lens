@@ -1,57 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  CONTENT_TYPES,
-  RESULT_COLUMNS,
-  SETTINGS_TYPES,
-  STYLE,
-} from "@/components/constants";
+import { SETTINGS_TYPES, STYLE } from "@/components/constants";
 import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
 import Head from "next/head";
-
-const checkResponseValidity = (response, fix) => {
-  //trying to find all columns in response
-  console.log(`checking: `);
-  console.log(response);
-
-  let checkResult = { error: false, message: "", typeError: [] };
-
-  //checking presence of all requested columns
-  let columns = RESULT_COLUMNS;
-  columns.forEach((column) => {
-    let columnExists = response.files.reduce((acc, asset) => {
-      return (asset[column] !== undefined || column === "nb_results") && acc;
-    }, true);
-    if (!columnExists) {
-      checkResult.error = true;
-      checkResult.message = `${column} doesn't exist in all the assets`;
-      console.log(checkResult.message);
-      return checkResult;
-    }
-  });
-
-  //checking that contenct types match between the constant and api response
-  let types = CONTENT_TYPES;
-  let typesAreFine = response.files.reduce((acc, asset) => {
-    if (types[asset.media_type_id] === undefined) {
-      !checkResult.typeError.includes(asset.media_type_id) &&
-        checkResult.typeError.push(asset.media_type_id);
-      return false;
-    } else {
-      return true && acc;
-    }
-  }, true);
-
-  if (!typesAreFine) {
-    checkResult.error = true;
-    checkResult.message = `missing types ##: ${checkResult.typeError.join(
-      ", "
-    )}`;
-    console.log(checkResult.message);
-  }
-
-  return checkResult;
-};
 
 export default function Home() {
   //main page component
@@ -242,10 +193,7 @@ export default function Home() {
             >
               {resp
                 ? resp.files.map((e, ind) => (
-                    <Card
-                      key={`e-${e.nb_results}-${e.id}`}
-                      e={e}
-                    />
+                    <Card key={`e-${e.nb_results}-${e.id}`} e={e} />
                   ))
                 : null}
             </div>

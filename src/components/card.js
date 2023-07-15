@@ -1,10 +1,14 @@
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronUp,
+  faChevronDown,
+  faCircleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
 
-export function Card({ e, errors }) {
+export function Card({ e }) {
   //Asset card component
   const [pressed, setPressed] = useState(false);
 
@@ -12,9 +16,26 @@ export function Card({ e, errors }) {
     setPressed(!pressed);
   };
 
+  let dataIsCorrect = true;
+  const validateData = () => {
+    if (dataIsCorrect === false) {
+      return false;
+    } else {
+      if (CONTENT_TYPES[e.media_type_id - 1] === undefined) {
+        dataIsCorrect = false;
+        return false;
+      } else {
+        dataIsCorrect = true;
+        return true;
+      }
+    }
+  };
+
   const getCardContent = () => {
     let cardType;
-    if (/* errors.state && errors.errors.includes(e.media_type_id) */false) {
+    validateData();
+
+    if (!dataIsCorrect || CONTENT_TYPES[e.media_type_id - 1] === undefined) {
       cardType = "ERROR";
     } else {
       cardType = CONTENT_TYPES[e.media_type_id - 1].title;
@@ -44,17 +65,22 @@ export function Card({ e, errors }) {
 
   const getCardHeader = () => {
     let cardType;
-    if (/* errors.state && errors.errors.includes(e.media_type_id) */false) {
+    let cardIcon;
+    validateData();
+
+    if (!dataIsCorrect || CONTENT_TYPES[e.media_type_id - 1] === undefined) {
       cardType = "ERROR";
+      cardIcon = faCircleExclamation;
     } else {
       cardType = CONTENT_TYPES[e.media_type_id - 1].title;
+      cardIcon = CONTENT_TYPES[e.media_type_id - 1].icon;
     }
     return (
       <div className="text-sm flex justify-between p-1">
         <span className="px-1 font-bold">{e.nb_downloads}</span>
         <span>{`${e.creator_name} | ${e.creator_id}`}</span>
         <span title={cardType} className="px-1">
-          <FontAwesomeIcon icon={CONTENT_TYPES[e.media_type_id - 1].icon} />
+          <FontAwesomeIcon icon={cardIcon} />
         </span>
       </div>
     );

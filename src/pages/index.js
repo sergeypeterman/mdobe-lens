@@ -23,7 +23,7 @@ export default function Home() {
 
   //reading settings from browser cache on the first load
   useEffect(() => {
-    localStorage.removeItem(`searchSettings`);
+    //HARD RESET//localStorage.removeItem(`searchSettings`);
     const localSettings = JSON.parse(localStorage.getItem(`searchSettings`));
 
     if (localSettings) {
@@ -137,7 +137,7 @@ export default function Home() {
       <Head>
         <title>mdobeLens</title>
       </Head>
-      <main className={`min-h-screen min-w-[220px] border-box ${STYLE.bodyBackground}`}>
+      <main className={`min-h-screen min-w-[240px] border-box ${STYLE.bodyBackground}`}>
         <div
           id="top-background"
           className={`w-full z-30 h-10 bg-neutral-700 flex justify-center items-center`}

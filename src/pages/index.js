@@ -11,7 +11,10 @@ export default function Home() {
   const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
   const [settingsRead, setSettingssRead] = useState(false); //were the settings read from localStorage
   const [currPage, setCurrPage] = useState(1);
-  //const [mdobeError, setMdobeError] = useState({ state: false, errors: [] });
+  const [settingsErr, setSettingsErr] = useState({
+    status: false,
+    message: "",
+  });
 
   const refSettings = useRef();
   const refSearch = useRef();
@@ -56,12 +59,12 @@ export default function Home() {
       settingsValues
     )}&offset=${offset}`;
 
-    if (settingsRead) {
+    if (settingsRead && !settingsErr.status) {
       try {
         const res = await fetch(fetchURL);
 
         console.log(
-          `fetch: ${settingsValues.query}, ${settingsValues.limit.values} per page`
+          `fetch: ${settingsValues.query}, by author ${settingsValues.creatorId.values}`
         );
         if (!res.ok) {
           throw new Error(`Fetch error: ${res.statusText}`);
@@ -74,7 +77,7 @@ export default function Home() {
         alert(err.message);
       }
     }
-  }, [settingsValues, currPage, settingsRead]);
+  }, [settingsValues, currPage, settingsRead, settingsErr]);
 
   //effect checks if the user clicked outside of the open settings menu
   //and fetches with applied settings
@@ -180,6 +183,8 @@ export default function Home() {
                 refSettings={refSettings}
                 settingsValues={settingsValues}
                 setSettingsValues={setSettingsValues}
+                settingsErr={settingsErr}
+                setSettingsErr={setSettingsErr}
               />
             </div>
           )}

@@ -64,13 +64,13 @@ export const SETTINGS_TYPES = {
     values: 0,
     caption: "Author id:",
     min: 0,
-    max: 9999999999, //plus one digit to xxx.xxx.xxx
+    max: 999999999, // xxx.xxx.xxx
   },
   limit: {
     name: "limit",
     type: "number",
     values: 100,
-    caption: "Assets per page",
+    caption: "Assets per page:",
     min: 1,
     max: 100,
   },

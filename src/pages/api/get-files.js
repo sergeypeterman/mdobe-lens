@@ -61,7 +61,7 @@ export default async function handler(req, res) {
   let userRequest = JSON.parse(search);
 
   //console.log(`API: Search = ${searchUrl}`);
-  let searchUrl = calculateFetchUrl(userRequest, offset);
+  let searchUrl = calculateFetchUrl(userRequest, offset); 
 
   try {
     const respn = await fetch(searchUrl, {

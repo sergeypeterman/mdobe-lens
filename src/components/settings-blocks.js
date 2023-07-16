@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { STYLE } from "./constants";
 import { checkIntegerRange } from "./functions";
 
@@ -155,74 +155,80 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   );
 }
 
-export function SettingsIntField({ type, settingsValues, setSettingsValues }) {
+export function SettingsIntField({
+  type,
+  settingsValues,
+  setSettingsValues,
+  error,
+  setError,
+}) {
   //component for a settings group which
   //works with an integer input
+
   let thisSetting = settingsValues[type];
-  const [thisInt, setThisInt] = useState(thisSetting.values);
-  const [thisErr, setThisErr] = useState({ status: false, message: "" });
   const thisRef = useRef();
+  const [thisInt, setThisInt] = useState(thisSetting.values);
 
-  const handleBlur = (e) => {
-    let newSet = JSON.parse(JSON.stringify(settingsValues)); //copy of an abject
-    let input = e.target.value;
+  let thisStyle =
+    "min-w-0 px-5 py-1 mb-2 basis-full font-medium text-lg rounded-md";
 
-    let isCorrect = checkIntegerRange(Number(input), thisSetting.min, thisSetting.max);
-    let err = JSON.parse(JSON.stringify(thisErr));
-    
+  const updateThisInt = (input, isCorrect) => {
+    let newSet = JSON.parse(JSON.stringify(settingsValues)); //copy of an object
+    let err = JSON.parse(JSON.stringify(error));
+
+    //console.log(Number(input));
+
     err.status = false;
     if (isCorrect.intInRange) {
-      thisRef.current.className =
-        "min-w-0 px-5 py-1 mb-2 basis-full font-medium text-lg rounded-md";
+      thisRef.current.className = `${thisStyle}`;
       newSet[type].values = input;
       setSettingsValues(newSet);
-      setThisErr(err);
+      setError(err);
     } else {
       thisRef.current.focus();
-      thisRef.current.className =
-        "bg-rose-300 min-w-0 px-5 py-1 mb-2 basis-full font-medium text-lg rounded-md";
+      thisRef.current.className = `bg-rose-300 ${thisStyle}`;
       err.status = true;
       err.message = isCorrect.message;
-      setThisErr(err);
+      setError(err);
     }
   };
 
+  const handleBlur = (e) => {
+    let input = e.target.value === "" ? 0 : e.target.value;
+    let isCorrect = checkIntegerRange(
+      Number(input),
+      thisSetting.min,
+      thisSetting.max
+    );
+    updateThisInt(input, isCorrect);
+  };
+
   const handleFieldChange = (e) => {
-    let num = e.target.value;
-    console.log(num);
-    let err = JSON.parse(JSON.stringify(thisErr));
-
-    let isCorrect = checkIntegerRange(Number(num), thisSetting.min, thisSetting.max);
-
-    err.status = false;
-    if (isCorrect.intInRange) {
-      setThisErr(err);
-      setThisInt(num);
-    } else {
-      console.log(isCorrect.message);
-      err.status = true;
-      err.message = isCorrect.message;
-      setThisErr(err);
-    }
+    let input = e.target.value === "" ? 0 : e.target.value;
+    let isCorrect = checkIntegerRange(
+      Number(input),
+      thisSetting.min,
+      thisSetting.max
+    );
+    console.log(thisInt);
+    updateThisInt(input, isCorrect);
+    isCorrect.intInRange && setThisInt(input);
   };
 
   return (
     <div
       className={`${STYLE.backColor} px-4 py-1 m-1 rounded-sm shadow-sm flex flex-wrap justify-between`}
     >
-      <div className="font-bold text-lg px-5 pb-2 basis-1/2">
+      <div className="font-bold text-lg px-5 pb-2 basis-full">
         {thisSetting.caption}
       </div>
-      <div className={`${STYLE.textError} px-5 pb-2 basis-1/2 text-right`}>
-        {thisErr.status && thisErr.message}
-      </div>
       <input
-        className="min-w-0 px-5 py-1 mb-2 basis-full font-medium text-lg rounded-md"
+        className={`${thisStyle}`}
         type="number"
-        id={`${thisSetting}`}
+        id={`${thisSetting.name}`}
         onChange={handleFieldChange}
         onBlur={handleBlur}
-        value={thisInt ? thisInt : ""}
+        value={thisInt}
         ref={thisRef}
       />
     </div>

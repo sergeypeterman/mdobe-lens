@@ -50,9 +50,9 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
     } else {
       ref.current.focus();
       ref.current.className = `bg-transparent text-center font-medium
-      px-3 py-1  ${textStyle} text-lg `;
+      px-3 py-1  ${textStyle} text-lg border-red-500`;
       error = true;
-      setErr(error);      
+      setErr(error);
     }
   };
 

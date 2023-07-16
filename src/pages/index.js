@@ -176,7 +176,7 @@ export default function Home() {
           {settingsShow && (
             <div
               id="settings-div"
-              className="sticky top-[9%] md:top-20 z-20 h-full w-full md:w-[500px]"
+              className="sticky top-[5.5rem] z-20 h-full w-full md:w-[500px]"
             >
               <SettingsContainer
                 settingsShow={settingsShow}

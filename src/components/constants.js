@@ -70,7 +70,7 @@ export const SETTINGS_TYPES = {
     name: "limit",
     type: "number",
     values: 100,
-    caption: "Assets per page:",
+    caption: "Per page:",
     min: 1,
     max: 100,
   },

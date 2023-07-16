@@ -125,7 +125,6 @@ export function SettingsContainer({
   settingsErr,
   setSettingsErr,
 }) {
-  
   return (
     <div
       id="settings-form"
@@ -133,10 +132,10 @@ export function SettingsContainer({
     >
       <div id="settings-elements" className="w-full">
         {settingsShow ? (
-          <div ref={refSettings}>
+          <div className={`max-h-[85vh] md:p-3 `} ref={refSettings}>
             <div
               id="search-params"
-              className="w-full max-h-[85vh] md:p-3 items-center 
+              className="w-full items-center 
                       overflow-auto relative"
             >
               <SettingsBlock
@@ -161,31 +160,31 @@ export function SettingsContainer({
                 setError={setSettingsErr}
               />
             </div>
-            <div
-              id="search-fields"
-              className="w-full max-h-[85vh] md:p-3 items-center 
-                      overflow-auto relative flex"
-            >
-              <SettingsIntField
-                settingsValues={settingsValues}
-                setSettingsValues={setSettingsValues}
-                type="creatorId"
-                error={settingsErr}
-                setError={setSettingsErr}
-              />
-              <SettingsIntField
-                settingsValues={settingsValues}
-                setSettingsValues={setSettingsValues}
-                type="limit"
-                error={settingsErr}
-                setError={setSettingsErr}
-              />
-            </div>
-
-            <div
-              className={`${STYLE.textError} px-5 pb-2 basis-1/2 text-right`}
-            >
-              {settingsErr.status && settingsErr.message}
+            <div id="search-fields" className="w-full relative ">
+              <div
+                className={`${STYLE.backColor} mx-1 rounded-sm shadow-sm
+                flex overflow-auto items-center`}
+              >
+                <SettingsIntField
+                  settingsValues={settingsValues}
+                  setSettingsValues={setSettingsValues}
+                  type="creatorId"
+                  error={settingsErr}
+                  setError={setSettingsErr}
+                />
+                <SettingsIntField
+                  settingsValues={settingsValues}
+                  setSettingsValues={setSettingsValues}
+                  type="limit"
+                  error={settingsErr}
+                  setError={setSettingsErr}
+                />
+              </div>
+              <div
+                className={`${STYLE.textError} m-1 px-5 pb-2 basis-full text-right`}
+              >
+                {settingsErr.status && settingsErr.message}
+              </div>
             </div>
           </div>
         ) : (

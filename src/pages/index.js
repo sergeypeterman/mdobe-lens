@@ -137,7 +137,7 @@ export default function Home() {
       <Head>
         <title>mdobeLens</title>
       </Head>
-      <main className={`min-h-screen ${STYLE.bodyBackground}`}>
+      <main className={`min-h-screen border-box ${STYLE.bodyBackground}`}>
         <div
           id="top-background"
           className={`w-full z-30 h-10 bg-neutral-700 flex justify-center items-center`}

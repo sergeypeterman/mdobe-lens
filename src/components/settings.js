@@ -132,11 +132,11 @@ export function SettingsContainer({
     >
       <div id="settings-elements" className="w-full">
         {settingsShow ? (
-          <div className={`max-h-[85vh] md:p-3 `} ref={refSettings}>
+          <div className={`max-h-[85vh] md:p-3 overflow-auto relative`} ref={refSettings}>
             <div
               id="search-params"
               className="w-full items-center 
-                      overflow-auto relative"
+                      "
             >
               <SettingsBlock
                 settingsValues={settingsValues}
@@ -163,7 +163,7 @@ export function SettingsContainer({
             <div id="search-fields" className="w-full relative ">
               <div
                 className={`${STYLE.backColor} mx-1 rounded-sm shadow-sm
-                flex overflow-auto items-center`}
+                flex overflow-auto flex-wrap items-center`}
               >
                 <SettingsIntField
                   settingsValues={settingsValues}

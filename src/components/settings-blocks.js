@@ -170,7 +170,7 @@ export function SettingsIntField({
   const [thisInt, setThisInt] = useState(thisSetting.values);
 
   let thisStyle =
-    "min-w-0 px-5 py-1 mb-2 basis-full w-full font-medium text-lg rounded-md";
+    "min-w-0 px-5 py-1 mb-2 basis-full w-full text-gray-800 font-medium text-lg rounded-md";
 
   const updateThisInt = (input, isCorrect) => {
     let newSet = JSON.parse(JSON.stringify(settingsValues)); //copy of an object

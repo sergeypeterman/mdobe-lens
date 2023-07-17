@@ -197,7 +197,7 @@ export default function Home() {
             ></div>
           )}
         </div>
-        <div className="md:flex md:flex-row">
+        <div className="flex flex-row">
           {settingsShow && (
             <div
               id="settings-div"

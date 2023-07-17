@@ -132,7 +132,7 @@ export function SettingsContainer({
     >
       <div id="settings-elements" className="w-full">
         {settingsShow ? (
-          <div className={`max-h-[85vh] md:px-3 md:py-1 overflow-auto relative`} ref={refSettings}>
+          <div className={`max-h-[48rem] md:px-3 md:py-1 overflow-auto relative`} ref={refSettings}>
             <div
               id="search-params"
               className="w-full items-center 

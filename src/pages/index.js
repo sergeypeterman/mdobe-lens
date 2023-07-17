@@ -21,6 +21,29 @@ export default function Home() {
 
   const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
 
+  //getting screen size to hide Cards for small ( < md=768px)
+  const [screenSize, setScreenSize] = useState(getScreenSize());
+  function getScreenSize() {
+    let newScreenSize =
+      typeof window === "undefined"
+        ? {}
+        : {
+            width: window.innerWidth,
+            height: window.innerHeight,
+          };
+    return newScreenSize;
+  }
+  useEffect(() => {
+    const updateScreenSize = () => {
+      setScreenSize(getScreenSize());
+      console.log("update screen size");
+    };
+    window.addEventListener("resize", updateScreenSize);
+    return () => {
+      window.removeEventListener("resize", updateScreenSize);
+    };
+  }, [screenSize]);
+
   //reading settings from browser cache on the first load
   useEffect(() => {
     //HARD RESET//localStorage.removeItem(`searchSettings`);
@@ -137,7 +160,9 @@ export default function Home() {
       <Head>
         <title>mdobeLens</title>
       </Head>
-      <main className={`min-h-screen min-w-[240px] border-box ${STYLE.bodyBackground}`}>
+      <main
+        className={`min-h-screen min-w-[240px] border-box ${STYLE.bodyBackground}`}
+      >
         <div
           id="top-background"
           className={`w-full z-30 h-10 bg-neutral-700 flex justify-center items-center`}
@@ -188,23 +213,25 @@ export default function Home() {
               />
             </div>
           )}
-          <div
-            id="cards-div"
-            className={`flex ${settingsShow ? "w-0 md:w-full" : "w-full"}`}
-          >
+          {!(settingsShow && screenSize.width < 768) && (
             <div
-              className={`text-center p-2 
+              id="cards-div"
+              className={`flex ${settingsShow ? "w-0 md:w-full" : "w-full"}`}
+            >
+              <div
+                className={`text-center p-2 
                       ${STYLE.fontColor} rounded-md w-full
                       grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3
                       lg:grid-cols-4 gap-4`}
-            >
-              {resp
-                ? resp.files.map((e, ind) => (
-                    <Card key={`e-${e.nb_results}-${e.id}`} e={e} />
-                  ))
-                : null}
+              >
+                {resp
+                  ? resp.files.map((e, ind) => (
+                      <Card key={`e-${e.nb_results}-${e.id}`} e={e} />
+                    ))
+                  : null}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </>

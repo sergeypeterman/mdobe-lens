@@ -3,6 +3,7 @@ import { SETTINGS_TYPES, STYLE } from "@/components/constants";
 import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
 import Head from "next/head";
+const packageJSON = require("package.json");
 
 export default function Home() {
   //main page component
@@ -44,27 +45,52 @@ export default function Home() {
     };
   }, [screenSize]);
 
+  const compareStringify = (a, b) => {
+    return JSON.stringify(a) === JSON.stringify(b);
+  };
+
   //reading settings from browser cache on the first load
   useEffect(() => {
     //HARD RESET//localStorage.removeItem(`searchSettings`);
-    const localSettings = JSON.parse(localStorage.getItem(`searchSettings`));
+    const mdobeLensVersion = packageJSON.version.split(".");
+    const mdobeLensVersionStored = JSON.parse(
+      localStorage.getItem(`mdobeLensVersion`)
+    );
+    const versionStored = mdobeLensVersionStored
+      ? mdobeLensVersionStored.split(".")
+      : [];
 
-    if (localSettings) {
-      let sameStructure =
-        JSON.stringify(Object.keys(localSettings)) ===
-        JSON.stringify(Object.keys(SETTINGS_TYPES));
-      console.log(
-        sameStructure,
-        Object.keys(localSettings),
-        Object.keys(SETTINGS_TYPES)
-      );
-      if (sameStructure) {
-        console.log(`reading searchSettings`);
-        setSettingsValues(localSettings);
-      } else {
-        localStorage.removeItem(`searchSettings`);
+    console.log(
+      `package version: ${mdobeLensVersion} stored version: ${versionStored}`
+    );
+    if (compareStringify(mdobeLensVersion, versionStored)) {
+      const localSettings = JSON.parse(localStorage.getItem(`searchSettings`));
+      if (localSettings) {
+        let sameStructure = compareStringify(
+          Object.keys(localSettings),
+          Object.keys(SETTINGS_TYPES)
+        );
+
+        //console.log(sameStructure, Object.keys(localSettings), Object.keys(SETTINGS_TYPES));
+        if (sameStructure) {
+          console.log(`reading searchSettings`);
+          setSettingsValues(localSettings);
+        } else {
+          console.log(`removing searchSettings`);
+          localStorage.removeItem(`searchSettings`);
+        }
       }
     }
+    //add logic for major versions
+    else {
+      console.log(`removing searchSettings`);
+      localStorage.removeItem(`searchSettings`);
+      localStorage.setItem(
+        `mdobeLensVersion`,
+        JSON.stringify(packageJSON.version)
+      );
+    }
+
     setSettingssRead(true);
   }, []);
 
@@ -168,7 +194,9 @@ export default function Home() {
           id="top-background"
           className={`w-full h-10 bg-neutral-700 flex z-30 justify-center items-center`}
         >
-          <h1 className={`text-gray-300 font-medium font-logo z-30`}>mdobeLens</h1>
+          <h1 className={`text-gray-300 font-medium font-logo z-30`}>
+            mdobeLens
+          </h1>
         </div>
         <div id="search" className="w-full h-full sticky top-0 z-30">
           <SearchContainer

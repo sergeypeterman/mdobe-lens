@@ -8,6 +8,7 @@ const nextConfig = {
         hostname: '*.ftcdn.net',
       },
     ],
+    unoptimized: true,
   },
 }
 

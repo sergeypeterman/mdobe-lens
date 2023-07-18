@@ -5,7 +5,7 @@ import {
   faMagnifyingGlass,
   faSliders,
 } from "@fortawesome/free-solid-svg-icons";
-import { STYLE } from "./constants";
+import { STYLE, MEDIUM_SCREEN_WIDTH } from "./constants";
 import { Paginator } from "./paginator";
 import { useEffect, useState } from "react";
 
@@ -21,6 +21,7 @@ export function SearchContainer({
   setCurrPage,
   assetsCount,
   limit,
+  screenSize,
 }) {
   const [tempQuery, setTempQuery] = useState("");
 
@@ -85,7 +86,9 @@ export function SearchContainer({
               onBlur={handleQueryBlur}
               onKeyDown={(e) => {
                 if (isEnter(e)) {
-                  settingsShow && handleSettingsFilter();
+                  settingsShow &&
+                    screenSize.width < MEDIUM_SCREEN_WIDTH &&
+                    handleSettingsFilter();
                   updateQuery(tempQuery);
                   e.target.blur();
                 }
@@ -98,7 +101,9 @@ export function SearchContainer({
               className="bg-gray-100 hover:bg-gray-200 text-center 
                          pl-3 pr-12 py-2 text-gray-700 text-lg active:shadow-none"
               onClick={() => {
-                settingsShow && handleSettingsFilter();
+                settingsShow &&
+                  screenSize.width < MEDIUM_SCREEN_WIDTH &&
+                  handleSettingsFilter();
                 handleFetchClick();
               }}
             >
@@ -132,7 +137,10 @@ export function SettingsContainer({
     >
       <div id="settings-elements" className="w-full">
         {settingsShow ? (
-          <div className={`max-h-[48rem] md:px-3 md:py-1 relative`} ref={refSettings}>
+          <div
+            className={`max-h-[48rem] md:px-3 md:py-1 relative`}
+            ref={refSettings}
+          >
             <div
               id="search-params"
               className="w-full items-center 

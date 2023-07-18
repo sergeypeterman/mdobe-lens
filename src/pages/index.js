@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SETTINGS_TYPES, STYLE } from "@/components/constants";
+import { MEDIUM_SCREEN_WIDTH, MEDIUM_SCREEN_WIDTHN, SETTINGS_TYPES, STYLE } from "@/components/constants";
 import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
 import Head from "next/head";
@@ -16,6 +16,7 @@ export default function Home() {
     status: false,
     message: "",
   });
+  const [screenSize, setScreenSize] = useState(getScreenSize());
 
   const refSettings = useRef();
   const refSearch = useRef();
@@ -23,7 +24,6 @@ export default function Home() {
   const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
 
   //getting screen size to hide Cards for small ( < md=768px)
-  const [screenSize, setScreenSize] = useState(getScreenSize());
   function getScreenSize() {
     let newScreenSize =
       typeof window === "undefined"
@@ -134,7 +134,7 @@ export default function Home() {
     const checkIfClickedInside = (e) => {
       if (
         settingsShow &&
-        screenSize.width < 768 &&
+        screenSize.width < MEDIUM_SCREEN_WIDTH &&
         !refSettings.current.contains(e.target) &&
         !refSearch.current.contains(e.target)
       ) {
@@ -211,6 +211,7 @@ export default function Home() {
             setCurrPage={setCurrPage}
             assetsCount={resp ? resp.nb_results : 0}
             limit={settingsValues.limit.values}
+            screenSize = {screenSize}
           />
         </div>
         <div id="settings" className="flex flex-row z-20">

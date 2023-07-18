@@ -116,3 +116,5 @@ export const RESULT_COLUMNS = [
   "nb_results",
   "is_gentech",
 ];
+
+export const MEDIUM_SCREEN_WIDTH = 768;

@@ -108,6 +108,7 @@ export default function Home() {
     const checkIfClickedInside = (e) => {
       if (
         settingsShow &&
+        screenSize.width < 768 &&
         !refSettings.current.contains(e.target) &&
         !refSearch.current.contains(e.target)
       ) {
@@ -121,7 +122,7 @@ export default function Home() {
     return () => {
       document.removeEventListener("mousedown", checkIfClickedInside);
     };
-  }, [settingsShow, handleFetchClick]);
+  }, [settingsShow, handleFetchClick, screenSize]);
 
   //handling system-wide dark mode changes
   useEffect(() => {
@@ -165,13 +166,11 @@ export default function Home() {
       >
         <div
           id="top-background"
-          className={`w-full z-30 h-10 bg-neutral-700 flex justify-center items-center`}
+          className={`w-full h-10 bg-neutral-700 flex z-30 justify-center items-center`}
         >
-          <h1 className={`text-gray-300 font-medium font-logo z-30`}>
-            mdobeLens
-          </h1>
+          <h1 className={`text-gray-300 font-medium font-logo z-30`}>mdobeLens</h1>
         </div>
-        <div className="w-full h-full sticky top-0 z-20">
+        <div id="search" className="w-full h-full sticky top-0 z-30">
           <SearchContainer
             handleFetchClick={handleFetchClick}
             isEnter={isEnter}
@@ -185,7 +184,9 @@ export default function Home() {
             assetsCount={resp ? resp.nb_results : 0}
             limit={settingsValues.limit.values}
           />
-          {settingsShow && (
+        </div>
+        <div id="settings" className="flex flex-row z-20">
+          {settingsShow && screenSize.width < 768 && (
             <div
               id="screen-background"
               className={`fixed top-0 ${STYLE.inactiveBackground} w-full h-full
@@ -196,12 +197,10 @@ export default function Home() {
                     }`}
             ></div>
           )}
-        </div>
-        <div className="flex flex-row">
           {settingsShow && (
             <div
               id="settings-div"
-              className="sticky top-[5.5rem] z-20 h-full w-full md:w-[500px]"
+              className="sticky top-[5.5rem] h-full w-full md:w-[500px] z-20"
             >
               <SettingsContainer
                 settingsShow={settingsShow}

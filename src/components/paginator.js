@@ -61,7 +61,7 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
   return (
     <div
       id="pages-container"
-      className="w-full z-20  p-1 bg-neutral-700 shadow-md"
+      className="w-full p-1 bg-neutral-700 shadow-md z-30"
     >
       <div className={`flex flex-row items-center justify-center `}>
         <button

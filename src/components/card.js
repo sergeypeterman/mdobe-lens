@@ -41,7 +41,7 @@ export function Card({ e }) {
       cardType = CONTENT_TYPES[e.media_type_id - 1].title;
     }
     return cardType === "video" ? (
-      <video controls key={e.video_small_preview_url} className="z-0">
+      <video controls key={e.video_small_preview_url}>
         <source
           src={e.video_small_preview_url}
           type={e.video_small_preview_content_type}

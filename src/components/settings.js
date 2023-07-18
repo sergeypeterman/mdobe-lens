@@ -55,9 +55,9 @@ export function SearchContainer({
       <div
         id="search-form"
         ref={refSearch}
-        className={`w-full z-30 flex flex-col items-center `}
+        className={`w-full flex flex-col items-center`}
       >
-        <div id="search-elements" className="w-full z-20">
+        <div id="search-elements" className="w-full z-30">
           <div id="search-field" className="flex flex-row items-center w-full">
             <button
               id="search-settings"
@@ -132,7 +132,7 @@ export function SettingsContainer({
     >
       <div id="settings-elements" className="w-full">
         {settingsShow ? (
-          <div className={`max-h-[48rem] md:px-3 md:py-1 overflow-auto relative`} ref={refSettings}>
+          <div className={`max-h-[48rem] md:px-3 md:py-1 relative`} ref={refSettings}>
             <div
               id="search-params"
               className="w-full items-center 
@@ -163,7 +163,7 @@ export function SettingsContainer({
             <div id="search-fields" className="w-full relative ">
               <div
                 className={`${STYLE.backColor} mx-1 rounded-sm shadow-sm
-                flex overflow-auto flex-wrap items-center`}
+                flex flex-wrap items-center`}
               >
                 <SettingsIntField
                   settingsValues={settingsValues}

@@ -24,6 +24,11 @@ export const ORDER = [
   { name: "undiscovered", title: "Undiscovered", enabled: true },
   { name: "nb_downloads", title: "Downloads", enabled: true },
 ];
+export const GENTECH = [
+  { name: "all", title: "All", enabled: true },
+  { name: "true", title: "AI generated", enabled: true },
+  { name: "false", title: "non-AI generated", enabled: true },
+];
 //[age]=1w, 1m, 6m, 1y, 2y, 3y
 export const AGE = [
   { name: "1w", title: "1 week", enabled: true },
@@ -73,6 +78,13 @@ export const SETTINGS_TYPES = {
     caption: "Per page:",
     min: 1,
     max: 100,
+  },
+  gentech: {
+    name: "gentech",
+    type: "radio",
+    caption: "AI generated:",
+    values: GENTECH,
+    selected: 0,
   },
 };
 

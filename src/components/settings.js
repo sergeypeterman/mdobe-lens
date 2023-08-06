@@ -167,6 +167,13 @@ export function SettingsContainer({
                 error={settingsErr}
                 setError={setSettingsErr}
               />
+              {/* <SettingsBlock
+                settingsValues={settingsValues}
+                setSettingsValues={setSettingsValues}
+                type="gentech"
+                error={settingsErr}
+                setError={setSettingsErr}
+              /> */}
             </div>
             <div id="search-fields" className="w-full relative ">
               <div

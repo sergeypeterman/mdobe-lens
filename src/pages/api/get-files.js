@@ -18,6 +18,9 @@ const calculateFetchUrl = (userRequest, offset) => {
   let orderInd = userRequest.order.selected; //index of selected order
   let order = userRequest.order.values[orderInd].name; //selected order
 
+  let gentechID = userRequest.gentech.selected;
+  let gentech = userRequest.gentech.values[gentechID].name;
+
   let author =
     userRequest.creatorId.values <= 0
       ? ``
@@ -36,10 +39,11 @@ const calculateFetchUrl = (userRequest, offset) => {
       : "";
     return acc;
   }, "");
-  //console.log(contentTypes);
+  //console.log(`userRequest.ai: ${gentech}`);
 
   let modifier =
     `&search_parameters[filters][age]=${age}` +
+//    `&search_parameters[filters][gentech]=${gentech}` +
     `&search_parameters[order]=${order}` +
     `&search_parameters[thumbnail_size]=240` +
     `&search_parameters[words]=${userRequest.query}` +
@@ -60,8 +64,8 @@ export default async function handler(req, res) {
 
   let userRequest = JSON.parse(search);
 
-  //console.log(`API: Search = ${searchUrl}`);
-  let searchUrl = calculateFetchUrl(userRequest, offset); 
+  let searchUrl = calculateFetchUrl(userRequest, offset);
+  console.log(`API: Search = ${searchUrl}`);
 
   try {
     const respn = await fetch(searchUrl, {

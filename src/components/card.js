@@ -12,6 +12,7 @@ export function Card({ e }) {
   //Asset card component
   const [pressed, setPressed] = useState(false);
 
+  let keysArrayLength;
   const handleExpand = () => {
     setPressed(!pressed);
   };
@@ -34,6 +35,8 @@ export function Card({ e }) {
   const getCardContent = () => {
     let cardType;
     validateData();
+
+    keysArrayLength = e.keywords.length;
 
     if (!dataIsCorrect || CONTENT_TYPES[e.media_type_id - 1] === undefined) {
       cardType = "ERROR";
@@ -86,6 +89,11 @@ export function Card({ e }) {
     );
   };
 
+  const formatKeyword = (keyword, keyIndex) => {
+    return keyIndex === keysArrayLength - 1 ? `${keyword}` : `${keyword}, `;
+  };
+
+  //<span className="px-1">{String(e.is_gentech)}</span>
   return (
     <div
       className={`mb-2 w-full flex flex-col rounded-lg shadow-sm 
@@ -101,7 +109,11 @@ export function Card({ e }) {
         <div className={`px-3 py-2`}>
           <p className="p-1 border-b-2 text-start">{e.title}</p>
           <p className="p-1 text-between text-justify">
-            {e.keywords.reduce((acc, item) => (acc += `${item.name}, `), " ")}
+            {e.keywords.reduce(
+              (acc, item, ind) =>
+                (acc += formatKeyword(item.name, ind)),
+              " "
+            )}
           </p>
         </div>
       ) : null}

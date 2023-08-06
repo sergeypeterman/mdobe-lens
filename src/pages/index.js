@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MEDIUM_SCREEN_WIDTH, MEDIUM_SCREEN_WIDTHN, SETTINGS_TYPES, STYLE } from "@/components/constants";
+import {
+  MEDIUM_SCREEN_WIDTH,
+  MEDIUM_SCREEN_WIDTHN,
+  SETTINGS_TYPES,
+  STYLE,
+} from "@/components/constants";
 import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
 import Head from "next/head";
@@ -51,7 +56,7 @@ export default function Home() {
 
   //reading settings from browser cache on the first load
   useEffect(() => {
-    //HARD RESET//localStorage.removeItem(`searchSettings`);
+    //HARD RESET CACHE//localStorage.removeItem(`searchSettings`);
     const mdobeLensVersion = packageJSON.version.split(".");
     const mdobeLensVersionStored = JSON.parse(
       localStorage.getItem(`mdobeLensVersion`)
@@ -120,7 +125,7 @@ export default function Home() {
         }
         const result = await res.json();
         const { response } = result;
-
+        console.log(response);
         setResp(response);
       } catch (err) {
         alert(err.message);
@@ -211,7 +216,7 @@ export default function Home() {
             setCurrPage={setCurrPage}
             assetsCount={resp ? resp.nb_results : 0}
             limit={settingsValues.limit.values}
-            screenSize = {screenSize}
+            screenSize={screenSize}
           />
         </div>
         <div id="settings" className="flex flex-row z-20">

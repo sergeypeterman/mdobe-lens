@@ -8,7 +8,7 @@ export default function Document() {
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossOrigin="true"
+          crossOrigin="anonymous"
         ></link>
         <link
           href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"

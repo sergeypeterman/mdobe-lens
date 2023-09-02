@@ -34,6 +34,7 @@ const calculateFetchUrl = (userRequest, offset) => {
       : `&search_parameters[limit]=${userRequest.limit.values}`;
 
   let contentTypes = userRequest.content.values.reduce((acc, elem, ind) => {
+    //console.log(`content_type:${elem.title}, ${userRequest.content.selected[ind]}`);
     acc += userRequest.content.selected[ind]
       ? `&search_parameters[filters][content_type:${elem.title}]=1`
       : "";
@@ -43,7 +44,7 @@ const calculateFetchUrl = (userRequest, offset) => {
 
   let modifier =
     `&search_parameters[filters][age]=${age}` +
-//    `&search_parameters[filters][gentech]=${gentech}` +
+    //`&search_parameters[filters][gentech]=${gentech}` +
     `&search_parameters[order]=${order}` +
     `&search_parameters[thumbnail_size]=240` +
     `&search_parameters[words]=${userRequest.query}` +

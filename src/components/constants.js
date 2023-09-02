@@ -5,6 +5,7 @@ import {
   faDesktop,
   faCube,
   faPenSquare,
+  faCircleChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const CONTENT_TYPES = [
@@ -39,6 +40,22 @@ export const AGE = [
   { name: "3y", title: "3 years", enabled: true },
   { name: "", title: "any", enabled: true },
 ];
+
+export const THEME = [
+  { name: "auto", title: "Auto", enabled: true },
+  { name: "dark", title: "Dark", enabled: true },
+  { name: "light", title: "Light", enabled: true },
+];
+
+export const EXPANDCARD = [
+  {
+    name: "expandCards",
+    icon: faCircleChevronDown,
+    title: "expand all cards",
+    enabled: true,
+  },
+];
+
 export const SETTINGS_TYPES = {
   order: {
     name: "order",
@@ -86,6 +103,22 @@ export const SETTINGS_TYPES = {
     values: GENTECH,
     selected: 0,
   },
+  expandCards: {
+    name: "expandCards",
+    caption: "Expand All Cards",
+    type: "checkbox",
+    values: EXPANDCARD,
+    selected: [false],
+    any: false,
+  },
+  theme: {
+    name: "theme",
+    caption: "Theme:",
+    type: "radio",
+    values: THEME,
+    selected: 0,
+  },
+  
 };
 
 //implementing dark mode styling

@@ -115,7 +115,7 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
             >
               <input
                 type={thisSetting.type}
-                id={`${item.name}`}
+                id={item.name ? `${item.name}` : `${thisSetting.name}-empty`}
                 value={`${ind}`}
                 name={thisSetting.name}
                 onChange={handleBlockChange}
@@ -123,7 +123,9 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
               />
 
               <label
-                htmlFor={`${item.name}`}
+                htmlFor={
+                  item.name ? `${item.name}` : `${thisSetting.name}-empty`
+                }
                 className="px-2 py-1 capitalize w-full"
               >
                 {item.title}
@@ -138,14 +140,17 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
           >
             <input
               type={thisSetting.type}
-              id={`Any`}
+              id={`${thisSetting.name}-any`}
               value={`${thisSetting.values.length}`}
-              name={"Any"}
+              name={thisSetting.name}
               onChange={handleAny}
               checked={checkedAny}
             />
 
-            <label htmlFor={`Any`} className="px-2 py-1 capitalize w-full">
+            <label
+              htmlFor={`${thisSetting.name}-any`}
+              className="px-2 py-1 capitalize w-full"
+            >
               Any
             </label>
           </div>
@@ -216,9 +221,7 @@ export function SettingsIntField({
   };
 
   return (
-    <div
-      className={`px-4 py-1 flex basis-1/2 flex-wrap justify-between`}
-    >
+    <div className={`px-4 py-1 flex basis-1/2 flex-wrap justify-between`}>
       <div className="font-bold text-lg px-2 pb-1 basis-full">
         {thisSetting.caption}
       </div>

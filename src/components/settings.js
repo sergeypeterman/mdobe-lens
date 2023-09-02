@@ -167,6 +167,7 @@ export function SettingsContainer({
                 error={settingsErr}
                 setError={setSettingsErr}
               />
+
               {/* <SettingsBlock
                 settingsValues={settingsValues}
                 setSettingsValues={setSettingsValues}
@@ -191,6 +192,20 @@ export function SettingsContainer({
                   settingsValues={settingsValues}
                   setSettingsValues={setSettingsValues}
                   type="limit"
+                  error={settingsErr}
+                  setError={setSettingsErr}
+                />
+                <SettingsBlock
+                  settingsValues={settingsValues}
+                  setSettingsValues={setSettingsValues}
+                  type="theme"
+                  error={settingsErr}
+                  setError={setSettingsErr}
+                />
+                <SettingsBlock
+                  settingsValues={settingsValues}
+                  setSettingsValues={setSettingsValues}
+                  type="expandCards"
                   error={settingsErr}
                   setError={setSettingsErr}
                 />

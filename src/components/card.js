@@ -8,9 +8,9 @@ import {
 import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
 
-export function Card({ e }) {
+export function Card({ e, settingsValues }) {
   //Asset card component
-  const [pressed, setPressed] = useState(false);
+  const [pressed, setPressed] = useState(settingsValues.expandCards.selected[0]);
 
   let keysArrayLength;
   const handleExpand = () => {
@@ -110,8 +110,7 @@ export function Card({ e }) {
           <p className="p-1 border-b-2 text-start">{e.title}</p>
           <p className="p-1 text-between text-justify">
             {e.keywords.reduce(
-              (acc, item, ind) =>
-                (acc += formatKeyword(item.name, ind)),
+              (acc, item, ind) => (acc += formatKeyword(item.name, ind)),
               " "
             )}
           </p>

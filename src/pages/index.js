@@ -83,6 +83,7 @@ export default function Home() {
         } else {
           console.log(`removing searchSettings`);
           localStorage.removeItem(`searchSettings`);
+          setSettingsValues(SETTINGS_TYPES);
         }
       }
     }
@@ -94,6 +95,7 @@ export default function Home() {
         `mdobeLensVersion`,
         JSON.stringify(packageJSON.version)
       );
+      setSettingsValues(SETTINGS_TYPES);
     }
 
     setSettingssRead(true);
@@ -120,6 +122,7 @@ export default function Home() {
         console.log(
           `fetch: ${settingsValues.query}, by author ${settingsValues.creatorId.values}`
         );
+        console.log(settingsValues);
         if (!res.ok) {
           throw new Error(`Fetch error: ${res.statusText}`);
         }
@@ -157,26 +160,45 @@ export default function Home() {
 
   //handling system-wide dark mode changes
   useEffect(() => {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.classList.add("dark");
-    }
-
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (event) => {
-        const colorScheme = event.matches ? "dark" : "light";
-        console.log(`${colorScheme} mode applied`); // "dark" or "light"
-        if (colorScheme === "dark") {
+    //console.log(`Theme #${settingsValues.theme.selected}`);
+    switch (settingsValues.theme.selected) {
+      case 0:
+        // Auto
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
           document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
+          //console.log("matches dark");
         }
-      });
+        else{
+          document.documentElement.classList.remove("dark");
+          //console.log("not matches dark");
+        }
 
-    return window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .removeEventListener("change", (event) => {});
-  }, []);
+        window
+          .matchMedia("(prefers-color-scheme: dark)")
+          .addEventListener("change", (event) => {
+            const colorScheme = event.matches ? "dark" : "light";
+            console.log(`${colorScheme} mode applied`); // "dark" or "light"
+            if (colorScheme === "dark") {
+              document.documentElement.classList.add("dark");
+            } else {
+              document.documentElement.classList.remove("dark");
+            }
+          });
+
+        return window
+          .matchMedia("(prefers-color-scheme: dark)")
+          .removeEventListener("change", (event) => {});
+
+      case 1:
+        // Dark
+        document.documentElement.classList.add("dark");
+        break;
+
+      case 2:
+        document.documentElement.classList.remove("dark");
+        break;
+    }
+  }, [settingsValues.theme.selected]);
 
   const isEnter = (e) => {
     if (e.key === "Enter") {
@@ -259,7 +281,11 @@ export default function Home() {
               >
                 {resp
                   ? resp.files.map((e, ind) => (
-                      <Card key={`e-${e.nb_results}-${e.id}`} e={e} />
+                      <Card
+                        key={`e-${e.nb_results}-${e.id}`}
+                        e={e}
+                        settingsValues={settingsValues}
+                      />
                     ))
                   : null}
               </div>

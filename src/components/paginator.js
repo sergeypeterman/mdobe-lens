@@ -56,7 +56,7 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
     }
   };
 
-  let textStyle = `transition text-gray-200 disabled:text-gray-500 hover:text-gray-50`;
+  const textStyle = STYLE.textOnDarkBackground;
 
   return (
     <div

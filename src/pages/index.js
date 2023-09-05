@@ -167,8 +167,7 @@ export default function Home() {
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
           document.documentElement.classList.add("dark");
           //console.log("matches dark");
-        }
-        else{
+        } else {
           document.documentElement.classList.remove("dark");
           //console.log("not matches dark");
         }
@@ -209,6 +208,8 @@ export default function Home() {
     return false;
   };
 
+  let settingsShowOnScreenLess768 = settingsShow && screenSize.width < 768;
+
   return (
     <>
       <Head>
@@ -242,7 +243,7 @@ export default function Home() {
           />
         </div>
         <div id="settings" className="flex flex-row z-20">
-          {settingsShow && screenSize.width < 768 && (
+          {settingsShowOnScreenLess768 && (
             <div
               id="screen-background"
               className={`fixed top-0 ${STYLE.inactiveBackground} w-full h-full
@@ -268,7 +269,7 @@ export default function Home() {
               />
             </div>
           )}
-          {!(settingsShow && screenSize.width < 768) && (
+          {!settingsShowOnScreenLess768 && (
             <div
               id="cards-div"
               className={`flex ${settingsShow ? "w-0 md:w-full" : "w-full"}`}

@@ -130,6 +130,7 @@ export function SettingsContainer({
   settingsErr,
   setSettingsErr,
 }) {
+  const sectionTextStyle = `w-full m-1 font-bold text-lg ${STYLE.textOnDarkBackground}`;
   return (
     <div
       id="settings-form"
@@ -141,6 +142,9 @@ export function SettingsContainer({
             className={`max-h-[48rem] md:px-3 md:py-1 relative`}
             ref={refSettings}
           >
+            <div id="refine-results-title" className={sectionTextStyle}>
+              <h1>REFINE</h1>
+            </div>
             <div
               id="search-params"
               className="w-full items-center 
@@ -195,25 +199,37 @@ export function SettingsContainer({
                   error={settingsErr}
                   setError={setSettingsErr}
                 />
-                <SettingsBlock
-                  settingsValues={settingsValues}
-                  setSettingsValues={setSettingsValues}
-                  type="theme"
-                  error={settingsErr}
-                  setError={setSettingsErr}
-                />
-                <SettingsBlock
-                  settingsValues={settingsValues}
-                  setSettingsValues={setSettingsValues}
-                  type="expandCards"
-                  error={settingsErr}
-                  setError={setSettingsErr}
-                />
               </div>
-              <div
-                className={`${STYLE.textError} m-1 px-5 pb-2 basis-full text-right`}
-              >
-                {settingsErr.status && settingsErr.message}
+
+              <div id="app-options" className="w-full relative ">
+                <div id="refine-results-title" className={sectionTextStyle}>
+                  <h1>OPTIONS</h1>
+                </div>
+                <div
+                  className={`${STYLE.backColor} m-1 rounded-sm shadow-sm
+                flex flex-wrap items-center`}
+                >
+                  <SettingsBlock
+                    settingsValues={settingsValues}
+                    setSettingsValues={setSettingsValues}
+                    type="theme"
+                    error={settingsErr}
+                    setError={setSettingsErr}
+                  />
+                  <SettingsBlock
+                    settingsValues={settingsValues}
+                    setSettingsValues={setSettingsValues}
+                    type="expandCards"
+                    error={settingsErr}
+                    setError={setSettingsErr}
+                  />
+                </div>
+
+                <div
+                  className={`${STYLE.textError} m-1 px-5 pb-2 basis-full text-right`}
+                >
+                  {settingsErr.status && settingsErr.message}
+                </div>
               </div>
             </div>
           </div>

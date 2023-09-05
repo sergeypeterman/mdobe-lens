@@ -87,7 +87,7 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   };
 
   return (
-    <div className={`${STYLE.backColor} px-4 py-1 m-1 rounded-sm shadow-sm`}>
+    <div className={`${STYLE.backColor} px-4 py-1 m-1 rounded-sm`}>
       <fieldset className="flex flex-wrap justify-between">
         <legend className="font-bold text-lg px-2 pb-1 basis-full">
           {thisSetting.caption}

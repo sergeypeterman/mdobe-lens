@@ -10,7 +10,9 @@ import { CONTENT_TYPES, STYLE } from "@/components/constants";
 
 export function Card({ e, settingsValues }) {
   //Asset card component
-  const [pressed, setPressed] = useState(settingsValues.expandCards.selected[0]);
+  const [pressed, setPressed] = useState(
+    settingsValues.expandCards.selected[0]
+  );
 
   let keysArrayLength;
   const handleExpand = () => {
@@ -81,7 +83,7 @@ export function Card({ e, settingsValues }) {
     return (
       <div className="text-sm flex justify-between p-1">
         <span className="px-1 font-bold">{e.nb_downloads}</span>
-        <span>{`${e.creator_name} | ${e.creator_id}`}</span>
+        <span>{`${e.creator_id} | ${e.creator_name}`}</span>
         <span title={cardType} className="px-1">
           <FontAwesomeIcon icon={cardIcon} />
         </span>
@@ -96,26 +98,28 @@ export function Card({ e, settingsValues }) {
   //<span className="px-1">{String(e.is_gentech)}</span>
   return (
     <div
-      className={`mb-2 w-full flex flex-col rounded-lg shadow-sm 
+      className={`mb-2 w-full flex flex-col rounded-lg shadow-sm justify-between 
         bg-gradient-to-b ${STYLE.gradColorFrom} from-85% ${STYLE.gradColorTo}`}
     >
-      {getCardHeader()}
-      {getCardContent()}
-      <div className="text-sm flex justify-around p-1">
-        <span className="px-1">{`id: ${e.id}`}</span>
-        <span className="px-1">{e.creation_date.substr(0, 7)}</span>
-      </div>
-      {pressed ? (
-        <div className={`px-3 py-2`}>
-          <p className="p-1 border-b-2 text-start">{e.title}</p>
-          <p className="p-1 text-between text-justify">
-            {e.keywords.reduce(
-              (acc, item, ind) => (acc += formatKeyword(item.name, ind)),
-              " "
-            )}
-          </p>
+      <div className="flex flex-col">
+        {getCardHeader()}
+        {getCardContent()}
+        <div className="text-sm flex justify-around p-1">
+          <span className="px-1">{`id: ${e.id}`}</span>
+          <span className="px-1">{e.creation_date.substr(0, 7)}</span>
         </div>
-      ) : null}
+        {pressed ? (
+          <div className={`px-3 py-2`}>
+            <p className="p-1 border-b-2 text-start">{e.title}</p>
+            <p className="p-1 text-between text-justify">
+              {e.keywords.reduce(
+                (acc, item, ind) => (acc += formatKeyword(item.name, ind)),
+                " "
+              )}
+            </p>
+          </div>
+        ) : null}
+      </div>
       {pressed ? (
         <div onClick={handleExpand} className={`expand`}>
           <FontAwesomeIcon icon={faChevronUp} />

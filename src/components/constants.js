@@ -135,6 +135,7 @@ export const STYLE = {
   gradColorTo: "to-neutral-50 dark:to-[#262626]",
   textError: "text-red-500 dark:text-red-200",
   textOnDarkBackground: "transition text-gray-200 disabled:text-gray-500 hover:text-gray-50",
+  settingsHeader: "transition text-neutral-400 disabled:text-neutral-400 hover:text-neutral-500",
 };
 
 export const RESULT_COLUMNS = [

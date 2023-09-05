@@ -130,7 +130,7 @@ export function SettingsContainer({
   settingsErr,
   setSettingsErr,
 }) {
-  const sectionTextStyle = `w-full m-1 font-bold text-lg ${STYLE.textOnDarkBackground}`;
+  const sectionTextStyle = `w-full m-1 font-bold text-lg ${STYLE.settingsHeader}`;
   return (
     <div
       id="settings-form"

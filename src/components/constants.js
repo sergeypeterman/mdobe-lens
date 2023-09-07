@@ -125,6 +125,7 @@ export const SETTINGS_TYPES = {
 export const STYLE = {
   fontColor:
     "text-gray-950 dark:text-gray-200 disabled:text-gray-300 disabled:dark:text-gray-500",
+  fontColorLink:"hover:text-sky-800 dark:hover:text-sky-200 underline",
   backColor: "bg-neutral-100 dark:bg-neutral-600",
   backColor2: "bg-neutral-200 dark:bg-neutral-700",
   backColorHover: "hover:bg-neutral-200 hover:dark:bg-neutral-500",
@@ -161,6 +162,7 @@ export const RESULT_COLUMNS = [
   "video_small_preview_content_length",
   "video_small_preview_content_type",
   "nb_results",
+  "details_url",
   "is_gentech",
 ];
 

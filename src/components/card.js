@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
+import { ST } from "next/dist/shared/lib/utils";
 
 export function Card({ e, settingsValues }) {
   //Asset card component
@@ -105,7 +106,12 @@ export function Card({ e, settingsValues }) {
         {getCardHeader()}
         {getCardContent()}
         <div className="text-sm flex justify-around p-1">
-          <span className="px-1">{`id: ${e.id}`}</span>
+          <a
+            className={`px-1 ${STYLE.fontColor} ${STYLE.fontColorLink}`}
+            href={`${e.details_url}?locale=en_US`}
+            title={`Open the asset with id ${e.id} on Adobe Stock`}
+          >{`id: ${e.id}`}</a>
+
           <span className="px-1">{e.creation_date.substr(0, 7)}</span>
         </div>
         {pressed ? (

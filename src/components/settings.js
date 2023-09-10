@@ -129,6 +129,8 @@ export function SettingsContainer({
   setSettingsValues,
   settingsErr,
   setSettingsErr,
+  optionsValues,
+  setOptionsValues,
 }) {
   const sectionTextStyle = `w-full m-1 font-bold text-lg ${STYLE.settingsHeader}`;
   return (
@@ -210,15 +212,15 @@ export function SettingsContainer({
                 flex flex-wrap items-center`}
                 >
                   <SettingsBlock
-                    settingsValues={settingsValues}
-                    setSettingsValues={setSettingsValues}
+                    settingsValues={optionsValues}
+                    setSettingsValues={setOptionsValues}
                     type="theme"
                     error={settingsErr}
                     setError={setSettingsErr}
                   />
                   <SettingsBlock
-                    settingsValues={settingsValues}
-                    setSettingsValues={setSettingsValues}
+                    settingsValues={optionsValues}
+                    setSettingsValues={setOptionsValues}
                     type="expandCards"
                     error={settingsErr}
                     setError={setSettingsErr}

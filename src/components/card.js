@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
 import { ST } from "next/dist/shared/lib/utils";
 
-export function Card({ e, settingsValues }) {
+export function Card({ e, optionsValues }) {
   //Asset card component
   const [pressed, setPressed] = useState(
-    settingsValues.expandCards.selected[0]
+    optionsValues.expandCards.selected[0]
   );
 
   let keysArrayLength;

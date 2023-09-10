@@ -103,6 +103,9 @@ export const SETTINGS_TYPES = {
     values: GENTECH,
     selected: 0,
   },
+};
+
+export const OPTIONS = {
   expandCards: {
     name: "expandCards",
     caption: "Expand All Cards",
@@ -118,14 +121,13 @@ export const SETTINGS_TYPES = {
     values: THEME,
     selected: 0,
   },
-  
 };
 
 //implementing dark mode styling
 export const STYLE = {
   fontColor:
     "text-gray-950 dark:text-gray-200 disabled:text-gray-300 disabled:dark:text-gray-500",
-  fontColorLink:"hover:text-sky-800 dark:hover:text-sky-200 underline",
+  fontColorLink: "hover:text-sky-800 dark:hover:text-sky-200 underline",
   backColor: "bg-neutral-100 dark:bg-neutral-600",
   backColor2: "bg-neutral-200 dark:bg-neutral-700",
   backColorHover: "hover:bg-neutral-200 hover:dark:bg-neutral-500",
@@ -135,8 +137,10 @@ export const STYLE = {
   gradColorFrom: "from-neutral-100 dark:from-neutral-800",
   gradColorTo: "to-neutral-50 dark:to-[#262626]",
   textError: "text-red-500 dark:text-red-200",
-  textOnDarkBackground: "transition text-gray-200 disabled:text-gray-500 hover:text-gray-50",
-  settingsHeader: "transition text-neutral-400 disabled:text-neutral-400 hover:text-neutral-500",
+  textOnDarkBackground:
+    "transition text-gray-200 disabled:text-gray-500 hover:text-gray-50",
+  settingsHeader:
+    "transition text-neutral-400 disabled:text-neutral-400 hover:text-neutral-500",
 };
 
 export const RESULT_COLUMNS = [

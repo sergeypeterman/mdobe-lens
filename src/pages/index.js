@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   MEDIUM_SCREEN_WIDTH,
-  MEDIUM_SCREEN_WIDTHN,
+  OPTIONS,
   SETTINGS_TYPES,
   STYLE,
 } from "@/components/constants";
@@ -14,6 +14,7 @@ export default function Home() {
   //main page component
 
   const [resp, setResp] = useState();
+  const [optionsValues, setOptionsValues] = useState(OPTIONS);
   const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
   const [settingsRead, setSettingssRead] = useState(false); //were the settings read from localStorage
   const [currPage, setCurrPage] = useState(1);
@@ -76,7 +77,6 @@ export default function Home() {
           Object.keys(SETTINGS_TYPES)
         );
 
-        //console.log(sameStructure, Object.keys(localSettings), Object.keys(SETTINGS_TYPES));
         if (sameStructure) {
           console.log(`reading searchSettings`);
           setSettingsValues(localSettings);
@@ -86,27 +86,49 @@ export default function Home() {
           setSettingsValues(SETTINGS_TYPES);
         }
       }
+
+      const localOptions = JSON.parse(localStorage.getItem(`appOptions`));
+      if (localOptions) {
+        let sameStructure = compareStringify(
+          Object.keys(localOptions),
+          Object.keys(OPTIONS)
+        );
+
+        if (sameStructure) {
+          console.log(`reading appOptions`);
+          setSettingsValues(localOptions);
+        } else {
+          console.log(`removing appOptions`);
+          localStorage.removeItem(`appOptions`);
+          setSettingsValues(OPTIONS);
+        }
+      }
     }
     //add logic for major versions
     else {
-      console.log(`removing searchSettings`);
+      console.log(`removing searchSettings and appOptions`);
       localStorage.removeItem(`searchSettings`);
+      localStorage.removeItem(`appOptions`);
       localStorage.setItem(
         `mdobeLensVersion`,
         JSON.stringify(packageJSON.version)
       );
       setSettingsValues(SETTINGS_TYPES);
+      setOptionsValues(OPTIONS);
     }
 
     setSettingssRead(true);
   }, []);
 
-  //saving settings to browser cache
+  //saving searchSettings and Options to browser cache
   useEffect(() => {
-    settingsRead &&
+    if (settingsRead) {
       localStorage.setItem(`searchSettings`, JSON.stringify(settingsValues));
-    settingsRead && console.log(`writing searchSettings`);
-  }, [settingsValues, settingsRead]);
+      localStorage.setItem(`appOptions`, JSON.stringify(optionsValues));
+    }
+
+    settingsRead && console.log(`writing searchSettings and appOptions`);
+  }, [settingsValues, optionsValues, settingsRead]);
 
   //fetch function
   const handleFetchClick = useCallback(async () => {
@@ -161,7 +183,7 @@ export default function Home() {
   //handling system-wide dark mode changes
   useEffect(() => {
     //console.log(`Theme #${settingsValues.theme.selected}`);
-    switch (settingsValues.theme.selected) {
+    switch (optionsValues.theme.selected) {
       case 0:
         // Auto
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -197,7 +219,7 @@ export default function Home() {
         document.documentElement.classList.remove("dark");
         break;
     }
-  }, [settingsValues.theme.selected]);
+  }, [optionsValues.theme.selected]);
 
   const isEnter = (e) => {
     if (e.key === "Enter") {
@@ -266,6 +288,8 @@ export default function Home() {
                 setSettingsValues={setSettingsValues}
                 settingsErr={settingsErr}
                 setSettingsErr={setSettingsErr}
+                optionsValues={optionsValues}
+                setOptionsValues={setOptionsValues}
               />
             </div>
           )}
@@ -283,9 +307,9 @@ export default function Home() {
                 {resp
                   ? resp.files.map((e, ind) => (
                       <Card
-                        key={`e-${e.nb_results}-${e.id}-${settingsValues.expandCards.selected}`}
+                        key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
                         e={e}
-                        settingsValues={settingsValues}
+                        optionsValues={optionsValues}
                       />
                     ))
                   : null}

@@ -283,7 +283,7 @@ export default function Home() {
                 {resp
                   ? resp.files.map((e, ind) => (
                       <Card
-                        key={`e-${e.nb_results}-${e.id}`}
+                        key={`e-${e.nb_results}-${e.id}-${settingsValues.expandCards.selected}`}
                         e={e}
                         settingsValues={settingsValues}
                       />

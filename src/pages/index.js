@@ -9,6 +9,10 @@ import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
 import Head from "next/head";
 const packageJSON = require("package.json");
+import {
+  compareStringify,
+  compareAndManageStorage,
+} from "@/components/functions";
 
 export default function Home() {
   //main page component
@@ -51,10 +55,6 @@ export default function Home() {
     };
   }, [screenSize]);
 
-  const compareStringify = (a, b) => {
-    return JSON.stringify(a) === JSON.stringify(b);
-  };
-
   //reading settings from browser cache on the first load
   useEffect(() => {
     //HARD RESET CACHE//localStorage.removeItem(`searchSettings`);
@@ -72,36 +72,22 @@ export default function Home() {
     if (compareStringify(mdobeLensVersion, versionStored)) {
       const localSettings = JSON.parse(localStorage.getItem(`searchSettings`));
       if (localSettings) {
-        let sameStructure = compareStringify(
-          Object.keys(localSettings),
-          Object.keys(SETTINGS_TYPES)
+        compareAndManageStorage(
+          localSettings,
+          SETTINGS_TYPES,
+          "searchSettings",
+          setSettingsValues
         );
-
-        if (sameStructure) {
-          console.log(`reading searchSettings`);
-          setSettingsValues(localSettings);
-        } else {
-          console.log(`removing searchSettings`);
-          localStorage.removeItem(`searchSettings`);
-          setSettingsValues(SETTINGS_TYPES);
-        }
       }
 
       const localOptions = JSON.parse(localStorage.getItem(`appOptions`));
       if (localOptions) {
-        let sameStructure = compareStringify(
-          Object.keys(localOptions),
-          Object.keys(OPTIONS)
+        compareAndManageStorage(
+          localOptions,
+          OPTIONS,
+          "appOptions",
+          setOptionsValues
         );
-
-        if (sameStructure) {
-          console.log(`reading appOptions`);
-          setSettingsValues(localOptions);
-        } else {
-          console.log(`removing appOptions`);
-          localStorage.removeItem(`appOptions`);
-          setSettingsValues(OPTIONS);
-        }
       }
     }
     //add logic for major versions
@@ -119,16 +105,6 @@ export default function Home() {
 
     setSettingssRead(true);
   }, []);
-
-  //saving searchSettings and Options to browser cache
-  useEffect(() => {
-    if (settingsRead) {
-      localStorage.setItem(`searchSettings`, JSON.stringify(settingsValues));
-      localStorage.setItem(`appOptions`, JSON.stringify(optionsValues));
-    }
-
-    settingsRead && console.log(`writing searchSettings and appOptions`);
-  }, [settingsValues, optionsValues, settingsRead]);
 
   //fetch function
   const handleFetchClick = useCallback(async () => {
@@ -158,6 +134,26 @@ export default function Home() {
     }
   }, [settingsValues, currPage, settingsRead, settingsErr]);
 
+  //saving searchSettings to browser cache
+  useEffect(() => {
+    if (settingsRead) {
+      localStorage.setItem(`searchSettings`, JSON.stringify(settingsValues));
+    }
+
+    settingsRead && console.log(`writing searchSettings`);
+    console.log(`fetching...`);
+    handleFetchClick();
+  }, [settingsValues, settingsRead, handleFetchClick]);
+
+  //saving Options to browser cache
+  useEffect(() => {
+    if (settingsRead) {
+      localStorage.setItem(`appOptions`, JSON.stringify(optionsValues));
+    }
+
+    settingsRead && console.log(`writing appOptions`);
+  }, [optionsValues, settingsRead]);
+
   //effect checks if the user clicked outside of the open settings menu
   //and fetches with applied settings
   useEffect(() => {
@@ -170,10 +166,11 @@ export default function Home() {
       ) {
         setSettingsShow(false);
         setCurrPage(1);
+
+        handleFetchClick();
       }
     };
 
-    handleFetchClick();
     document.addEventListener("mousedown", checkIfClickedInside);
     return () => {
       document.removeEventListener("mousedown", checkIfClickedInside);

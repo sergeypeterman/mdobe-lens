@@ -31,6 +31,9 @@ export function SearchContainer({
 
   const handleSettingsFilter = () => {
     setSettingsShow(!settingsShow);
+    settingsShow &&
+      screenSize.width < MEDIUM_SCREEN_WIDTH &&
+      handleFetchClick();
   };
 
   const handleQueryChange = (e) => {

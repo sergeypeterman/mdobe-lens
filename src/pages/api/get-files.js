@@ -4,6 +4,37 @@ const adobeUrl =
   "https://stock.adobe.io/Rest/Media/1/Search/Files?locale=en_US";
 const apikey = process.env.API_KEY;
 
+export default async function handler(req, res) {
+  const {
+    query: { search, offset },
+  } = req;
+
+  let userRequest = JSON.parse(search);
+
+  let searchUrl = calculateFetchUrl(userRequest, offset);
+  console.log(`API: Search = ${searchUrl}`);
+
+  try {
+    const respn = await fetch(searchUrl, {
+      method: "GET",
+      headers: {
+        "x-api-key": apikey,
+        "X-Product": "MySampleApp/1.0",
+      },
+    });
+    const result = await respn.json();
+    
+    if (!respn.ok) {
+      console.log(respn);
+      throw new Error(`API Response Error: ${respn.statusText}`);
+    }
+    res.status(200).json({ response: result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err.message);
+  }
+}
+
 const calculateFetchUrl = (userRequest, offset) => {
   let columns = RESULT_COLUMNS;
 
@@ -57,35 +88,3 @@ const calculateFetchUrl = (userRequest, offset) => {
 
   return searchUrl;
 };
-
-export default async function handler(req, res) {
-  const {
-    query: { search, offset },
-  } = req;
-
-  let userRequest = JSON.parse(search);
-
-  let searchUrl = calculateFetchUrl(userRequest, offset);
-  console.log(`API: Search = ${searchUrl}`);
-
-  try {
-    const respn = await fetch(searchUrl, {
-      method: "GET",
-      headers: {
-        "x-api-key": apikey,
-        "X-Product": "MySampleApp/1.0",
-      },
-    });
-    const result = await respn.json();
-    //console.log(result);
-    //console.log(respn);
-    if (!respn.ok) {
-      console.log(respn);
-      throw new Error(`API Response Error: ${respn.statusText}`);
-    }
-    res.status(200).json({ response: result });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json(err.message);
-  }
-}

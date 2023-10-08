@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   const [messageFinal, setMessageFinal] = useState("Didn't try to connect");
-  const tryDb = async () => {
+  async function tryDb() {
     try {
       const res = await fetch("api/test-db-sql");
 
@@ -10,14 +10,19 @@ export default function Page() {
         throw new Error(`Fetch error: ${res.statusText}`);
       }
       const result = await res.json();
-      const { message } = result;
-      //console.log(message);
-      setMessageFinal(message);
+      const { message } = await result;
+      console.log(message);
+      setMessageFinal(JSON.stringify(message));
     } catch (err) {
       console.log(err.message);
       setMessageFinal(err.message);
     }
-  };
-  tryDb();
+  }
+
+  useEffect(() => {
+    console.log("calling trydb");
+    tryDb();
+  }, []);
+
   return <div>{messageFinal}</div>;
 }

@@ -1,15 +1,22 @@
 import { useState } from "react";
 
+function checkValidJSON(str) {
+  try {
+    JSON.parse(str);
+  } catch (err) {
+    return false;
+  }
+  return true;
+}
+
 function PrintObject({ d }) {
-  console.log("PrintObject" + d + "d:");
-  console.log(d);
   if (Object.keys(d).length > 0) {
     let printedArray = [];
     let ind = `${d.id}`;
     for (const [key, val] of Object.entries(d)) {
       printedArray.push(
         <div key={`${key}-${ind}`}>
-          {key}: {val}
+          {key}: {JSON.stringify(val)}
         </div>
       );
     }
@@ -28,7 +35,9 @@ export default function Page() {
       const res = await fetch("api/test-db-sql");
 
       if (!res.ok) {
-        throw new Error(`Fetch error: ${res.statusText}`);
+        const error = await res.json();
+        console.log(res);
+        throw new Error(`Fetch error: ${JSON.stringify(error.message)}`);
       }
       const result = await res.json();
       const { message } = await result;
@@ -44,7 +53,7 @@ export default function Page() {
   return (
     <>
       <button onClick={tryDb} className="bg-neutral-200 p-2">
-        Get Data
+        Test and Get data
       </button>
 
       <div>{messageFinal}</div>

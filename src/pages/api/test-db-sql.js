@@ -9,33 +9,47 @@ export default async function testConnection(req, res) {
     database: process.env.DB_SCHEME,
   });
   try {
-    let newCreator =
-      testData.creator_id; /* + Math.floor(Math.random() * 1000) */
-    let newKeywords = testData.keywords.reduce((acc, item) => {
-      acc.push(item.name);
-      return acc;
-    }, []);
+    let newQuery = makeInsertQuery(testData, "test");
 
-    let newQuery = `INSERT INTO test(id, title, keywords, creation_date, allFields) VALUES ('${newCreator}', '${
-      testData.title
-    }', '${JSON.stringify(newKeywords)}', '${
-      testData.creation_date
-    }', '${JSON.stringify(testData)}')`;
-
-    console.log(`writing test_data with id=${newCreator}`);
-    console.log(newQuery);
-
-    await db.query(newQuery);
-    console.log("after await");
-    const [rows, fields] = await db.query("SELECT * FROM test");
+    //await db.query(newQuery);
+    const dateToday = new Date().toJSON();
+    const [rows, fields] = await db.query(
+      `SELECT * FROM test WHERE DATE_FORMAT(creation_date,'%Y %m %d')=DATE_FORMAT('${dateToday}','%Y %m %d')`
+    );
 
     db.end();
-    res.status(200).json({ message: rows });
+    if (rows.length > 0) {
+      res.status(200).json({ message: rows });
+    } else {
+      res.status(404).json({ message: "not found" });
+    }
   } catch (err) {
     //console.log("catched");
     //console.log(err);
     res.status(500).json({ message: err });
+    db.end();
   }
+}
+
+Date.prototype.removeTimeFromDate = function(){
+  let dateWithoutTime = new Date(this.setHours(0,0,0,0));
+  return dateWithoutTime;
+}
+
+function makeInsertQuery(data, table) {
+  let newID = data.id;
+  let newKeywords = data.keywords.reduce((acc, item) => {
+    acc.push(item.name);
+    return acc;
+  }, []);
+
+  let newQuery = `INSERT INTO ${table}(id, title, keywords, creation_date, allFields) VALUES ('${newID}', '${
+    data.title
+  }', '${JSON.stringify(newKeywords)}', '${
+    data.creation_date
+  }', '${JSON.stringify(data)}')`;
+
+  return newQuery;
 }
 
 const testData = {

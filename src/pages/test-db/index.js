@@ -19,6 +19,13 @@ function PrintObject({ d }) {
           {key}: {JSON.stringify(val)}
         </div>
       );
+      /* if (key === "creation_date") {
+        printedArray.push(
+          <div key={`${key}-${ind}-date`}>
+            date parsed: {Date.parse(val)}
+          </div>
+        );
+      } */
     }
     return printedArray;
   } else {

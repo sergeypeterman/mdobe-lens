@@ -11,53 +11,57 @@ export default async function testConnection(req, res) {
     database: process.env.DB_SCHEME,
   });
 
-  let writeIntoDB;
-
+  //writing to assets DB
   if (req.method === "POST") {
-    writeIntoDB = req.body;
+    let writeIntoDB = req.body;
     console.log(
       `Array received, id of the first one is: ${writeIntoDB.files[0].id}`
     );
     try {
-      writeIntoDB.files.map(async (item) => {
-        const newQuery = makeInsertAssetsQuery(item, "assets");
+      //writeIntoDB.files.map(async (item) => {
+      for (let item of writeIntoDB.files) {
+        //writing into the assets table
+        const newQuery = makeInsertIgnoreAssetsQuery(item, "assets");
         const [reply] = await db.query(newQuery);
         const { warningStatus, affectedRows } = reply;
-        console.log(warningStatus, affectedRows);
         if (warningStatus && !affectedRows) {
           console.log(`item ${item.id} already exists in the assets DB`);
         } else if (affectedRows) {
-          console.log(`item ${item.id} recorded`);
+          console.log(`item ${item.id} added to the assets DB`);
+        } 
+
+        //writing into the assets_sales table
+        const newSalesQuery = makeInsertAssetSalesQuery(item, "assets_sales");
+        console.log(newSalesQuery.filter);
+        //there are 2 items in reply' array, taking the first, omitting the second
+        const [salesFilterReply] = await db.query(newSalesQuery.filter);
+        console.log(`found ${salesFilterReply.length} intersections`);
+
+        if (salesFilterReply.length > 0) {
+          console.log(`already logged sales for the id ${item.id} today`);
+        } else {
+          console.log(newSalesQuery.query);
+          const [salesReply] = await db.query(newSalesQuery.query);
+          //console.log(salesReply);
+          if (warningStatus && !affectedRows) {
+            console.log(`not added, warning: ${salesReply.info}`);
+          } else if (affectedRows) {
+            console.log(`inserted with id=${salesReply.insertId}`);
+          }
         }
-      });
+      }
+      //});
+
       db.end();
-    } catch {
+      res.status(200).json({ message: "all fine" });
+    } catch (err) {
       console.log(err);
       res.status(500).json({ message: err });
       db.end();
     }
   }
 
-  try {
-    //console.log("reached");
-    //const dateToday = new Date().toJSON();
-    //const [rows, fields] = await db.query(
-    //  `SELECT * FROM assets WHERE DATE_FORMAT(creation_date,'%Y %m %d')=DATE_FORMAT('${dateToday}','%Y %m %d')`
-    //); 
-
-    if (rows.length > 0) {
-      res.status(200).json({ message: rows });
-      console.log(rows);
-    } else {
-      res.status(404).json({ message: "not found" });
-      console.log("not found");
-    }
-  } catch (err) {
-    //console.log("catched");
-    console.log(err);
-    res.status(500).json({ message: err });
-    db.end();
-  }
+  //will need GET later
 }
 
 Date.prototype.removeTimeFromDate = function () {
@@ -69,12 +73,35 @@ Boolean.prototype.to01 = function () {
   return this ? 1 : 0;
 };
 
-function makeInsertAssetsQuery(data, table) {
-  let newID = data.id;
-  let newKeywords = data.keywords.reduce((acc, item) => {
-    acc.push(item.name);
+Array.prototype.reduceArrayOfObjectsToArrayOfValues = function (keyName) {
+  let newKeywords = this.reduce((acc, item) => {
+    acc.push(item[keyName]);
     return acc;
   }, []);
+  return newKeywords;
+};
+
+function makeInsertAssetSalesQuery(data, table) {
+  let today = new Date();
+  //console.log(today.toJSON().slice(0, 10));
+
+  let newQuery = `INSERT INTO ${table}`;
+  newQuery += `(asset_id, nb_downloads, date_recorded) VALUES ('`;
+  newQuery += `${data.id}', '`;
+  newQuery += `${data.nb_downloads}', `;
+  newQuery += `STR_TO_DATE('${today.toJSON().slice(0, 10)}','%Y-%m-%d'))`;
+
+  let filter =
+    `SELECT * FROM ${table} ` +
+    `WHERE DATE_FORMAT(date_recorded,'%Y %m %d')` +
+    `=DATE_FORMAT('${today.toJSON()}','%Y %m %d')` +
+    ` AND asset_id = '${data.id}'`;
+
+  return { query: newQuery, filter: filter };
+}
+
+function makeInsertIgnoreAssetsQuery(data, table) {
+  let newKeywords = data.keywords.reduceArrayOfObjectsToArrayOfValues("name");
 
   const content_type_str = CONTENT_TYPES[data.media_type_id - 1].title;
 
@@ -82,7 +109,7 @@ function makeInsertAssetsQuery(data, table) {
   newQuery += `${table}`;
   newQuery += `(id, title, keywords, creation_date, allFields, creator_id, has_releases, 
     media_type_id, is_gentech, content_type_str) VALUES ('`;
-  newQuery += `${newID}', '`;
+  newQuery += `${data.id}', '`;
   newQuery += `${data.title}', '`;
   newQuery += `${JSON.stringify(newKeywords)}', '`;
   newQuery += `${data.creation_date}', '`;

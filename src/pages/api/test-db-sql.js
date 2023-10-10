@@ -1,3 +1,5 @@
+import { CONTENT_TYPES } from "@/components/constants";
+
 const mysql = require("mysql2/promise");
 
 export default async function testConnection(req, res) {
@@ -9,22 +11,40 @@ export default async function testConnection(req, res) {
     database: process.env.DB_SCHEME,
   });
 
+  let writeIntoDB;
+
   if (req.method === "POST") {
-    let writeIntoDB = req.body;
-    console.log(`Array received, id of the first one is: ${writeIntoDB.files[0].id}`);
+    writeIntoDB = req.body;
+    console.log(
+      `Array received, id of the first one is: ${writeIntoDB.files[0].id}`
+    );
+    try {
+      writeIntoDB.files.map(async (item) => {
+        const newQuery = makeInsertAssetsQuery(item, "assets");
+        const [reply] = await db.query(newQuery);
+        const { warningStatus, affectedRows } = reply;
+        console.log(warningStatus, affectedRows);
+        if (warningStatus && !affectedRows) {
+          console.log(`item ${item.id} already exists in the assets DB`);
+        } else if (affectedRows) {
+          console.log(`item ${item.id} recorded`);
+        }
+      });
+      db.end();
+    } catch {
+      console.log(err);
+      res.status(500).json({ message: err });
+      db.end();
+    }
   }
 
   try {
-    let newQuery = makeInsertQuery(testData, "test");
-
-    //await db.query(newQuery);
     //console.log("reached");
-    const dateToday = new Date().toJSON();
-    const [rows, fields] = await db.query(
-      `SELECT * FROM test WHERE DATE_FORMAT(creation_date,'%Y %m %d')=DATE_FORMAT('${dateToday}','%Y %m %d')`
-    );
+    //const dateToday = new Date().toJSON();
+    //const [rows, fields] = await db.query(
+    //  `SELECT * FROM assets WHERE DATE_FORMAT(creation_date,'%Y %m %d')=DATE_FORMAT('${dateToday}','%Y %m %d')`
+    //); 
 
-    db.end();
     if (rows.length > 0) {
       res.status(200).json({ message: rows });
       console.log(rows);
@@ -34,7 +54,7 @@ export default async function testConnection(req, res) {
     }
   } catch (err) {
     //console.log("catched");
-    //console.log(err);
+    console.log(err);
     res.status(500).json({ message: err });
     db.end();
   }
@@ -45,19 +65,33 @@ Date.prototype.removeTimeFromDate = function () {
   return dateWithoutTime;
 };
 
-function makeInsertQuery(data, table) {
+Boolean.prototype.to01 = function () {
+  return this ? 1 : 0;
+};
+
+function makeInsertAssetsQuery(data, table) {
   let newID = data.id;
   let newKeywords = data.keywords.reduce((acc, item) => {
     acc.push(item.name);
     return acc;
   }, []);
 
-  let newQuery = `INSERT INTO ${table}(id, title, keywords, creation_date, allFields) VALUES ('${newID}', '${
-    data.title
-  }', '${JSON.stringify(newKeywords)}', '${
-    data.creation_date
-  }', '${JSON.stringify(data)}')`;
+  const content_type_str = CONTENT_TYPES[data.media_type_id - 1].title;
 
+  let newQuery = `INSERT IGNORE INTO `;
+  newQuery += `${table}`;
+  newQuery += `(id, title, keywords, creation_date, allFields, creator_id, has_releases, 
+    media_type_id, is_gentech, content_type_str) VALUES ('`;
+  newQuery += `${newID}', '`;
+  newQuery += `${data.title}', '`;
+  newQuery += `${JSON.stringify(newKeywords)}', '`;
+  newQuery += `${data.creation_date}', '`;
+  newQuery += ` ${JSON.stringify(data)}', '`;
+  newQuery += ` ${data.creator_id}', '`;
+  newQuery += ` ${data.has_releases}', '`;
+  newQuery += ` ${data.media_type_id}', '`;
+  newQuery += ` ${data.is_gentech.to01()}', '`;
+  newQuery += ` ${content_type_str}')`;
   return newQuery;
 }
 

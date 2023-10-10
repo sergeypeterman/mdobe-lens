@@ -8,10 +8,17 @@ export default async function testConnection(req, res) {
     password: process.env.DB_PASS,
     database: process.env.DB_SCHEME,
   });
+
+  if (req.method === "POST") {
+    let writeIntoDB = req.body;
+    console.log(`Array received, id of the first one is: ${writeIntoDB.files[0].id}`);
+  }
+
   try {
     let newQuery = makeInsertQuery(testData, "test");
 
     //await db.query(newQuery);
+    //console.log("reached");
     const dateToday = new Date().toJSON();
     const [rows, fields] = await db.query(
       `SELECT * FROM test WHERE DATE_FORMAT(creation_date,'%Y %m %d')=DATE_FORMAT('${dateToday}','%Y %m %d')`
@@ -20,8 +27,10 @@ export default async function testConnection(req, res) {
     db.end();
     if (rows.length > 0) {
       res.status(200).json({ message: rows });
+      console.log(rows);
     } else {
       res.status(404).json({ message: "not found" });
+      console.log("not found");
     }
   } catch (err) {
     //console.log("catched");
@@ -31,10 +40,10 @@ export default async function testConnection(req, res) {
   }
 }
 
-Date.prototype.removeTimeFromDate = function(){
-  let dateWithoutTime = new Date(this.setHours(0,0,0,0));
+Date.prototype.removeTimeFromDate = function () {
+  let dateWithoutTime = new Date(this.setHours(0, 0, 0, 0));
   return dateWithoutTime;
-}
+};
 
 function makeInsertQuery(data, table) {
   let newID = data.id;

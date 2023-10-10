@@ -23,12 +23,27 @@ export default async function handler(req, res) {
       },
     });
     const result = await respn.json();
-    
+
     if (!respn.ok) {
       console.log(respn);
       throw new Error(`API Response Error: ${respn.statusText}`);
     }
     res.status(200).json({ response: result });
+
+    //console.log("test connection with test-db-sql");
+    const testDb = await fetch(`${process.env.HOST_ADDRESS}/api/test-db-sql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(result),
+    });
+    console.log(`Sent to DB API`);
+
+    if (!testDb.ok) {
+      console.log(`Fetch error`);
+      console.log(testDb);
+    }
   } catch (err) {
     console.log(err);
     res.status(400).json(err.message);

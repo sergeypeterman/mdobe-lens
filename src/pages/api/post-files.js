@@ -2,7 +2,7 @@ import { CONTENT_TYPES } from "@/components/constants";
 
 const mysql = require("mysql2/promise");
 
-export default async function testConnection(req, res) {
+export default async function postToStockDB(req, res) {
   const db = await mysql.createConnection({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -23,26 +23,24 @@ export default async function testConnection(req, res) {
         //writing into the assets table
         const newQuery = makeInsertIgnoreAssetsQuery(item, "assets");
         const [reply] = await db.query(newQuery);
-        const { warningStatus, affectedRows } = reply;
+        let { warningStatus, affectedRows } = reply;
         if (warningStatus && !affectedRows) {
           console.log(`item ${item.id} already exists in the assets DB`);
         } else if (affectedRows) {
           console.log(`item ${item.id} added to the assets DB`);
-        } 
+        }
 
         //writing into the assets_sales table
         const newSalesQuery = makeInsertAssetSalesQuery(item, "assets_sales");
-        console.log(newSalesQuery.filter);
+
         //there are 2 items in reply' array, taking the first, omitting the second
         const [salesFilterReply] = await db.query(newSalesQuery.filter);
-        console.log(`found ${salesFilterReply.length} intersections`);
 
         if (salesFilterReply.length > 0) {
           console.log(`already logged sales for the id ${item.id} today`);
         } else {
-          console.log(newSalesQuery.query);
           const [salesReply] = await db.query(newSalesQuery.query);
-          //console.log(salesReply);
+          const { warningStatus, affectedRows } = salesReply;
           if (warningStatus && !affectedRows) {
             console.log(`not added, warning: ${salesReply.info}`);
           } else if (affectedRows) {

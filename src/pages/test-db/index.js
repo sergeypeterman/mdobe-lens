@@ -39,7 +39,7 @@ export default function Page() {
   async function tryDb() {
     console.log("calling tryDB");
     try {
-      const res = await fetch("api/test-db-sql");
+      const res = await fetch("api/post-files");
 
       if (!res.ok) {
         const error = await res.json();

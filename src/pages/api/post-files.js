@@ -1,4 +1,8 @@
 import { CONTENT_TYPES } from "@/components/constants";
+import {
+  string_cleanJSON_preStringify,
+  string_cleanJSON_to_query,
+} from "@/components/functions";
 
 const mysql = require("mysql2/promise");
 
@@ -98,26 +102,39 @@ function makeInsertAssetSalesQuery(data, table) {
   return { query: newQuery, filter: filter };
 }
 
-function makeInsertIgnoreAssetsQuery(data, table) {
+function makeInsertIgnoreAssetsQuery(dataOrig, table) {
+  let data = JSON.parse(JSON.stringify(dataOrig));
+
   let newKeywords = data.keywords.reduceArrayOfObjectsToArrayOfValues("name");
 
   const content_type_str = CONTENT_TYPES[data.media_type_id - 1].title;
 
-  let newQuery = `INSERT IGNORE INTO `;
-  newQuery += `${table}`;
-  newQuery += `(id, title, keywords, creation_date, allFields, creator_id, has_releases, 
-    media_type_id, is_gentech, content_type_str) VALUES ('`;
-  newQuery += `${data.id}', '`;
-  newQuery += `${data.title}', '`;
-  newQuery += `${JSON.stringify(newKeywords)}', '`;
-  newQuery += `${data.creation_date}', '`;
-  newQuery += ` ${JSON.stringify(data)}', '`;
-  newQuery += ` ${data.creator_id}', '`;
-  newQuery += ` ${data.has_releases}', '`;
-  newQuery += ` ${data.media_type_id}', '`;
-  newQuery += ` ${data.is_gentech.to01()}', '`;
-  newQuery += ` ${content_type_str}')`;
-  return newQuery;
+  let newTitle = string_cleanJSON_preStringify(data.title);
+  let newCountry = string_cleanJSON_preStringify(data.country_name);
+  let newCreatorName = string_cleanJSON_preStringify(data.creator_name);
+
+  data.title = newTitle;
+  data.country_name = newCountry;
+  data.creator_name = newCreatorName;
+
+  let newQuery =
+    `INSERT IGNORE INTO ` +
+    `${table}` +
+    `(id, title, keywords, creation_date, allFields, creator_id, has_releases, media_type_id, is_gentech, content_type_str) VALUES ('` +
+    `${data.id}', '` +
+    `${data.title}', '` +
+    `${JSON.stringify(newKeywords)}', '` +
+    `${data.creation_date}', '` +
+    ` ${JSON.stringify(data)}', '` +
+    ` ${data.creator_id}', '` +
+    ` ${data.has_releases}', '` +
+    ` ${data.media_type_id}', '` +
+    ` ${data.is_gentech.to01()}', '` +
+    ` ${content_type_str}')`;
+
+  let cleanedQuery = string_cleanJSON_to_query(newQuery);
+  //console.log(cleanedQuery);
+  return cleanedQuery;
 }
 
 const testData = {

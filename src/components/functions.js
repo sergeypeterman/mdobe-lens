@@ -96,3 +96,32 @@ export const calculateFetchUrl = (userRequest, offset) => {
 
   return searchUrl;
 };
+
+export function string_cleanJSON_preStringify(str) {
+  if (!str.replace) return str;
+
+  str = str.replace(/'/g, "\\'"); //escape all at least ' once
+  str = str.replace(/"/g, '\\"'); //escape all at least " once
+
+  str = str.replace(/[\t\r\n\f]/g, ""); // remove problematic escape characters
+
+  if (str.charAt(str.length - 1) == "\\") str += " "; // add blank space at the end if \ is last character - for example: {"var":"\"} would be problematic
+
+  return str;
+}
+
+export function string_cleanJSON_to_query(str) {
+  str = str.replace(/(\\)+\\/g, "\\"); // replace all \ more than 1 in a row, to be just 1 ( \\ -> gets escaped again when it's processed to just \)
+
+  str = str.replace(/(\\)+"/g, '\\\\\\"'); // replace all \" more than 1 (ex \\\") - i don't know why \\\\\\ - this seem to work in my case, might need to alter based on str manipulations before insert
+
+  str = str.replace(/(\\)+'/g, "\\'"); // i don't know why \\ - this seem to work in my case, might need to alter based on str manipulations before insert
+
+  str = str.replace(/(\\)+t/g, "t"); // same process as above but with problematic escape characters
+
+  str = str.replace(/(\\)+r/g, "r");
+  str = str.replace(/(\\)+n/g, "n");
+  str = str.replace(/(\\)+f/g, "f");
+
+  return str;
+}

@@ -31,6 +31,7 @@ export default async function handler(req, res) {
 
     //don't try to post to db, if env variable HOST_ADDRESS is undefined
     const hostAdress = process.env.HOST_ADDRESS;
+    alert(`host address is incorrect, write to DB skipped`);
     
     if (hostAdress) {
       const testDb = await fetch(`${hostAdress}/api/post-files`, {

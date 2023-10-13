@@ -1,7 +1,6 @@
 const path = require('node:path');
 require("dotenv").config({ path: path.resolve(`../../../.env.local`) }); //{ path: `I:/Dev/mdobe-lens/.env.local` }
-console.log(process.env.LOCAL_PATH);
-console.log(path.resolve(`../../../.env.local`));
+
 const {
   RESULT_COLUMNS,
   GENTECH,

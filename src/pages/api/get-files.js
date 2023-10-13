@@ -29,19 +29,25 @@ export default async function handler(req, res) {
     }
     res.status(200).json({ response: result });
 
-    //console.log("test connection with test-db-sql");
-    const testDb = await fetch(`${process.env.HOST_ADDRESS}/api/post-files`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(result),
-    });
-    console.log(`Sent to DB API`);
+    //don't try to post to db, if env variable HOST_ADDRESS is undefined
+    const hostAdress = process.env.HOST_ADDRESS;
+    
+    if (hostAdress) {
+      const testDb = await fetch(`${hostAdress}/api/post-files`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(result),
+      });
+      console.log(`Sent to DB API`);
 
-    if (!testDb.ok) {
-      console.log(`Fetch error`);
-      console.log(testDb);
+      if (!testDb.ok) {
+        console.log(`Fetch error`);
+        console.log(testDb);
+      }
+    } else {
+      console.log(`host address is incorrect, write to DB skipped`);
     }
   } catch (err) {
     console.log(err);

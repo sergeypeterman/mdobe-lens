@@ -33,6 +33,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-#specific
-src\pages\test-db\local-worker.js

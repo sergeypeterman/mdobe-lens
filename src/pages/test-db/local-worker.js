@@ -1,5 +1,14 @@
-require("dotenv").config({ path: "I:/Dev/mdobe-lens/.env.local" });
-const { RESULT_COLUMNS, GENTECH, ORDER, AGE, CONTENT_TYPES } = require("I:/Dev/mdobe-lens/src/pages/test-db/db-constants.js");
+const path = require('node:path');
+require("dotenv").config({ path: path.resolve(`../../../.env.local`) }); //{ path: `I:/Dev/mdobe-lens/.env.local` }
+console.log(process.env.LOCAL_PATH);
+console.log(path.resolve(`../../../.env.local`));
+const {
+  RESULT_COLUMNS,
+  GENTECH,
+  ORDER,
+  AGE,
+  CONTENT_TYPES,
+} = require(`${process.env.LOCAL_PATH}/src/pages/test-db/db-constants.js`);
 
 const request = {
   order: {
@@ -81,7 +90,6 @@ request.content.selected = [true, true, true, true, false, false, false];
 connectAndHarvest(request, 1000);
 //***** Stills, 10000, 6m *****/
 
-
 //***** Video, 1000, 1m *****/
 request.limit.values = itemsPerRequest;
 request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
@@ -119,7 +127,7 @@ async function connectAndHarvest(requestOrig, amount) {
     database: process.env.DB_SCHEME,
   });
   const apikey = process.env.API_KEY;
-  
+
   console.log("connecting done");
 
   try {

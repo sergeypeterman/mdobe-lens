@@ -276,7 +276,7 @@ export default function Home() {
           {settingsShow && (
             <div
               id="settings-div"
-              className="sticky top-[5.5rem] h-full w-full md:w-[500px] z-20"
+              className="custom-scrollbar sticky top-[5.5rem] overflow-auto h-[calc(100vh_-_8rem)] w-full md:w-[500px] z-20"
             >
               <SettingsContainer
                 settingsShow={settingsShow}

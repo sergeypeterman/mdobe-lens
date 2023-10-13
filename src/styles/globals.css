@@ -15,6 +15,23 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+/* width */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(163 163 163);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(115 115 115);
+}
+
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;

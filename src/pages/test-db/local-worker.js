@@ -1,5 +1,5 @@
 const path = require('node:path');
-require("dotenv").config({ path: path.resolve(`../../../.env.local`) }); //{ path: `I:/Dev/mdobe-lens/.env.local` }
+require("dotenv").config({ path: path.resolve(`../../../.env.local`) }); 
 
 const {
   RESULT_COLUMNS,

@@ -63,13 +63,13 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
       id="pages-container"
       className="w-full p-1 bg-neutral-700 shadow-md z-30"
     >
-      <div className={`flex flex-row items-center justify-center `}>
+      <div className={`flex  flex-row items-center justify-center `}>
         <button
-          className={`hover:underline ${textStyle} px-3`}
+          className={`hover:underline flex-1 ${textStyle} px-3`}
           title="First Page"
           onClick={() => updatePage(1)}
           disabled={currPage === 1}
-        >{`${1}`}</button>
+        >{`1`}</button>
         <button
           id="previous-page"
           onClick={() => updatePage(currPage - 1)}
@@ -105,7 +105,7 @@ export function Paginator({ currPage, setCurrPage, assetsCount, limit }) {
           <FontAwesomeIcon icon={faChevronRight} />
         </button>
         <button
-          className={`${textStyle} hover:underline px-3`}
+          className={`${textStyle} flex-1 hover:underline px-3`}
           onClick={() => updatePage(pagesCount + 1)}
           title="Last Page"
           disabled={currPage === pagesCount}

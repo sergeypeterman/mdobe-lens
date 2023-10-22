@@ -1,5 +1,5 @@
-const path = require('node:path');
-require("dotenv").config({ path: path.resolve(`../../../.env.local`) }); 
+const path = require("node:path");
+require("dotenv").config({ path: path.resolve(`../../../.env.local`) });
 
 const {
   RESULT_COLUMNS,
@@ -335,7 +335,7 @@ function makeInsertAssetSalesQuery(data, table) {
 
 function makeInsertIgnoreAssetsQuery(dataOrig, table) {
   let data = JSON.parse(JSON.stringify(dataOrig));
-
+  
   let newKeywords = data.keywords.reduceArrayOfObjectsToArrayOfValues("name");
 
   const content_type_str = CONTENT_TYPES[data.media_type_id - 1].title;

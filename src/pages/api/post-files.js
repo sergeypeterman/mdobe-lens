@@ -75,9 +75,12 @@ Boolean.prototype.to01 = function () {
   return this ? 1 : 0;
 };
 
+
 Array.prototype.reduceArrayOfObjectsToArrayOfValues = function (keyName) {
   let newKeywords = this.reduce((acc, item) => {
-    acc.push(item[keyName]);
+    let escapedValue = string_cleanJSON_preStringify(item[keyName]);
+    item[keyName] = escapedValue;
+    acc.push(escapedValue);
     return acc;
   }, []);
   return newKeywords;

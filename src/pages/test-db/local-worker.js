@@ -128,6 +128,8 @@ async function connectAndHarvest(requestOrig, amount) {
   const apikey = process.env.API_KEY;
 
   console.log("connecting done");
+  const timer = ms => new Promise(res => setTimeout(res, ms));
+  const delay = 1; //seconds
 
   try {
     for (let i = 0; i < amount / itemsPerRequest; i++) {
@@ -137,7 +139,8 @@ async function connectAndHarvest(requestOrig, amount) {
 
       const writeResult = await writeIntoDB(currArray, db);
       console.log(writeResult);
-      console.log(`${(i + 1) * itemsPerRequest} assets processed`);
+      console.log(`${(i + 1) * itemsPerRequest} assets processed, waiting ${delay} second${delay>1?'s':''}`);
+      await timer(1000*delay);
     }
   } catch (err) {
     console.log(err);
@@ -335,7 +338,7 @@ function makeInsertAssetSalesQuery(data, table) {
 
 function makeInsertIgnoreAssetsQuery(dataOrig, table) {
   let data = JSON.parse(JSON.stringify(dataOrig));
-  
+
   let newKeywords = data.keywords.reduceArrayOfObjectsToArrayOfValues("name");
 
   const content_type_str = CONTENT_TYPES[data.media_type_id - 1].title;

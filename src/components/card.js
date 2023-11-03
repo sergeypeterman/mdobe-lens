@@ -99,7 +99,7 @@ export function Card({ e, optionsValues }) {
   //<span className="px-1">{String(e.is_gentech)}</span>
   return (
     <div
-      className={`mb-2 w-full flex flex-col rounded-lg shadow-sm justify-between 
+      className={`w-full flex flex-col rounded-lg shadow-sm justify-between 
         bg-gradient-to-b ${STYLE.gradColorFrom} from-85% ${STYLE.gradColorTo}`}
     >
       <div className="flex flex-col">

@@ -116,6 +116,8 @@ request.content.selected = [false, false, false, true, false, false, false];
 connectAndHarvest(request, 10000);
 //***** Video, 10000, 2y *****/
 
+/****************DECLARATIONS*********************/
+
 async function connectAndHarvest(requestOrig, amount) {
   let request = JSON.parse(JSON.stringify(requestOrig));
   const db = await mysql.createConnection({
@@ -128,19 +130,26 @@ async function connectAndHarvest(requestOrig, amount) {
   const apikey = process.env.API_KEY;
 
   console.log("connecting done");
-  const timer = ms => new Promise(res => setTimeout(res, ms));
+  const timer = (ms) => new Promise((res) => setTimeout(res, ms));
   const delay = 1; //seconds
+  const roundsNum = amount / itemsPerRequest;
 
   try {
-    for (let i = 0; i < amount / itemsPerRequest; i++) {
+    for (let i = 0; i < roundsNum; i++) {
       let offset = i * itemsPerRequest;
       const currArray = await getAdobeArray(apikey, offset, request);
       //console.log(currArray);
 
       const writeResult = await writeIntoDB(currArray, db);
       console.log(writeResult);
-      console.log(`${(i + 1) * itemsPerRequest} assets processed, waiting ${delay} second${delay>1?'s':''}`);
-      await timer(1000*delay);
+      let assetsProcessed = (i + 1) * itemsPerRequest;
+      console.log(`${assetsProcessed} assets processed.`);
+
+      assetsProcessed === roundsNum
+        ? console.log("done")
+        : console.log(`waiting ${delay} second${delay > 1 ? "s" : ""}`);
+
+      await timer(1000 * delay);
     }
   } catch (err) {
     console.log(err);

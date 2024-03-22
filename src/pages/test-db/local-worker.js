@@ -145,7 +145,7 @@ async function connectAndHarvest(requestOrig, amount) {
       let assetsProcessed = (i + 1) * itemsPerRequest;
       console.log(`${assetsProcessed} assets processed.`);
 
-      assetsProcessed === roundsNum
+      i + 1 === roundsNum
         ? console.log("done")
         : console.log(`waiting ${delay} second${delay > 1 ? "s" : ""}`);
 

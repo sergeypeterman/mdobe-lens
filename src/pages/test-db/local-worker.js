@@ -62,61 +62,65 @@ const mysql = require("mysql2/promise");
 console.log("connecting worker");
 const itemsPerRequest = 100;
 
-//***** Stills, 10000, 2y *****/
-request.limit.values = itemsPerRequest;
-request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
-request.age.selected = 4; //[age]=1w, 1m, 6m, 1y, 2y, 3y
-request.content.selected = [true, true, true, true, false, false, false];
-// "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-connectAndHarvest(request, 10000);
-//***** Stills, 10000, 2y *****/
-
-//***** Stills, 1000, 1w *****/
-request.limit.values = itemsPerRequest;
-request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
-request.age.selected = 0; //[age]=1w, 1m, 6m, 1y, 2y, 3y
-request.content.selected = [true, true, true, true, false, false, false];
-// "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-connectAndHarvest(request, 1000);
-//***** Stills, 1000, 1w *****/
-
-//***** Stills, 10000, 6m *****/
-request.limit.values = itemsPerRequest;
-request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
-request.age.selected = 2; //[age]=1w, 1m, 6m, 1y, 2y, 3y
-request.content.selected = [true, true, true, true, false, false, false];
-// "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-connectAndHarvest(request, 1000);
-//***** Stills, 10000, 6m *****/
-
-//***** Video, 1000, 1m *****/
-request.limit.values = itemsPerRequest;
-request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
-request.age.selected = 1; //[age]=1w, 1m, 6m, 1y, 2y, 3y
-request.content.selected = [false, false, false, true, false, false, false];
-// "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-connectAndHarvest(request, 1000);
-//***** Video, 1000, 1m *****/
-
-//***** Video, 1000, 6m *****/
-request.limit.values = itemsPerRequest;
-request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
-request.age.selected = 2; //[age]=1w, 1m, 6m, 1y, 2y, 3y
-request.content.selected = [false, false, false, true, false, false, false];
-// "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-connectAndHarvest(request, 1000);
-//***** Video, 1000, 6m *****/
-
-//***** Video, 10000, 2y *****/
-request.limit.values = itemsPerRequest;
-request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
-request.age.selected = 4; //[age]=1w, 1m, 6m, 1y, 2y, 3y
-request.content.selected = [false, false, false, true, false, false, false];
-// "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-connectAndHarvest(request, 10000);
-//***** Video, 10000, 2y *****/
+worker();
 
 /****************DECLARATIONS*********************/
+
+async function worker() {
+  //***** Stills, 10000, 2y *****/
+  request.limit.values = itemsPerRequest;
+  request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
+  request.age.selected = 4; //[age]=1w, 1m, 6m, 1y, 2y, 3y
+  request.content.selected = [true, true, true, true, false, false, false];
+  // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
+  await connectAndHarvest(request, 10000);
+  //***** Stills, 10000, 2y *****/
+
+  //***** Stills, 1000, 1w *****/
+  request.limit.values = itemsPerRequest;
+  request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
+  request.age.selected = 0; //[age]=1w, 1m, 6m, 1y, 2y, 3y
+  request.content.selected = [true, true, true, true, false, false, false];
+  // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
+  await connectAndHarvest(request, 1000);
+  //***** Stills, 1000, 1w *****/
+
+  //***** Stills, 10000, 6m *****/
+  request.limit.values = itemsPerRequest;
+  request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
+  request.age.selected = 2; //[age]=1w, 1m, 6m, 1y, 2y, 3y
+  request.content.selected = [true, true, true, true, false, false, false];
+  // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
+  await connectAndHarvest(request, 1000);
+  //***** Stills, 10000, 6m *****/
+
+  //***** Video, 1000, 1m *****/
+  request.limit.values = itemsPerRequest;
+  request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
+  request.age.selected = 1; //[age]=1w, 1m, 6m, 1y, 2y, 3y
+  request.content.selected = [false, false, false, true, false, false, false];
+  // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
+  await connectAndHarvest(request, 1000);
+  //***** Video, 1000, 1m *****/
+
+  //***** Video, 1000, 6m *****/
+  request.limit.values = itemsPerRequest;
+  request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
+  request.age.selected = 2; //[age]=1w, 1m, 6m, 1y, 2y, 3y
+  request.content.selected = [false, false, false, true, false, false, false];
+  // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
+  await connectAndHarvest(request, 1000);
+  //***** Video, 1000, 6m *****/
+
+  //***** Video, 10000, 2y *****/
+  request.limit.values = itemsPerRequest;
+  request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
+  request.age.selected = 4; //[age]=1w, 1m, 6m, 1y, 2y, 3y
+  request.content.selected = [false, false, false, true, false, false, false];
+  // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
+  await connectAndHarvest(request, 10000);
+  //***** Video, 10000, 2y *****/
+}
 
 async function connectAndHarvest(requestOrig, amount) {
   let request = JSON.parse(JSON.stringify(requestOrig));
@@ -131,7 +135,7 @@ async function connectAndHarvest(requestOrig, amount) {
 
   console.log("connecting done");
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-  const delay = 1; //seconds
+  const delay = 0.1; //seconds
   const roundsNum = amount / itemsPerRequest;
 
   try {

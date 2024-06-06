@@ -58,7 +58,7 @@ const request = {
   },
 };
 
-const delay = 0.2; //seconds
+const delay = 0.2; //seconds, between each api call
 
 const mysql = require("mysql2/promise");
 console.log("connecting worker");

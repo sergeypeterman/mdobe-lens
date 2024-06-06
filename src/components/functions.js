@@ -84,6 +84,7 @@ export const calculateFetchUrl = (userRequest, offset) => {
   let modifier =
     `&search_parameters[filters][age]=${age}` +
     //`&search_parameters[filters][gentech]=${gentech}` +
+    `&search_parameters[filters][premium]=false` +
     `&search_parameters[order]=${order}` +
     `&search_parameters[thumbnail_size]=240` +
     `&search_parameters[words]=${userRequest.query}` +

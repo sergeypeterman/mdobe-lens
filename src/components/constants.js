@@ -103,6 +103,7 @@ export const SETTINGS_TYPES = {
     values: GENTECH,
     selected: 0,
   },
+  skipFetch: { value: false, reason: "" },
 };
 
 export const OPTIONS = {

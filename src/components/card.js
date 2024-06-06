@@ -4,6 +4,7 @@ import {
   faChevronUp,
   faChevronDown,
   faCircleExclamation,
+  faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
@@ -11,9 +12,7 @@ import { ST } from "next/dist/shared/lib/utils";
 
 export function Card({ e, optionsValues }) {
   //Asset card component
-  const [pressed, setPressed] = useState(
-    optionsValues.expandCards.selected[0]
-  );
+  const [pressed, setPressed] = useState(optionsValues.expandCards.selected[0]);
 
   let keysArrayLength;
   const handleExpand = () => {
@@ -81,12 +80,20 @@ export function Card({ e, optionsValues }) {
       cardType = CONTENT_TYPES[e.media_type_id - 1].title;
       cardIcon = CONTENT_TYPES[e.media_type_id - 1].icon;
     }
+
     return (
       <div className="text-sm flex justify-between p-1">
         <span className="px-1 font-bold">{e.nb_downloads}</span>
-        <span>{`${e.creator_id} | ${e.creator_name}`}</span>
-        <span title={cardType} className="px-1">
-          <FontAwesomeIcon icon={cardIcon} />
+        <span className="truncate">{`${e.creator_id} | ${e.creator_name}`}</span>
+        <span className="flex">
+          {e.is_gentech ? (
+            <span title="AI Generated" className="px-1">
+              <FontAwesomeIcon icon={faRobot} />
+            </span>
+          ) : null}
+          <span title={cardType} className="px-1">
+            <FontAwesomeIcon icon={cardIcon} />
+          </span>
         </span>
       </div>
     );

@@ -108,6 +108,13 @@ export default function Home() {
 
   //fetch function
   const handleFetchClick = useCallback(async () => {
+
+    if(settingsValues.skipFetch.value){
+      settingsValues.skipFetch.value = false;
+      console.log(`fetch skipped. Reason: ${settingsValues.skipFetch.reason}`);
+      return;
+    }
+
     let offset = (currPage - 1) * settingsValues.limit.values;
     let fetchURL = `/api/get-files?search=${JSON.stringify(
       settingsValues
@@ -276,7 +283,7 @@ export default function Home() {
           {settingsShow && (
             <div
               id="settings-div"
-              className="custom-scrollbar sticky top-[5.5rem] overflow-auto h-[calc(100vh_-_8rem)] w-full md:w-[500px] z-20"
+              className="gcustom-scrollbar sticky top-[5.5rem] overflow-auto h-[calc(100vh_-_8rem)] w-full md:w-[500px] z-20"
             >
               <SettingsContainer
                 settingsShow={settingsShow}
@@ -302,13 +309,30 @@ export default function Home() {
                       lg:grid-cols-4 gap-4`}
               >
                 {resp
-                  ? resp.files.map((e, ind) => (
-                      <Card
-                        key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
-                        e={e}
-                        optionsValues={optionsValues}
-                      />
-                    ))
+                  ? resp.files.map((e, ind) => {
+                      //gentech filter
+                      let gentechSelected = settingsValues.gentech.selected;
+                      if (settingsValues.gentech.values[gentechSelected].name == "all") {
+                        return (
+                          <Card
+                            key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
+                            e={e}
+                            optionsValues={optionsValues}
+                          />
+                        );
+                      } else if (
+                        e.is_gentech.toString() ==
+                        settingsValues.gentech.values[gentechSelected].name
+                      ) {
+                        return (
+                          <Card
+                            key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
+                            e={e}
+                            optionsValues={optionsValues}
+                          />
+                        );
+                      }
+                    })
                   : null}
               </div>
             </div>

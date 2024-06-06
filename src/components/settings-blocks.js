@@ -7,6 +7,13 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
   //chooses from a group of options (radio\checkbox type)
   let thisSetting = settingsValues[type];
   const [checkedAny, setCheckedAny] = useState(false);
+  function setSettingsValuesSettingsBlock(newSet) {
+    if (type === "gentech") {
+      newSet.skipFetch.value = true;
+      newSet.skipFetch.reason = "gentech only needs filtering";
+    }
+    setSettingsValues(newSet);
+  }
 
   const handleAny = () => {
     let newAny = !checkedAny;
@@ -15,13 +22,13 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
       newSet[type].selected.forEach((e, ind) => {
         newSet[type].selected[ind] = true;
       });
-      setSettingsValues(newSet);
+      setSettingsValuesSettingsBlock(newSet);
     } else {
       let newSet = JSON.parse(JSON.stringify(settingsValues));
       newSet[type].selected.forEach((e, ind) => {
         newSet[type].selected[ind] = false;
       });
-      setSettingsValues(newSet);
+      setSettingsValuesSettingsBlock(newSet);
     }
 
     setCheckedAny(newAny);
@@ -83,7 +90,7 @@ export function SettingsBlock({ type, settingsValues, setSettingsValues }) {
         }
         break;
     }
-    setSettingsValues(newSet);
+    setSettingsValuesSettingsBlock(newSet);
   };
 
   return (

@@ -58,6 +58,8 @@ const request = {
   },
 };
 
+const delay = 0.2; //seconds
+
 const mysql = require("mysql2/promise");
 console.log("connecting worker");
 const itemsPerRequest = 100;
@@ -135,7 +137,6 @@ async function connectAndHarvest(requestOrig, amount) {
 
   console.log("connecting done");
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-  const delay = 0.1; //seconds
   const roundsNum = amount / itemsPerRequest;
 
   try {

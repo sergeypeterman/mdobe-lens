@@ -10,7 +10,12 @@ import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
 import { ST } from "next/dist/shared/lib/utils";
 
-export function Card({ e, optionsValues, setOptionsValues }) {
+export function Card({
+  e,
+  optionsValues,
+  showCardDetails,
+  setShowCardDetails,
+}) {
   //Asset card component
   const [pressed, setPressed] = useState(optionsValues.expandCards.selected[0]);
 
@@ -104,11 +109,11 @@ export function Card({ e, optionsValues, setOptionsValues }) {
   };
 
   const openDetailsWindow = () => {
-    const newOptions = JSON.parse(JSON.stringify(optionsValues));
-
-    newOptions.showCardDetails.status = true;
-    newOptions.showCardDetails.assetToDisplay = e.id;
-    setOptionsValues(newOptions);
+    const newOptions = {
+      status: true,
+      assetToDisplay: e.id,
+    };
+    setShowCardDetails(newOptions);
   };
 
   //<span className="px-1">{String(e.is_gentech)}</span>

@@ -122,10 +122,6 @@ export const OPTIONS = {
     values: THEME,
     selected: 0,
   },
-  showCardDetails:{
-    status: false,
-    assetToDisplay: -1,
-  }
 };
 
 //implementing dark mode styling

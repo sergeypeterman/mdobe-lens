@@ -32,6 +32,10 @@ export default function Home() {
   const refSearch = useRef();
 
   const [settingsShow, setSettingsShow] = useState(false); //hamburger menu handler
+  const [showCardDetails, setShowCardDetails] = useState({
+    state: false,
+    assetToDisplay: -1,
+  });
 
   //getting screen size to hide Cards for small ( < md=768px)
   function getScreenSize() {
@@ -88,9 +92,6 @@ export default function Home() {
           "appOptions",
           setOptionsValues
         );
-        const resetDetailsWindow = JSON.parse(JSON.stringify(optionsValues));
-        resetDetailsWindow.showCardDetails.status = false;
-        setOptionsValues(resetDetailsWindow);
       }
     }
     //add logic for major versions
@@ -239,10 +240,8 @@ export default function Home() {
   let settingsShowOnScreenLess768 = settingsShow && screenSize.width < 768;
 
   const closeDetailsWindow = () => {
-    const newOptions = JSON.parse(JSON.stringify(optionsValues));
-
-    newOptions.showCardDetails.status = false;
-    setOptionsValues(newOptions);
+    const newOptions = {status: false, assetToDisplay: -1};
+    setShowCardDetails(newOptions);
   };
 
   return (
@@ -331,7 +330,8 @@ export default function Home() {
                             key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
                             e={e}
                             optionsValues={optionsValues}
-                            setOptionsValues={setOptionsValues}
+                            showCardDetails={showCardDetails}
+                            setShowCardDetails={setShowCardDetails}
                           />
                         );
                       } else if (
@@ -343,7 +343,8 @@ export default function Home() {
                             key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
                             e={e}
                             optionsValues={optionsValues}
-                            setOptionsValues={setOptionsValues}
+                            showCardDetails={showCardDetails}
+                            setShowCardDetails={setShowCardDetails}
                           />
                         );
                       }
@@ -354,7 +355,7 @@ export default function Home() {
           )}
         </div>
         {!settingsShowOnScreenLess768 &&
-          optionsValues.showCardDetails.status && (
+          showCardDetails.status && (
             <>
               <div
                 id="statistics-screen-background"
@@ -371,7 +372,7 @@ export default function Home() {
                     className={`${STYLE.button} `}
                     onClick={closeDetailsWindow}
                   >
-                    {optionsValues.showCardDetails.assetToDisplay}
+                    {showCardDetails.assetToDisplay}
                   </button>
                 </div>
               </div>

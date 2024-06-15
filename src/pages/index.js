@@ -18,7 +18,7 @@ export default function Home() {
   //main page component
 
   const [resp, setResp] = useState();
-  const [optionsValues, setOptionsValues] = useState(OPTIONS);
+  const [optionsValues, setOptionsValues] = useState(OPTIONS); //visual options
   const [settingsValues, setSettingsValues] = useState(SETTINGS_TYPES); //main settings object
   const [settingsRead, setSettingssRead] = useState(false); //were the settings read from localStorage
   const [currPage, setCurrPage] = useState(1);
@@ -88,6 +88,9 @@ export default function Home() {
           "appOptions",
           setOptionsValues
         );
+        const resetDetailsWindow = JSON.parse(JSON.stringify(optionsValues));
+        resetDetailsWindow.showCardDetails.status = false;
+        setOptionsValues(resetDetailsWindow);
       }
     }
     //add logic for major versions
@@ -108,8 +111,7 @@ export default function Home() {
 
   //fetch function
   const handleFetchClick = useCallback(async () => {
-
-    if(settingsValues.skipFetch.value){
+    if (settingsValues.skipFetch.value) {
       settingsValues.skipFetch.value = false;
       console.log(`fetch skipped. Reason: ${settingsValues.skipFetch.reason}`);
       return;
@@ -236,6 +238,13 @@ export default function Home() {
 
   let settingsShowOnScreenLess768 = settingsShow && screenSize.width < 768;
 
+  const closeDetailsWindow = () => {
+    const newOptions = JSON.parse(JSON.stringify(optionsValues));
+
+    newOptions.showCardDetails.status = false;
+    setOptionsValues(newOptions);
+  };
+
   return (
     <>
       <Head>
@@ -246,13 +255,13 @@ export default function Home() {
       >
         <div
           id="top-background"
-          className={`w-full h-10 bg-neutral-700 flex z-30 justify-center items-center`}
+          className={`w-full h-10 bg-neutral-700 flex z-40 justify-center items-center`}
         >
-          <h1 className={`text-gray-300 font-medium font-logo z-30`}>
+          <h1 className={`text-gray-300 font-medium font-logo z-40`}>
             mdobeLens
           </h1>
         </div>
-        <div id="search" className="w-full h-full sticky top-0 z-30">
+        <div id="search" className="w-full h-full sticky top-0 z-40">
           <SearchContainer
             handleFetchClick={handleFetchClick}
             isEnter={isEnter}
@@ -268,7 +277,7 @@ export default function Home() {
             screenSize={screenSize}
           />
         </div>
-        <div id="settings" className="flex flex-row z-20">
+        <div id="main-window" className="flex flex-row z-20">
           {settingsShowOnScreenLess768 && (
             <div
               id="screen-background"
@@ -280,6 +289,7 @@ export default function Home() {
                     }`}
             ></div>
           )}
+
           {settingsShow && (
             <div
               id="settings-div"
@@ -309,15 +319,19 @@ export default function Home() {
                       lg:grid-cols-4 gap-4`}
               >
                 {resp
-                  ? resp.files.map((e, ind) => {
+                  ? resp.files.map((e) => {
                       //gentech filter
                       let gentechSelected = settingsValues.gentech.selected;
-                      if (settingsValues.gentech.values[gentechSelected].name == "all") {
+                      if (
+                        settingsValues.gentech.values[gentechSelected].name ==
+                        "all"
+                      ) {
                         return (
                           <Card
                             key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
                             e={e}
                             optionsValues={optionsValues}
+                            setOptionsValues={setOptionsValues}
                           />
                         );
                       } else if (
@@ -329,6 +343,7 @@ export default function Home() {
                             key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
                             e={e}
                             optionsValues={optionsValues}
+                            setOptionsValues={setOptionsValues}
                           />
                         );
                       }
@@ -338,6 +353,30 @@ export default function Home() {
             </div>
           )}
         </div>
+        {!settingsShowOnScreenLess768 &&
+          optionsValues.showCardDetails.status && (
+            <>
+              <div
+                id="statistics-screen-background"
+                className={`fixed top-0 opacity-100 backdrop-filter backdrop-blur-sm backdrop-brightness-50 w-full h-full
+                    z-50`}
+              ></div>
+              <div
+                className={`fixed top-0 flex items-center justify-center z-50 w-full h-full `}
+              >
+                <div
+                  className={`${STYLE.backColor} rounded-md w-full h-3/5 md:w-3/5 h-3/5 flex flex-col justify-center items-center`}
+                >
+                  <button
+                    className={`${STYLE.button} `}
+                    onClick={closeDetailsWindow}
+                  >
+                    {optionsValues.showCardDetails.assetToDisplay}
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
       </main>
     </>
   );

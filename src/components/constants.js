@@ -122,6 +122,10 @@ export const OPTIONS = {
     values: THEME,
     selected: 0,
   },
+  showCardDetails:{
+    status: false,
+    assetToDisplay: -1,
+  }
 };
 
 //implementing dark mode styling
@@ -142,6 +146,7 @@ export const STYLE = {
     "transition text-gray-200 disabled:text-gray-500 hover:text-gray-50",
   settingsHeader:
     "transition text-neutral-400 disabled:text-neutral-400 hover:text-neutral-500",
+  button: "bg-neutral-200 dark:bg-neutral-700 rounded-xl flex items-center justify-center p-1 m-1 hover:bg-neutral-300 hover:dark:bg-neutral-500",
 };
 
 export const RESULT_COLUMNS = [

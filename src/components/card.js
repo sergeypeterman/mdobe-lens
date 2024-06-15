@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
 import { ST } from "next/dist/shared/lib/utils";
 
-export function Card({ e, optionsValues }) {
+export function Card({ e, optionsValues, setOptionsValues }) {
   //Asset card component
   const [pressed, setPressed] = useState(optionsValues.expandCards.selected[0]);
 
@@ -103,6 +103,14 @@ export function Card({ e, optionsValues }) {
     return keyIndex === keysArrayLength - 1 ? `${keyword}` : `${keyword}, `;
   };
 
+  const openDetailsWindow = () => {
+    const newOptions = JSON.parse(JSON.stringify(optionsValues));
+
+    newOptions.showCardDetails.status = true;
+    newOptions.showCardDetails.assetToDisplay = e.id;
+    setOptionsValues(newOptions);
+  };
+
   //<span className="px-1">{String(e.is_gentech)}</span>
   return (
     <div
@@ -112,6 +120,9 @@ export function Card({ e, optionsValues }) {
       <div className="flex flex-col">
         {getCardHeader()}
         {getCardContent()}
+        <button className={`${STYLE.button}`} onClick={openDetailsWindow}>
+          Details
+        </button>
         <div className="text-sm flex justify-around p-1">
           <a
             className={`px-1 ${STYLE.fontColor} ${STYLE.fontColorLink}`}

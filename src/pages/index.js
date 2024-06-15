@@ -8,7 +8,7 @@ import {
 import { SettingsContainer, SearchContainer } from "@/components/settings";
 import { Card } from "@/components/card";
 import Head from "next/head";
-const packageJSON = require("package.json");
+const packageJSON = require("../../package.json");
 import {
   compareStringify,
   compareAndManageStorage,

@@ -13,6 +13,7 @@ import {
   compareStringify,
   compareAndManageStorage,
 } from "@/components/functions";
+import Image from "next/image";
 
 export default function Home() {
   //main page component
@@ -35,6 +36,7 @@ export default function Home() {
   const [showCardDetails, setShowCardDetails] = useState({
     state: false,
     assetToDisplay: -1,
+    dataToDisplay: { test: "test" },
   });
 
   //getting screen size to hide Cards for small ( < md=768px)
@@ -240,8 +242,34 @@ export default function Home() {
   let settingsShowOnScreenLess768 = settingsShow && screenSize.width < 768;
 
   const closeDetailsWindow = () => {
-    const newOptions = {status: false, assetToDisplay: -1};
-    setShowCardDetails(newOptions);
+    const newCardDetails = JSON.parse(JSON.stringify(showCardDetails));
+    newCardDetails.status = false;
+    newCardDetails.assetToDisplay = -1;
+    setShowCardDetails(newCardDetails);
+  };
+
+  const getDetailsFromDB = async (asset) => {
+    const newCardDetails = JSON.parse(JSON.stringify(showCardDetails));
+
+    const dbResponse = await fetch(`/api/post-files?id=${asset.id}`, {
+      method: "GET",
+    });
+    if (dbResponse.ok) {
+      newCardDetails.status = true;
+      newCardDetails.assetToDisplay = asset;
+
+      const response = await dbResponse.json();
+      const { message } = response;
+
+      newCardDetails.dataToDisplay = message;
+
+      console.log(`getDetailsFromDB: ${message}`);
+    } else {
+      newCardDetails.status = false;
+      console.log(`getDetailsFromDB: ${dbResponse.type}`);
+    }
+
+    setShowCardDetails(newCardDetails);
   };
 
   return (
@@ -330,8 +358,7 @@ export default function Home() {
                             key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
                             e={e}
                             optionsValues={optionsValues}
-                            showCardDetails={showCardDetails}
-                            setShowCardDetails={setShowCardDetails}
+                            getDetailsFromDB={getDetailsFromDB}
                           />
                         );
                       } else if (
@@ -343,8 +370,7 @@ export default function Home() {
                             key={`e-${e.nb_results}-${e.id}-${optionsValues.expandCards.selected}`}
                             e={e}
                             optionsValues={optionsValues}
-                            showCardDetails={showCardDetails}
-                            setShowCardDetails={setShowCardDetails}
+                            getDetailsFromDB={getDetailsFromDB}
                           />
                         );
                       }
@@ -354,30 +380,38 @@ export default function Home() {
             </div>
           )}
         </div>
-        {!settingsShowOnScreenLess768 &&
-          showCardDetails.status && (
-            <>
-              <div
-                id="statistics-screen-background"
-                className={`fixed top-0 opacity-100 backdrop-filter backdrop-blur-sm backdrop-brightness-50 w-full h-full
+        {!settingsShowOnScreenLess768 && showCardDetails.status && (
+          <>
+            <div
+              id="statistics-screen-background"
+              className={`fixed top-0 opacity-100 backdrop-filter backdrop-blur-sm backdrop-brightness-50 w-full h-full
                     z-50`}
-              ></div>
+            ></div>
+            <div
+              className={`fixed top-0 flex items-center justify-center z-50 w-full h-full `}
+            >
               <div
-                className={`fixed top-0 flex items-center justify-center z-50 w-full h-full `}
+                className={`${STYLE.backColor} rounded-md w-full h-3/5 md:w-3/5 h-3/5 flex flex-col justify-around items-center`}
               >
-                <div
-                  className={`${STYLE.backColor} rounded-md w-full h-3/5 md:w-3/5 h-3/5 flex flex-col justify-center items-center`}
+                <Image
+                  className="image-contain p-2"
+                  alt={showCardDetails.assetToDisplay.title}
+                  src={showCardDetails.assetToDisplay.thumbnail_url}
+                  width={showCardDetails.assetToDisplay.thumbnail_width}
+                  height={showCardDetails.assetToDisplay.thumbnail_height}
+                />
+                <div className="flex flex-wrap w-full">{JSON.stringify(showCardDetails.dataToDisplay)}</div>
+
+                <button
+                  className={`${STYLE.button} `}
+                  onClick={closeDetailsWindow}
                 >
-                  <button
-                    className={`${STYLE.button} `}
-                    onClick={closeDetailsWindow}
-                  >
-                    {showCardDetails.assetToDisplay}
-                  </button>
-                </div>
+                  Close
+                </button>
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
       </main>
     </>
   );

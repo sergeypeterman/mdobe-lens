@@ -61,9 +61,25 @@ export default async function postToStockDB(req, res) {
       res.status(500).json({ message: err });
       db.end();
     }
-  }
+    //will need GET later
+  } else if (req.method === "GET") {
+    const {
+      query: { id },
+    } = req;
+    try {
+      //console.log(`post-files: ${id}`);
+      const dbQuery = `SELECT * FROM assets_sales WHERE asset_id = '${id}'`;
+      
+      const assetSalesDB = await db.query(dbQuery);
 
-  //will need GET later
+      db.end();
+      res.status(200).json({ message: assetSalesDB[0] });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: err });
+      db.end();
+    }
+  }
 }
 
 Date.prototype.removeTimeFromDate = function () {
@@ -74,7 +90,6 @@ Date.prototype.removeTimeFromDate = function () {
 Boolean.prototype.to01 = function () {
   return this ? 1 : 0;
 };
-
 
 Array.prototype.reduceArrayOfObjectsToArrayOfValues = function (keyName) {
   let newKeywords = this.reduce((acc, item) => {

@@ -10,12 +10,7 @@ import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
 import { ST } from "next/dist/shared/lib/utils";
 
-export function Card({
-  e,
-  optionsValues,
-  showCardDetails,
-  setShowCardDetails,
-}) {
+export function Card({ e, optionsValues, getDetailsFromDB }) {
   //Asset card component
   const [pressed, setPressed] = useState(optionsValues.expandCards.selected[0]);
 
@@ -108,12 +103,30 @@ export function Card({
     return keyIndex === keysArrayLength - 1 ? `${keyword}` : `${keyword}, `;
   };
 
-  const openDetailsWindow = () => {
-    const newOptions = {
-      status: true,
-      assetToDisplay: e.id,
-    };
-    setShowCardDetails(newOptions);
+  const openDetailsWindow = async () => {
+    getDetailsFromDB(e);
+
+    /* //don't try to GET from db, if env variable HOST_ADDRESS is undefined
+    const hostAdress = process.env.HOST_ADDRESS;
+    console.log(hostAdress);
+
+    if (hostAdress) {
+      const dbResponse = await fetch(`${hostAdress}/api/post-files`,{
+        method: "GET",
+        body: JSON.stringify(newCardDetails),
+      });
+      if(dbResponse.ok){
+        newCardDetails.status = true;
+        newCardDetails.assetToDisplay = e.id;
+        newCardDetails.dataToDisplay = dbResponse.message;
+      }
+      else{
+        newCardDetails.status = false;
+      }
+    }
+    else {
+      console.log(`host address is incorrect, GET from DB skipped`);
+    } */
   };
 
   //<span className="px-1">{String(e.is_gentech)}</span>

@@ -58,9 +58,10 @@ const request = {
   },
 };
 
-const delay = 0.2; //seconds, between each api call
+const delay = 1; //seconds, between each api call
 
 const mysql = require("mysql2/promise");
+const { error } = require("node:console");
 console.log("connecting worker");
 const itemsPerRequest = 100;
 
@@ -69,32 +70,37 @@ worker();
 /****************DECLARATIONS*********************/
 
 async function worker() {
-  //***** Stills, 10000, 2y *****/
+  const workerStatus = [];
+  let resultCurrent;
+  //***** Stills and video, 10000, 2y *****/
   request.limit.values = itemsPerRequest;
   request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
   request.age.selected = 4; //[age]=1w, 1m, 6m, 1y, 2y, 3y
   request.content.selected = [true, true, true, true, false, false, false];
   // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-  await connectAndHarvest(request, 10000);
-  //***** Stills, 10000, 2y *****/
+  resultCurrent = await connectAndHarvest(request, 10000);
+  workerStatus.push(`Stills and video, 10000, 2y — ${resultCurrent}`);
+  //***** Stills and video, 10000, 2y *****/
 
-  //***** Stills, 1000, 1w *****/
+  //***** Stills and video, 1000, 1w *****/
   request.limit.values = itemsPerRequest;
   request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
   request.age.selected = 0; //[age]=1w, 1m, 6m, 1y, 2y, 3y
   request.content.selected = [true, true, true, true, false, false, false];
   // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-  await connectAndHarvest(request, 1000);
-  //***** Stills, 1000, 1w *****/
+  resultCurrent = await connectAndHarvest(request, 1000);
+  workerStatus.push(`Stills and video, 1000, 1w — ${resultCurrent}`);
+  //***** Stills and video, 1000, 1w *****/
 
-  //***** Stills, 10000, 6m *****/
+  //***** Stills and video, 10000, 6m *****/
   request.limit.values = itemsPerRequest;
   request.order.selected = 4; //"relevance", "creation", "featured", "undiscovered", "nb_downloads
   request.age.selected = 2; //[age]=1w, 1m, 6m, 1y, 2y, 3y
   request.content.selected = [true, true, true, true, false, false, false];
   // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-  await connectAndHarvest(request, 1000);
-  //***** Stills, 10000, 6m *****/
+  resultCurrent = await connectAndHarvest(request, 1000);
+  workerStatus.push(`Stills and video, 10000, 6m — ${resultCurrent}`);
+  //***** Stills and video, 10000, 6m *****/
 
   //***** Video, 1000, 1m *****/
   request.limit.values = itemsPerRequest;
@@ -102,7 +108,8 @@ async function worker() {
   request.age.selected = 1; //[age]=1w, 1m, 6m, 1y, 2y, 3y
   request.content.selected = [false, false, false, true, false, false, false];
   // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-  await connectAndHarvest(request, 1000);
+  resultCurrent = await connectAndHarvest(request, 1000);
+  workerStatus.push(`Video, 1000, 1m — ${resultCurrent}`);
   //***** Video, 1000, 1m *****/
 
   //***** Video, 1000, 6m *****/
@@ -111,7 +118,8 @@ async function worker() {
   request.age.selected = 2; //[age]=1w, 1m, 6m, 1y, 2y, 3y
   request.content.selected = [false, false, false, true, false, false, false];
   // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-  await connectAndHarvest(request, 1000);
+  resultCurrent = await connectAndHarvest(request, 1000);
+  workerStatus.push(`Video, 1000, 6m — ${resultCurrent}`);
   //***** Video, 1000, 6m *****/
 
   //***** Video, 10000, 2y *****/
@@ -120,12 +128,16 @@ async function worker() {
   request.age.selected = 4; //[age]=1w, 1m, 6m, 1y, 2y, 3y
   request.content.selected = [false, false, false, true, false, false, false];
   // "photo", "illustration", "vector", "video", "UNKNOWN", "3d", "template"
-  await connectAndHarvest(request, 10000);
+  resultCurrent = await connectAndHarvest(request, 10000);
+  workerStatus.push(`Video, 10000, 2y — ${resultCurrent}`);
   //***** Video, 10000, 2y *****/
+
+  console.log('All done.');
+  workerStatus.map((item) => console.log(`${item}\n`));
 }
 
 async function connectAndHarvest(requestOrig, amount) {
-  let request = JSON.parse(JSON.stringify(requestOrig));
+  let requestToHarvest = JSON.parse(JSON.stringify(requestOrig));
   const db = await mysql.createConnection({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -139,29 +151,57 @@ async function connectAndHarvest(requestOrig, amount) {
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
   const roundsNum = amount / itemsPerRequest;
 
+  let assetsProcessed = 0;
+
   try {
     for (let i = 0; i < roundsNum; i++) {
       let offset = i * itemsPerRequest;
-      const currArray = await getAdobeArray(apikey, offset, request);
-      //console.log(currArray);
 
-      const writeResult = await writeIntoDB(currArray, db);
-      console.log(writeResult);
-      let assetsProcessed = (i + 1) * itemsPerRequest;
-      console.log(`${assetsProcessed} assets processed.`);
+      let attemptsTotal = 5;
+      let attempt = 1;
+      let successfulFetch = false;
 
-      i + 1 === roundsNum
-        ? console.log("done")
-        : console.log(`waiting ${delay} second${delay > 1 ? "s" : ""}`);
+      while (!successfulFetch && attemptsTotal >= attempt) {
+        const { errorStatus, errorMessage, currArray } = await getAdobeArray(
+          apikey,
+          offset,
+          requestToHarvest
+        );
+        //console.log(currArray);
 
-      await timer(1000 * delay);
+        if (errorStatus === false) {
+          successfulFetch = true;
+          const writeResult = await writeIntoDB(currArray, db);
+          console.log(writeResult);
+          assetsProcessed = (i + 1) * itemsPerRequest;
+          console.log(`${assetsProcessed}/${amount} assets processed.`);
+
+          i + 1 === roundsNum
+            ? console.log("done")
+            : console.log(`waiting ${delay} second${delay !== 1 ? "s" : ""}`);
+
+          await timer(1000 * delay);
+        } else {
+          console.log(
+            `Fetch failed. Attempt #${attempt} Adobe API error: ${errorMessage}`
+          );
+          attempt++;
+          if (attemptsTotal >= attempt) {
+            console.log(`Waiting ${attempt * delay} seconds`);
+            await timer(attempt * 1000 * delay);
+          } else {
+            throw new Error(`Out of attempts`);
+          }
+        }
+      }
     }
   } catch (err) {
     console.log(err);
+    console.log(`ERROR. ${assetsProcessed}/${amount} assets processed.`);
   }
 
   db.end();
-  return;
+  return `${assetsProcessed}/${amount}`;
 }
 
 //settings
@@ -241,6 +281,8 @@ async function getAdobeArray(apikey, offset, request) {
   let searchUrl = calculateFetchUrl(request, offset);
   //console.log(`API: Search = ${searchUrl}`);
 
+  const returnValue = { errorStatus: false, errorMessage: "", currArray: null };
+
   const respn = await fetch(searchUrl, {
     method: "GET",
     headers: {
@@ -251,11 +293,15 @@ async function getAdobeArray(apikey, offset, request) {
   const result = await respn.json();
 
   if (!respn.ok) {
-    console.log(respn);
-    throw new Error(`API Response Error: ${respn.statusText}`);
+    //console.log(respn);
+    //throw new Error(`API Response Error: ${respn.statusText}`);
+    returnValue.errorStatus = true;
+    returnValue.errorMessage = `API Response Error: ${respn.statusText}`;
   }
 
-  return result;
+  returnValue.currArray = result;
+
+  return returnValue;
 }
 
 async function writeIntoDB(adobeArray, db) {

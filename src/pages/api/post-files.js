@@ -69,11 +69,18 @@ export default async function postToStockDB(req, res) {
     try {
       //console.log(`post-files: ${id}`);
       const dbQuery = `SELECT * FROM assets_sales WHERE asset_id = '${id}'`;
-      
+
       const assetSalesDB = await db.query(dbQuery);
 
+      const assetSalesArray = assetSalesDB[0].reduce((acc, item) => {
+        const newSaleData = {nbDownloads: item.nb_downloads, dateRecorded: item.date_recorded};
+        acc.push(newSaleData);
+        return acc;
+      }, []);
+      const assetSalesDataFiltered = { assetID: id, sales: assetSalesArray };
+
       db.end();
-      res.status(200).json({ message: assetSalesDB[0] });
+      res.status(200).json({ message: assetSalesDataFiltered });
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: err });

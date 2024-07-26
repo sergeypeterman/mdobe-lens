@@ -81,11 +81,11 @@ export const calculateFetchUrl = (userRequest, offset) => {
   }, "");
   //console.log(`userRequest.ai: ${gentech}`);
 
-  //for some reason with empty age (any age) you can't use premium = false
+  //for some reason for videos with empty age (any age) you can't use premium = false
   let premium = age === "" ? null: `&search_parameters[filters][premium]=false`;
 
   let modifier =
-    `${age}` +
+    `&search_parameters[filters][age]=${age}` +
     //`&search_parameters[filters][gentech]=${gentech}` +
     `${premium}` +
     `&search_parameters[order]=${order}` +

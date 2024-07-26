@@ -53,7 +53,7 @@ export const calculateFetchUrl = (userRequest, offset) => {
 
   let ageInd = userRequest.age.selected; //index of selected age
   let age = userRequest.age.values[ageInd].name; //selected age
-
+  
   let orderInd = userRequest.order.selected; //index of selected order
   let order = userRequest.order.values[orderInd].name; //selected order
 
@@ -81,10 +81,13 @@ export const calculateFetchUrl = (userRequest, offset) => {
   }, "");
   //console.log(`userRequest.ai: ${gentech}`);
 
+  //for some reason with empty age (any age) you can't use premium = false
+  let premium = age === "" ? null: `&search_parameters[filters][premium]=false`;
+
   let modifier =
-    `&search_parameters[filters][age]=${age}` +
+    `${age}` +
     //`&search_parameters[filters][gentech]=${gentech}` +
-    `&search_parameters[filters][premium]=false` +
+    `${premium}` +
     `&search_parameters[order]=${order}` +
     `&search_parameters[thumbnail_size]=240` +
     `&search_parameters[words]=${userRequest.query}` +

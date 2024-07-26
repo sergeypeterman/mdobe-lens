@@ -14,6 +14,8 @@ import {
   compareAndManageStorage,
 } from "@/components/functions";
 import Image from "next/image";
+import { Line } from "react-chartjs-2";
+import "chart.js/auto";
 
 export default function Home() {
   //main page component
@@ -272,6 +274,28 @@ export default function Home() {
     setShowCardDetails(newCardDetails);
   };
 
+  const labelsTest = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+  ];
+  const dataTest = {
+    labelsTest,
+    datasets: [
+      {
+        label: "My First Dataset",
+        data: [65, 59, 80, 81, 56, 55, 40],
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+    ],
+  };
+
   return (
     <>
       <Head>
@@ -393,6 +417,12 @@ export default function Home() {
               <div
                 className={`${STYLE.backColor} rounded-md w-full h-3/5 md:w-3/5 h-3/5 flex flex-col justify-around items-center`}
               >
+                <button
+                  className={`${STYLE.button} `}
+                  onClick={closeDetailsWindow}
+                >
+                  Close
+                </button>
                 <Image
                   className="image-contain p-2"
                   alt={showCardDetails.assetToDisplay.title}
@@ -400,14 +430,23 @@ export default function Home() {
                   width={showCardDetails.assetToDisplay.thumbnail_width}
                   height={showCardDetails.assetToDisplay.thumbnail_height}
                 />
-                <div className="flex flex-wrap w-full">{JSON.stringify(showCardDetails.dataToDisplay)}</div>
-
-                <button
-                  className={`${STYLE.button} `}
-                  onClick={closeDetailsWindow}
-                >
-                  Close
-                </button>
+                <div className="flex flex-wrap w-full">
+                  {JSON.stringify(showCardDetails.dataToDisplay)}
+                </div>
+                <Line
+                  data={dataTest}
+                  options={{
+                    plugins: {
+                      title: {
+                        display: true,
+                        text: "Users Gained between 2016-2020",
+                      },
+                      legend: {
+                        display: false,
+                      },
+                    },
+                  }}
+                />
               </div>
             </div>
           </>

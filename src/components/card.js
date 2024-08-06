@@ -10,7 +10,12 @@ import { useEffect, useState } from "react";
 import { CONTENT_TYPES, STYLE } from "@/components/constants";
 import { ST } from "next/dist/shared/lib/utils";
 
-export function Card({ e, optionsValues, getDetailsFromDB }) {
+export function Card({
+  e,
+  optionsValues,
+  getDetailsFromDB,
+  urlDetailsBlocked,
+}) {
   //Asset card component
   const [pressed, setPressed] = useState(optionsValues.expandCards.selected[0]);
 
@@ -105,28 +110,6 @@ export function Card({ e, optionsValues, getDetailsFromDB }) {
 
   const openDetailsWindow = async () => {
     getDetailsFromDB(e);
-
-    /* //don't try to GET from db, if env variable HOST_ADDRESS is undefined
-    const hostAdress = process.env.HOST_ADDRESS;
-    console.log(hostAdress);
-
-    if (hostAdress) {
-      const dbResponse = await fetch(`${hostAdress}/api/post-files`,{
-        method: "GET",
-        body: JSON.stringify(newCardDetails),
-      });
-      if(dbResponse.ok){
-        newCardDetails.status = true;
-        newCardDetails.assetToDisplay = e.id;
-        newCardDetails.dataToDisplay = dbResponse.message;
-      }
-      else{
-        newCardDetails.status = false;
-      }
-    }
-    else {
-      console.log(`host address is incorrect, GET from DB skipped`);
-    } */
   };
 
   //<span className="px-1">{String(e.is_gentech)}</span>
@@ -138,9 +121,11 @@ export function Card({ e, optionsValues, getDetailsFromDB }) {
       <div className="flex flex-col">
         {getCardHeader()}
         {getCardContent()}
-        <button className={`${STYLE.button}`} onClick={openDetailsWindow}>
-          Details
-        </button>
+        {urlDetailsBlocked ? null : (
+          <button className={`${STYLE.button}`} onClick={openDetailsWindow}>
+            {`Details`}
+          </button>
+        )}
         <div className="text-sm flex justify-around p-1">
           <a
             className={`px-1 ${STYLE.fontColor} ${STYLE.fontColorLink}`}

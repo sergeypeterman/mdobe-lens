@@ -13,12 +13,17 @@ import {
   compareStringify,
   compareAndManageStorage,
 } from "@/components/functions";
-import Image from "next/image";
-import { Line } from "react-chartjs-2";
-import "chart.js/auto";
 
+import { SalesChart } from "@/components/sales-details";
+
+let urlDetailsBlocked;
 export default function Home() {
   //main page component
+
+  //check if we're at localhost. If not, block Details and DB communication
+  useEffect(() => {
+    urlDetailsBlocked = window.location.hostname == "localhost" ? false : true;
+  },[]);
 
   const [resp, setResp] = useState();
   const [optionsValues, setOptionsValues] = useState(OPTIONS); //visual options
@@ -243,13 +248,6 @@ export default function Home() {
 
   let settingsShowOnScreenLess768 = settingsShow && screenSize.width < 768;
 
-  const closeDetailsWindow = () => {
-    const newCardDetails = JSON.parse(JSON.stringify(showCardDetails));
-    newCardDetails.status = false;
-    newCardDetails.assetToDisplay = -1;
-    setShowCardDetails(newCardDetails);
-  };
-
   const getDetailsFromDB = async (asset) => {
     const newCardDetails = JSON.parse(JSON.stringify(showCardDetails));
 
@@ -274,32 +272,10 @@ export default function Home() {
     setShowCardDetails(newCardDetails);
   };
 
-  const labelsTest = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-  ];
-  const dataTest = {
-    labelsTest,
-    datasets: [
-      {
-        label: "My First Dataset",
-        data: [65, 59, 80, 81, 56, 55, 40],
-        fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
-
   return (
     <>
       <Head>
-        <title>mdobeLens</title>
+        <title>{`mdobeLens`}</title>
       </Head>
       <main
         className={`min-h-screen min-w-[240px] border-box ${STYLE.bodyBackground}`}
@@ -383,6 +359,7 @@ export default function Home() {
                             e={e}
                             optionsValues={optionsValues}
                             getDetailsFromDB={getDetailsFromDB}
+                            urlDetailsBlocked={urlDetailsBlocked}
                           />
                         );
                       } else if (
@@ -395,6 +372,7 @@ export default function Home() {
                             e={e}
                             optionsValues={optionsValues}
                             getDetailsFromDB={getDetailsFromDB}
+                            urlDetailsBlocked={urlDetailsBlocked}
                           />
                         );
                       }
@@ -405,51 +383,11 @@ export default function Home() {
           )}
         </div>
         {!settingsShowOnScreenLess768 && showCardDetails.status && (
-          <>
-            <div
-              id="statistics-screen-background"
-              className={`fixed top-0 opacity-100 backdrop-filter backdrop-blur-sm backdrop-brightness-50 w-full h-full
-                    z-50`}
-            ></div>
-            <div
-              className={`fixed top-0 flex items-center justify-center z-50 w-full h-full `}
-            >
-              <div
-                className={`${STYLE.backColor} rounded-md w-full h-3/5 md:w-3/5 h-3/5 flex flex-col justify-around items-center`}
-              >
-                <button
-                  className={`${STYLE.button} `}
-                  onClick={closeDetailsWindow}
-                >
-                  Close
-                </button>
-                <Image
-                  className="image-contain p-2"
-                  alt={showCardDetails.assetToDisplay.title}
-                  src={showCardDetails.assetToDisplay.thumbnail_url}
-                  width={showCardDetails.assetToDisplay.thumbnail_width}
-                  height={showCardDetails.assetToDisplay.thumbnail_height}
-                />
-                <div className="flex flex-wrap w-full">
-                  {JSON.stringify(showCardDetails.dataToDisplay)}
-                </div>
-                <Line
-                  data={dataTest}
-                  options={{
-                    plugins: {
-                      title: {
-                        display: true,
-                        text: "Users Gained between 2016-2020",
-                      },
-                      legend: {
-                        display: false,
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </div>
-          </>
+          <SalesChart
+            setShowCardDetails={setShowCardDetails}
+            showCardDetails={showCardDetails}
+            getDetailsFromDB={getDetailsFromDB}
+          />
         )}
       </main>
     </>
